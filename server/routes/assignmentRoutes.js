@@ -1,8 +1,17 @@
 // routes/assignmentRoutes.js
 
-const express = require('express');
+// import express from "express";
+
+// import { ObjectId } from "mongodb";
+// import Assignment from "../models/Assignment.js";
+
+const express = require("express");
+const { ObjectId } = require("mongodb");
+const Assignment = require("../models/Assignment.js");
+
+const db = require("../db/conn.js");
 const router = express.Router();
-const Assignment = require('../models/Assignment');
+
 
 // Get all assignments
 router.get('/', async (req, res) => {

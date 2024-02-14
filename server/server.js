@@ -1,56 +1,35 @@
-// server.js
+const express = require("express");
+
+const cors = require("cors");
+require("dotenv").config({ path: "./config.env" });
+
+const studentRoutes = require("./routes/studentRoutes");
+const courseRoutes = require("./routes/courseRoutes");
+const assignmentRoutes = require("./routes/assignmentRoutes");
+const dbo = require("./db/conn");
 
 
-require('dotenv').config()
-const express = require('express');
-const mongoose = require('mongoose');
-const studentRoutes = require('./routes/studentRoutes'); // Adjust paths accordingly
-const courseRoutes = require('./routes/courseRoutes');
-const assignmentRoutes = require('./routes/assignmentRoutes');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-// Import other route files as needed
-
+const PORT = process.env.PORT || 5050;
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const uri = "mongodb+srv://jnbernabe:jnbMongod94!@navigrade.sznat3k.mongodb.net/?retryWrites=true&w=majority";
-
-console.log("uri: ", uri);
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    //await client.close();
-  }
-}
-run().catch(console.dir);
-
-
+app.use(cors());
 app.use(express.json());
 
-// Use routes
-// app.use('/', (req, res) => {    // Add a default route
-//     res.send('Welcome to NaviGrade!');
-// })
-app.use('/students', studentRoutes);
-app.use('/courses', courseRoutes);
-app.use('/assignments', assignmentRoutes);
-// Use other routes as needed
+// Load the /posts routes
+app.use("/students", studentRoutes);
+app.use("/courses", courseRoutes);
+app.use("/assignments", assignmentRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${"http://localhost:" + PORT}`);
+// Global error handling
+app.use((err, _req, res, next) => {
+  res.status(500).send("Uh oh! An unexpected error occured.")
+})
+
+// start the Express server
+app.listen(PORT, async () => {
+  // perform a database connection when server starts
+  await dbo.connectToServer(function (err) {
+    if (err) console.error(err);
+  });
+  console.log(`Server is running on port: http://localhost:${PORT}/`);
 });

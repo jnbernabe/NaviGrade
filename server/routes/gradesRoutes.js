@@ -1,8 +1,12 @@
 // routes/gradeRoutes.js
 
-const express = require('express');
+const express = require("express");
+const { ObjectId } = require("mongodb");
+const Grade = require("../models/Grade.js");
+const db = require("../db/conn.js");
+
+
 const router = express.Router();
-const Grade = require('../models/Grade');
 
 // Get all grades
 router.get('/', async (req, res) => {
@@ -25,3 +29,4 @@ router.get('/:id', async (req, res) => {
 });
 
 //
+module.exports = router;

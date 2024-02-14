@@ -1,13 +1,27 @@
-// routes/studentRoutes.js
+// // routes/studentRoutes.js
+// import express from "express";
+// import { ObjectId } from "mongodb";
+// import Student from "../models/Student.js";
 
-const express = require('express');
+const express = require("express");
+const ObjectId = require("mongodb").ObjectId;
+const Student = require("../models/Student.js");
+const dbo = require("../db/conn");
 const router = express.Router();
-const Student = require('../models/Student');
 
 // Get all students
 router.get('/', async (req, res) => {
   try {
-    const students = await Student.find().then(res.json(students));
+    let db_connect = dbo.getDb();
+    db_connect
+   .collection("student")
+   .find({})
+    .toArray()
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    });
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

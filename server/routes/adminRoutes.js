@@ -1,8 +1,16 @@
 // routes/adminRoutes.js
 
-const express = require('express');
+// import express from "express";
+// import db from "../db/conn.mjs";
+// import { ObjectId } from "mongodb";
+// import Admin from "../models/Admin.mjs";
+
+const express = require("express");
+const { ObjectId } = require("mongodb");
+const Admin = require("../models/Admin.js");
+const db = require("../db/conn.js");
 const router = express.Router();
-const Admin = require('../models/Admin');
+
 
 // Get all admins
 router.get('/', async (req, res) => {

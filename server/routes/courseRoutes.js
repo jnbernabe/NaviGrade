@@ -1,8 +1,15 @@
 // routes/courseRoutes.js
 
-const express = require('express');
+// import express from "express";
+
+// import { ObjectId } from "mongodb";
+// import Course from "../models/Course.js";
+
+const express = require("express");
+const { ObjectId } = require("mongodb");
+const Course = require("../models/Course.js");
+const db = require("../db/conn.js");
 const router = express.Router();
-const Course = require('../models/Course');
 
 // Get all courses
 router.get('/', async (req, res) => {
