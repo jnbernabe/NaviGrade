@@ -1,8 +1,7 @@
 const express = require("express");
 
 const cors = require("cors");
-require("dotenv").config({ path: "./config.env" });
-
+require("dotenv").config({ path: "./loadEnvironment.mjs" });
 const studentRoutes = require("./routes/studentRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const assignmentRoutes = require("./routes/assignmentRoutes");

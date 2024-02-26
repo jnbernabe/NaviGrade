@@ -29,26 +29,37 @@ router.get('/', async (req, res) => {
 
 // Get a specific student
 router.get('/:id', async (req, res) => {
-  try {
-    const student = await Student.findById(req.params.id);
-    res.json(student);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+    try {
+      let db_connect = dbo.getDb();
+      await db_connect
+        .collection("student")
+        .find({ _id: new ObjectId(req.params.id) })
+        .toArray()
+        .then((data) => {
+          res.json(data);
+        });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
 
 // Create a new student
 router.post('/', async (req, res) => {
-  const student = new Student({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password, // Remember to hash the password before storing it
-  });
-
   try {
-    const newStudent = await student.save();
-    res.status(201).json(newStudent);
+    const student = new Student({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password, // Remember to hash the password before storing it
+      courses: [],
+    });
+    let db_connect = dbo.getDb();
+    await db_connect.collection("student").insertOne(student)
+      .then((data) => {
+        console.log(data);
+        res.json(data);
+      });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -57,19 +68,12 @@ router.post('/', async (req, res) => {
 // Update a student
 router.patch('/:id', async (req, res) => {
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          email: req.body.email,
-          password: req.body.password, // Remember to hash the password before storing it
-        },
-      },
-      { new: true }
-    );
-    res.json(updatedStudent);
+    let db_connect = dbo.getDb();
+    await db_connect.collection("student").updateOne(req.params.id, { $set: req.body }, { new: true })
+      .then((data) => {
+        res.json(data);
+      }
+      );
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

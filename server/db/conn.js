@@ -1,9 +1,9 @@
 //import { MongoClient } from "mongodb";
 
-require("dotenv").config();
+require("dotenv").config({ path: "../loadEnvironment.mjs" });
 const MongoClient = require("mongodb").MongoClient;
 const connectionString = process.env.ATLAS_URI;
-const client = new MongoClient(connectionString);
+const client = new MongoClient("mongodb+srv://jnbernabe:jnbMongo94!@navigrade.sznat3k.mongodb.net/?retryWrites=true&w=majority");
 
 let _db;
 
