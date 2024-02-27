@@ -1,4 +1,4 @@
-.courses-container {
+.grades-container {
     text-align: center;
     padding: 50px;
   }
@@ -17,6 +17,7 @@
     margin: 10px 0;
   }
   
+ 
   a {
     text-decoration: none;
     color: #007bff;
@@ -28,3 +29,14 @@
     text-decoration: underline;
   }
   
+ 
+  @media all and (min-width: 480px) {
+    .entryform {
+      padding: 10px 0;
+    }
+  
+    .entryform form {
+      margin: 0 auto;
+      max-width: 600px;
+    }
+  }

@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';  // Check the path and capitalization here
 import Courses from './pages/Courses/Courses';
 import Assignments from './pages/Assignments/Assignments';
 import Grades from './pages/Grades/Grades'
+import EditGrade from './pages/Grades/EditGrade'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/assignments" element={<Assignments />} />
         <Route path="/grades" element={<Grades />} />
+        <Route path ="/editgrade/:id" element={<EditGrade/>}/>
     </Routes>
      </>
   );
