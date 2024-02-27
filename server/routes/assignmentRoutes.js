@@ -9,15 +9,18 @@ const express = require("express");
 const { ObjectId } = require("mongodb");
 const Assignment = require("../models/Assignment.js");
 
-const db = require("../db/conn.js");
+
 const router = express.Router();
 
 
 // Get all assignments
 router.get('/', async (req, res) => {
   try {
-    const assignments = await Assignment.find();
-    res.json(assignments);
+    
+    await Assignment.find({}).exec().then((data) => {
+      console.log(data)
+      res.json(data);
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -26,6 +29,7 @@ router.get('/', async (req, res) => {
 // Get a specific assignment
 router.get('/:id', async (req, res) => {
   try {
+    console.log("get 1 assignments")
     const assignment = await Assignment.findById(req.params.id);
     res.json(assignment);
   } catch (error) {

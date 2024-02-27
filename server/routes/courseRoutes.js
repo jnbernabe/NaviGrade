@@ -8,7 +8,7 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const Course = require("../models/Course.js");
-const db = require("../db/conn.js");
+
 const router = express.Router();
 
 // Get all courses
