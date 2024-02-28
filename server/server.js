@@ -7,7 +7,7 @@ const studentRoutes = require("./routes/studentRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const assignmentRoutes = require("./routes/assignmentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const gradeRoutes = require("./routes/gradesRoutes");
+
 
 
 const mongoose = require("mongoose");
@@ -24,7 +24,6 @@ app.use("/students", studentRoutes);
 app.use("/courses", courseRoutes);
 app.use("/assignments", assignmentRoutes);
 app.use("/admin", adminRoutes);
-app.use("/grades", gradeRoutes);
 
 // Global error handling
 app.use((err, _req, res, next) => {

@@ -2,13 +2,12 @@
 const mongoose = require('mongoose');
 
 const assignmentSchema = new mongoose.Schema({
-  name: String,
-  dueDate: Date,
-  course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
-  grades: [{
-    student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-    score: Number,
-  }],
+  name: {type: String, required: true},
+  dueDate: {type: Date, required: true},
+  course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true},
+  grade:  {type: Number, default: 0, required: false },
+  weight: { type: Number, default: 1, required: false, max: 1, min: 0},
+  student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true},
 });
 
 const Assignment = mongoose.model('Assignment', assignmentSchema);
