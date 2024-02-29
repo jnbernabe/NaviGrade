@@ -7,31 +7,37 @@ import axios from 'axios';
 function EditGrade(props) {
     const { id } = useParams(); 
     let navigate = useNavigate();
-    const [grade, setGrade] = useState({id:'',assignmentName:'',grade:0});
-    const apiUrl ="/editgrade"+id;
+    const [grade, setGrade] = useState({ id: '', name: '', grade: 0, weight: 0 });
     const [assignmentName, setAssignmentName] = useState('');
+    const apiUrl = `http://localhost:5050/assignments/${id}`;
   
 
    
     useEffect(() => {
-      //It is not working now, waiting for DB to setup
-        const fetchData = async()=>{
-            const result = await axios(apiUrl)
-            setAssignmentName(result.assignmentName);
-            setGrade(result.grade);
+        const fetchData = async () => {
+            try {
+                const result = await axios.get(apiUrl);
+                const { name, grade, weight } = result.data;
+                setAssignmentName(name);
+                setGrade({ id, name, grade, weight });
+            } catch (error) {
+                console.error('Error:', error);
+            }
         };
        
         fetchData();
-    }, []); 
+    }, [apiUrl, id]); 
 
     const handleSave = (e) => {
         e.preventDefault();
-        const data = { id: grade.id, assignmentName: grade.assignmentName, 
-            grade: grade.grade};
-          axios.put(apiUrl, data)
+        const data = { name: grade.name, grade: grade.grade, weight: grade.weight };
+        axios.patch(apiUrl, data)
             .then((result) => {
-              navigate('/grades')
+                navigate('/grades');
             })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     };
 
     return (
@@ -43,15 +49,23 @@ function EditGrade(props) {
                     <Form.Control
                         type="text"
                         value={assignmentName}
-                        onChange={(e) => setAssignmentName(e.target.value)}
+                        readOnly
                     />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Grade</Form.Label>
                     <Form.Control
                         type="number"
-                        value={grade}
-                        onChange={(e) => setGrade(e.target.value)}
+                        value={grade.grade}
+                        onChange={(e) => setGrade({ ...grade, grade: e.target.value })}
+                    />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Weight</Form.Label>
+                    <Form.Control
+                        type="number"
+                        value={grade.weight}
+                        onChange={(e) => setGrade({ ...grade, weight: e.target.value })}
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit">

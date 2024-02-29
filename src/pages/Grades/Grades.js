@@ -1,100 +1,99 @@
-import React,{ useState }  from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import './grades.css'
-import Form from 'react-bootstrap/Form';
+
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import './grades.css';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 
-const Grades = () =>{
-    const [grades, setGrades] = useState([
-        {id:1, assignmentName:'Lab 1',grade:90},
-        {id:2, assignmentName:'Assignment 1',grade:90},
-    ]);
-
-    let navigate = useNavigate();
+const Grades = () => {
+    const [grades, setGrades] = useState([]);
+    const [courses, setCourses] = useState({});
     const [assignmentName, setAssignmentName] = useState('');
     const [grade, setGrade] = useState('');
+    const [students, setStudents] = useState({});
 
-    const saveGrade = (e)=>{
-        e.preventDefault();
+    useEffect(() => {
+        fetch('http://localhost:5050/assignments')
+            .then(response => response.json())
+            .then(data => {
+                setGrades(data);
+            })
+            .catch(error => console.error('Error:', error));
 
-    //Add Grade in DB after DB is setup
-    //addGrade({})
+            fetch('http://localhost:5050/courses')
+            .then(response => response.json())
+            .then(data => {
+                // save courseData as object
+                const coursesData = {};
+                data.forEach(course => {
+                    coursesData[course._id] = course.name;
+                });
+                setCourses(coursesData);
+            })
+            .catch(error => console.error('Error:', error));
 
-        // Making newGrade object
-        const newGrade = {
-            id: grades.length + 1, // assign new ID
-            assignmentName: assignmentName,
-            grade: grade
-        };
-        // newGrades are added
-        setGrades([...grades, newGrade]);
-        
-        // clearing form
-        setAssignmentName('');
-        setGrade('');
-        
-        // refreshing page. 
-        //navigate('/grades');
-    }
+
+
+            fetch('http://localhost:5050/students')
+            .then(response => response.json())
+            .then(data => {
+                // save courseData as object
+                const studentsData = {};
+                data.forEach(student => {
+                    studentsData[student._id] = student.firstName;
+                });
+                setStudents(studentsData);
+            })
+            .catch(error => console.error('Error:', error));
+
+    }, []);
+
+
 
     const deleteGrade = (id) => {
-        const updatedGrades = grades.filter((grade) => grade.id !== id);
+        const updatedGrades = grades.filter(grade => grade._id !== id);
         setGrades(updatedGrades);
     };
 
-    const editGrade =(id)=>{
-
-    }
-    
-
     return (
         <div className="grades-container">
-            <h2>Grade Page</h2>
-            <Table >
-                <tbody>
+            <h2>Grade Page </h2> {/**add User name once lgin */}
+            <Table>
+                <thead>
                     <tr>
-                        <th>Assignment Name</th> 
+                        <th>Assignment Name</th>
                         <th>Grade</th>
-                        <th>Actions</th>
+                        <th>Weight</th>
+                        <th>Course</th>
+                        <th>Student Name</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
-                   
+                </thead>
+                <tbody>
                     {grades.map(grade => (
-                    <tr key={grade.id}>
-                     
-                        <td>{grade.assignmentName}</td>
-                        <td>Grade: {grade.grade}</td>
-                          <td>
-                          <Link to={`/editgrade/${grade.id}`}>Edit</Link>
-                          </td>
-                          <td>
-                          <Button variant="danger" onClick={() => deleteGrade(grade.id)}>Delete</Button>
-                          </td>
-                    </tr>
+                        <tr key={grade._id}>
+                            <td>{grade.name}</td> {/**Assignment Name */}
+                            <td>{grade.grade}</td>
+                            <td>{grade.weight}</td>
+                            <td>{courses[grade.course]}</td>
+                            <td>{students[grade.student]}</td>
+                            <td>
+                            <Link to={`/editgrade/${grade._id}`}>Edit</Link> </td>
+                            <td>
+                            <Button variant="danger" onClick={() => deleteGrade(grade._id)}>Delete</Button>
+                            </td>
+                              
+                        </tr>
                     ))}
-               
                 </tbody>
-        
             </Table>
-                        <h2>Add New Grade</h2>
-            <Form onSubmit={saveGrade}>
-                <Form.Group>
-                    <Form.Label> Assignment Name</Form.Label>
-                    <Form.Control type="text" name="assignmentName" id="assignmentName" placeholder="Enter assignmentName" 
-                    value={assignmentName} onChange={(e) => setAssignmentName(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label> Grade</Form.Label>
-                    <Form.Control type="number" name="grade" id="grade" placeholder="Enter grade" 
-                    value={grade} onChange={(e) => setGrade(e.target.value)} />
-                </Form.Group>
-                                            
-                <Button variant="primary" type="submit">
-                    Save Grade
-                </Button>
-            </Form>
+
+       
         </div>
     );
 };
 
 export default Grades;
+
+
