@@ -1,24 +1,21 @@
 // routes/adminRoutes.js
 
-// import express from "express";
-// import db from "../db/conn.mjs";
-// import { ObjectId } from "mongodb";
-// import Admin from "../models/Admin.mjs";
-
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const Admin = require("../models/Admin.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { authenticateToken } = require("../middleware/authMiddleware"); // Import the authentication middleware
 const router = express.Router();
-
 
 // Get all admins
 router.get('/', async (req, res) => {
   try {
+    console.log('Request to get all admins:', req.user); // Log the user information
     const admins = await Admin.find();
     res.json(admins);
   } catch (error) {
+    console.error('Error getting all admins:', error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -82,8 +79,8 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Route to handle admin login
-router.post('login', async (req, res) => {
-  const { email, password} = req.body;
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
   try {
     // Check if the admin with the provided email exists
@@ -101,7 +98,7 @@ router.post('login', async (req, res) => {
     }
 
     // Create a JWT token for authentication
-    const token = jwt.sign({ adminId: admin._id }, 'your_secret_key_here', { expiresIn: '1h' });
+    const token = jwt.sign({ adminId: admin._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(200).json({ token });
   } catch (error) {
@@ -111,7 +108,7 @@ router.post('login', async (req, res) => {
 
 // Route to handle admin signup
 router.post('/signup', async (req, res) => {
-  const { email, password,firstName,lastName  } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
   try {
     // Check if the admin with the provided email already exists
@@ -136,9 +133,9 @@ router.post('/signup', async (req, res) => {
     await newAdmin.save();
 
     // Create a JWT token for authentication
-    const token = jwt.sign({ adminId: newAdmin._id }, 'your_secret_key_here', { expiresIn: '1h' });
+    const token = jwt.sign({ adminId: newAdmin._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ token });
+    res.status(201).json({ message: 'Admin signed up successfully', token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
