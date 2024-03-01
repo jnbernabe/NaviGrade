@@ -106,8 +106,8 @@ router.delete('/:id', async (req, res) => {
 
 // Route to add an assignment
 router.post('/add-assignment', async (req, res) => {
-  const { name, dueDate, courseId, weight, studentId } = req.body;
-
+  const { name, dueDate,  courseId, weight, studentId } = req.body;
+  
   try {
     // Check if the course exists
     const course = await Course.findById(courseId);

@@ -18,11 +18,47 @@ function AddAssignment() {
     const navigate = useNavigate();
     const [assignment, setAssignment] = useState([]);
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+        
+    //     try {
+    //         // get data from form
+    //         const data = {
+    //             name: name,
+    //             dueDate: dueDate.toISOString(),
+    //             course: course,
+    //             weight: weight,
+    //             studentId: student
+    //         };
+    //         //Debug 
+    //         console.log('course: ', course);
+    //         console.log('name: ', name);
+    //         console.log('dueDate: ', data.dueDate);
+    //         console.log('studentId: ', data.studentId);
+    //         // send POST request to add new assignment 
+    //         const response = await axios.post('http://localhost:5050/assignments/add-assignment', data);
+    
+    //         // redirect to assignments if succeed
+    //         if (response.status === 201) {
+    //             //alert('Assignment added successfully');
+    //             navigate('/assignments');
+    //         } else {
+                
+    //             const errorMessage = response.data.message || 'Failed to add assignment';
+    //             alert(errorMessage);
+    //         }
+    //     } catch (error) {
+          
+    //         console.error('Error:', error);
+    //         alert('Failed to add assignment');
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try {
-            // get data from form
+            // Get data from form
             const data = {
                 name: name,
                 dueDate: dueDate.toISOString(),
@@ -30,30 +66,44 @@ function AddAssignment() {
                 weight: weight,
                 studentId: student
             };
-            //Debug 
-            // console.log('courseId: ', course);
+            console.log('course Type: ', typeof(course));
             // console.log('name: ', name);
-            // //console.log('dueDate: ', data.dueDate);
-            // console.log('studentId: ', data.studentId);
-            // send POST request to add new assignment 
+            // console.log('dueDate: ', data.dueDate);
+            console.log('studentId Type: ', typeof(data.studentId));
+            //Send POST request to add new assignment 
             const response = await axios.post('http://localhost:5050/assignments/add-assignment', data);
-    
-            // redirect to assignments if succeed
+            console.log('response: ', response);
+            console.log('response status: ', response.status);
+            // Redirect to assignments if succeed
             if (response.status === 201) {
-                //alert('Assignment added successfully');
                 navigate('/assignments');
             } else {
-                
                 const errorMessage = response.data.message || 'Failed to add assignment';
                 alert(errorMessage);
             }
+
+            //find corresponding courses by feching courses
+            const courseResponse = await axios.get(`http://localhost:5050/courses/${course}`);
+            const courseData = courseResponse.data;
+    
+            if (courseData) {
+                const updatedCourseData = {
+                    ...courseData,
+                    assignments: [...courseData.assignments, response.data._id] // 新しいassignmentの_idをObjectIdに変換して追加
+                };
+                // コースを更新する
+                await axios.patch(`http://localhost:5050/courses/${course}`, updatedCourseData);
+            }
+    
+            // 成功したらassignmentsページにリダイレクトする
+            navigate('/assignments');
+
+
         } catch (error) {
-          
             console.error('Error:', error);
             alert('Failed to add assignment');
         }
     };
-
     
     useEffect(() => {
         const fetchCourses = async () => {
@@ -111,6 +161,8 @@ function AddAssignment() {
                         {courses.map(course => (
                             <option key={course._id} value={course._id}>{course.name}</option>
                         ))}
+                        
+
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>

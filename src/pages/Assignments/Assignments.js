@@ -46,10 +46,27 @@ const Assignments = () => {
   };
 
   
-  const deleteAssignment = (id) => {
+  const deleteAssignment = async (id) => {
     //Comment out for now to avoid deleting 
     // const updatedAssignment = assignments.filter(assignment => assignment._id !== id);
     // setAssignments(updatedAssignment);
+
+    const confirmation = window.confirm('Are you sure you want to delete this grade?');
+    if (confirmation) {
+        try{
+            const response = await axios.delete(`http://localhost:5050/assignments/${id}`);
+            if (response.status === 200) {
+                //Show lert if succeed
+                //alert('Assignment deleted successfully.');
+                window.location.href = '/assignments'
+            } else {
+                alert('Failed to delete grade.');
+            }
+        }catch{
+                console.error('Error:');
+                alert('Failed to delete grade.');
+        }
+    }
 };
 
   return (
@@ -67,7 +84,7 @@ const Assignments = () => {
                   <p>Due Date:  {formatDateToMDYY(assignment.dueDate)}</p>
                   <p>Weight:  {(assignment.weight)}</p>
                   <p><Link to={`/editassignment/${assignment._id}`}>Edit</Link></p>
-                  <Button variant ="danger" onClick={()=> deleteAssignment(assignment._id)}>Delete</Button>
+                  <Button variant ="danger" onClick={()=> deleteAssignment(assignment._id)}>Delete this assignment</Button>
                   </div>
 
                   
