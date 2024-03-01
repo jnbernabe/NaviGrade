@@ -6,6 +6,8 @@ import Courses from './pages/Courses/Courses';
 import Assignments from './pages/Assignments/Assignments';
 import Grades from './pages/Grades/Grades'
 import EditGrade from './pages/Grades/EditGrade'
+import EditAssignment from './pages/Assignments/EditAssignment';
+import AddAssignment from './pages/Assignments/AddAssignment'
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/assignments" element={<Assignments />} />
         <Route path="/grades" element={<Grades />} />
         <Route path ="/editgrade/:id" element={<EditGrade/>}/>
+        <Route path ="/editassignment/:id" element={<EditAssignment/>}/>
+        <Route path ="/addassignment" element={<AddAssignment/>}/>
     </Routes>
      </>
   );

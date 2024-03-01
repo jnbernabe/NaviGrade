@@ -1,6 +1,7 @@
 .grades-container {
     text-align: center;
     padding: 50px;
+    background-color: rgba(195, 224, 243, 0.274);
   }
   
   h2 {
@@ -40,3 +41,8 @@
       max-width: 600px;
     }
   }
+
+
+
+
+  

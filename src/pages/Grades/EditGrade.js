@@ -41,19 +41,20 @@ function EditGrade(props) {
     };
 
     return (
-        <div>
+        <div className="grades-container">
             <h2>Edit Grade</h2>
             <Form onSubmit={handleSave}>
-                <Form.Group>
+                {/* <Form.Group>
                     <Form.Label>Assignment Name</Form.Label>
                     <Form.Control
                         type="text"
                         value={assignmentName}
                         readOnly
                     />
-                </Form.Group>
+                </Form.Group> */}
+                <p>Assignment Name: {assignmentName}</p>
                 <Form.Group>
-                    <Form.Label>Grade</Form.Label>
+                    <Form.Label>Grade  </Form.Label>
                     <Form.Control
                         type="number"
                         value={grade.grade}
@@ -61,7 +62,7 @@ function EditGrade(props) {
                     />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Weight</Form.Label>
+                    <Form.Label>Weight  </Form.Label>
                     <Form.Control
                         type="number"
                         value={grade.weight}

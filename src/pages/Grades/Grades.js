@@ -51,45 +51,33 @@ const Grades = () => {
 
 
     const deleteGrade = (id) => {
-        const updatedGrades = grades.filter(grade => grade._id !== id);
-        setGrades(updatedGrades);
+        const confirmation = window.confirm('Are you sure you want to delete this grade?');
+        if (confirmation) {
+            const updatedGrades = grades.filter(grade => grade._id !== id);
+            setGrades(updatedGrades);
+            alert('Grade deleted successfully.');
+        }
+        
     };
 
     return (
         <div className="grades-container">
-            <h2>Grade Page </h2> {/**add User name once lgin */}
-            <Table>
-                <thead>
-                    <tr>
-                        <th>Assignment Name</th>
-                        <th>Grade</th>
-                        <th>Weight</th>
-                        <th>Course</th>
-                        <th>Student Name</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <h2>Grade Page </h2> {/**add User name once lgin */} 
+            <ul>
                     {grades.map(grade => (
-                        <tr key={grade._id}>
-                            <td>{grade.name}</td> {/**Assignment Name */}
-                            <td>{grade.grade}</td>
-                            <td>{grade.weight}</td>
-                            <td>{courses[grade.course]}</td>
-                            <td>{students[grade.student]}</td>
-                            <td>
-                            <Link to={`/editgrade/${grade._id}`}>Edit</Link> </td>
-                            <td>
-                            <Button variant="danger" onClick={() => deleteGrade(grade._id)}>Delete</Button>
-                            </td>
-                              
-                        </tr>
+                        <li key={grade._id}>
+                            <div>
+                            <h3>Assignment Name: {grade.name}</h3> {/**Assignment Name */}
+                            <h3>Grade: {grade.grade}</h3>
+                            <p>Weight: {grade.weight}</p>
+                            <p>Course: {courses[grade.course]}</p>
+                            <p>Student Name: {students[grade.student]}</p>
+                            <p><Link to={`/editgrade/${grade._id}`}>Edit</Link></p> 
+                            <Button variant="danger" onClick={() => deleteGrade(grade._id)}>Delete Assignment</Button>
+                         </div>
+                        </li>
                     ))}
-                </tbody>
-            </Table>
-
-       
+            </ul>
         </div>
     );
 };
