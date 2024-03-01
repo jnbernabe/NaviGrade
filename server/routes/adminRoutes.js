@@ -106,11 +106,13 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Route to handle admin signup
+// Signup endpoint with logging
 router.post('/signup', async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
+  console.log('Received signup request:', req.body);
 
   try {
+    const { email, password, firstName, lastName } = req.body;
+
     // Check if the admin with the provided email already exists
     const existingAdmin = await Admin.findOne({ email });
 
@@ -134,7 +136,7 @@ router.post('/signup', async (req, res) => {
 
     // Create a JWT token for authentication
     const token = jwt.sign({ adminId: newAdmin._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+    
     res.status(201).json({ message: 'Admin signed up successfully', token });
   } catch (error) {
     res.status(500).json({ message: error.message });

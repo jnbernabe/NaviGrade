@@ -1,27 +1,25 @@
-//Courses.js
+// src/components/Courses.js
+
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './courses.css';
 
-const Courses = () => {
-  const courses = [
-    { id: 1, name: 'Mathematics' },
-    { id: 2, name: 'Science' },
-    { id: 3, name: 'History' },
-    // Add more courses as needed
-  ];
-
+const Courses = ({ userCourses }) => {
   return (
-    <div className="courses-container">
-      <h2>Available Courses</h2>
-      
-      <ul>
-        {courses.map(course => (
-          <li key={course.id}>
-            <Link to={`/courses/${course.id}`}>{course.name}</Link>
-          </li>
-        ))}
-      </ul>
+    <div className="container mt-5">
+      <h2>Your Courses</h2>
+      {userCourses.length > 0 ? (
+        <ul className="list-group">
+          {userCourses.map(course => (
+            <li key={course.id} className="list-group-item">
+              <h4>{course.name}</h4>
+              <p>Professor: {course.professor}</p>
+              <p>Schedule: {course.schedule}</p>
+              {/* Add other course details as needed */}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No courses available. Add courses to get started!</p>
+      )}
     </div>
   );
 };

@@ -1,12 +1,10 @@
 //Assignments.js
 import React from 'react';
-import './assignments.css';
+
 
 const Assignments = () => {
   const assignments = [
-    { id: 1, course: 'Mathematics', name: 'Algebra Assignment', dueDate: '2024-02-01' },
-    { id: 2, course: 'Science', name: 'Biology Lab Report', dueDate: '2024-02-10' },
-    { id: 3, course: 'History', name: 'Research Paper', dueDate: '2024-02-15' },
+    
     // Add more assignments as needed
   ];
 

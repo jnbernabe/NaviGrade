@@ -4,35 +4,23 @@ import { Link, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Courses from './pages/Courses/Courses';
 import Assignments from './pages/Assignments/Assignments';
+import Navbar from './components/Navbar';
 import AuthenticationPage from './components/AuthenticationPage';
-import Login from './components/Login'; 
+import Login from './pages/Login/Login'; 
 import { useAuth } from './contexts/AuthContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const { user } = useAuth();
 
   return (
     <>
-      <nav>
-        <ul>
-          {user ? (
-            <>
-              {/* <li><Link to="/">Home</Link></li>
-              <li><Link to="/courses">Courses</Link></li>
-              <li><Link to="/assignments">Assignments</Link></li> */}
-            </>
-          ) : (
-            <>
-              <li><Link to="/authentication/signin">Sign In</Link></li>
-              <li><Link to="/authentication/signup">Sign Up</Link></li>
-            </>
-          )}
-        </ul>
-      </nav>
+      <Navbar />
       <Routes>
+      <Route path="/" element={<Home />} />
         {user ? (
           <>
-            <Route path="/" element={<Home />} />
+            
             <Route path="courses" element={<Courses />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="login" element={<Login />} /> 

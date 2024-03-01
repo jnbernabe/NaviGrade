@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
   const signup = async (email, password, firstName, lastName) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5050/admin/signup', {
+      const response = await fetch('http://localhost:5050/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
       });
   
       const responseData = await response.json(); // This line captures the response data
-  
+      console.log('Response data:', responseData);
       if (response.ok) {
         console.log('Signup successful. User data:', responseData);
         setUser(responseData);
@@ -92,7 +92,7 @@ const AuthProvider = ({ children }) => {
       console.log('Token before API call:', cleanedToken);
       console.log('Making API call...');
   
-      const response = await fetch('http://localhost:5050/admin/login', {
+      const response = await fetch('http://localhost:5050/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

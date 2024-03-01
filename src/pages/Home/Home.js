@@ -4,22 +4,25 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
-    <div className="landing-page">
-      <nav className="navbar">
-        <div className="navbar-logo">
-          NaviGrade
-        </div>
-        <div className="navbar-links">
-          <Link to="/courses">Courses</Link>
-          <Link to="/assignments">Assignments</Link>
-        </div>
-      </nav>
-      <div className="landing-content">
-        <h1>Welcome to NaviGrade</h1>
-        <p>Your personal academic companion</p>
-        <Link to="/courses">
-          <button>Explore Courses</button>
-        </Link>
+  <div className="container mt-5">
+      <div className="jumbotron">
+        <h1 className="display-4">Welcome to NaviGrade!</h1>
+        <p className="lead">NaviGrade is your all-in-one solution for managing courses, assignments, and grades.</p>
+        <hr className="my-4" />
+        <p>Key Features:</p>
+        <ul>
+          <li>Track courses and their details.</li>
+          <li>Add and manage assignments with due dates.</li>
+          <li>Record grades for assignments and tests.</li>
+          <li>Get estimates for final grades.</li>
+          <li>Set reminders for assignment due dates.</li>
+        </ul>
+        <p className="lead">
+          <strong>Get started now!</strong>
+          <br />
+          <a className="btn btn-primary btn-lg mt-3" href="/authentication/signup" role="button">Sign Up</a>
+          <a className="btn btn-primary btn-lg mt-3" href="/authentication/signin" role="button">Log In</a>
+        </p>
       </div>
     </div>
   );
