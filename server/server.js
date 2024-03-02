@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const { authenticateToken } = require('./middleware/authMiddleware');
 const Student = require('./models/Student');
 const studentRoutes = require('./routes/studentRoutes');
@@ -12,12 +13,15 @@ const courseRoutes = require('./routes/courseRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
+const logoutRoute = require('./routes/logoutRoutes');
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+// Middleware
+app.use(bodyParser.json());
 
 mongoose.connect(process.env.ATLAS_URI);
 
@@ -28,6 +32,7 @@ app.use('/courses', authenticateToken, courseRoutes);
 app.use('/assignments', authenticateToken, assignmentRoutes);
 app.use('/admin', adminRoutes);
 app.use('/users', userRoutes);
+app.use('/logout',authenticateToken, logoutRoute);
 
 
 
