@@ -32,20 +32,22 @@ const Courses = () => {
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, '0'); // add leading zero if minutes < 10
     return `${month}/${day}/${year} ${hours}:${minutes}`;
-};
+  }
+  
 
 
   const deleteCourse = async (id) => {
-    //Comment out for now to avoid deleting 
-   
+   //******************Only admin should be able to delete course?************
+  //Otherwise, gives a conflict and make no sense when displaying assignments when course is not available
+
     // const confirmation = window.confirm('Are you sure you want to delete this grade?');
     // if (confirmation) {
     //     try{
-    //         const response = await axios.delete(`http://localhost:5050/assignments/${id}`);
+    //         const response = await axios.delete(`http://localhost:5050/courses/${id}`);
     //         if (response.status === 200) {
     //             //Show lert if succeed
     //             alert('Assignment deleted successfully.');
-    //             window.location.href = '/assignments'
+    //             window.location.href = '/courses'
     //         } else {
     //             alert('Failed to delete grade.');
     //         }
@@ -53,9 +55,9 @@ const Courses = () => {
     //             console.error('Error:');
     //             alert('Failed to delete grade.');
     //     }
-     }
-
-
+    //   }
+    }
+    
   return (
     < div className="courses-container">
       <h2>Available Courses</h2>
@@ -70,7 +72,7 @@ const Courses = () => {
             <p>Schedule: {formatDateToMDYY(course.schedule)}</p>
           
           
-            <Button variant ="danger" onClick={()=> deleteCourse(course._id)}>Delete this course</Button>
+            {/* <Button variant ="danger" onClick={()=> deleteCourse(course._id)}>Delete this course</Button> */}
             {/* <ul>
               {course.assignments.map(assignment => (
                 <li key={assignment.id}>

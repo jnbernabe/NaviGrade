@@ -8,14 +8,13 @@ import axios from 'axios';
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
 
-
-
-  useEffect(() => {
+    useEffect(() => {
     fetchAssignments();
   
   }, []);
 
   const fetchAssignments = async () => {
+    //Would be nice to add error handling if a course is not available. 
     try {
       const response = await axios.get('http://localhost:5050/assignments');
       const fetchedAssignments = response.data;
@@ -23,19 +22,24 @@ const Assignments = () => {
       // Fetch course names for each assignment
       const updatedAssignments = await Promise.all(
         fetchedAssignments.map(async assignment => {
+          //console.log('assignment.course',assignment.course)
           const courseResponse = await axios.get(`http://localhost:5050/courses/${assignment.course}`);
+          //console.log('courseResponse', courseResponse)
           const courseName = courseResponse.data.name;
+          console.log('courseName',courseName)
           return { ...assignment, course: courseName };
         })
       );
-
+        console.log('updatedAssignments' , updatedAssignments)//null
       setAssignments(updatedAssignments);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
-
+  //console.log('assignments',assignments); //null
+ 
+ 
   //Format Due Date
   const formatDateToMDYY = (dateString) => {
     const date = new Date(dateString);
@@ -47,10 +51,7 @@ const Assignments = () => {
 
   
   const deleteAssignment = async (id) => {
-    //Comment out for now to avoid deleting 
-    // const updatedAssignment = assignments.filter(assignment => assignment._id !== id);
-    // setAssignments(updatedAssignment);
-
+   
     const confirmation = window.confirm('Are you sure you want to delete this grade?');
     if (confirmation) {
         try{

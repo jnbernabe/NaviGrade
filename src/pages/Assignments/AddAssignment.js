@@ -18,41 +18,6 @@ function AddAssignment() {
     const navigate = useNavigate();
     const [assignment, setAssignment] = useState([]);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-        
-    //     try {
-    //         // get data from form
-    //         const data = {
-    //             name: name,
-    //             dueDate: dueDate.toISOString(),
-    //             course: course,
-    //             weight: weight,
-    //             studentId: student
-    //         };
-    //         //Debug 
-    //         console.log('course: ', course);
-    //         console.log('name: ', name);
-    //         console.log('dueDate: ', data.dueDate);
-    //         console.log('studentId: ', data.studentId);
-    //         // send POST request to add new assignment 
-    //         const response = await axios.post('http://localhost:5050/assignments/add-assignment', data);
-    
-    //         // redirect to assignments if succeed
-    //         if (response.status === 201) {
-    //             //alert('Assignment added successfully');
-    //             navigate('/assignments');
-    //         } else {
-                
-    //             const errorMessage = response.data.message || 'Failed to add assignment';
-    //             alert(errorMessage);
-    //         }
-    //     } catch (error) {
-          
-    //         console.error('Error:', error);
-    //         alert('Failed to add assignment');
-    //     }
-    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,14 +31,29 @@ function AddAssignment() {
                 weight: weight,
                 studentId: student
             };
-            console.log('course Type: ', typeof(course));
-            // console.log('name: ', name);
-            // console.log('dueDate: ', data.dueDate);
-            console.log('studentId Type: ', typeof(data.studentId));
+         
+            // Get student's data
+            const studentResponse = await axios.get(`http://localhost:5050/students/${student}`);
+            console.log('student 98: ',{student});
+            const studentData = studentResponse.data;
+
+            // Update student's courses array with the new course
+            const updatedStudentData = {
+                ...studentData,
+                courses: [...studentData.courses, course]
+            };
+
+            // Send POST request to add the course to student's courses
+            await axios.post(`http://localhost:5050/courses/${student}/add-course`, { courseId: course });
+
+            // Update the student's data
+            await axios.patch(`http://localhost:5050/students/${student}`, updatedStudentData);
+
+
+
             //Send POST request to add new assignment 
             const response = await axios.post('http://localhost:5050/assignments/add-assignment', data);
-            console.log('response: ', response);
-            console.log('response status: ', response.status);
+         
             // Redirect to assignments if succeed
             if (response.status === 201) {
                 navigate('/assignments');
@@ -89,13 +69,12 @@ function AddAssignment() {
             if (courseData) {
                 const updatedCourseData = {
                     ...courseData,
-                    assignments: [...courseData.assignments, response.data._id] // 新しいassignmentの_idをObjectIdに変換して追加
+                    assignments: [...courseData.assignments, response.data._id]  
                 };
-                // コースを更新する
+                // update course
                 await axios.patch(`http://localhost:5050/courses/${course}`, updatedCourseData);
             }
     
-            // 成功したらassignmentsページにリダイレクトする
             navigate('/assignments');
 
 

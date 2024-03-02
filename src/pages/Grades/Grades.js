@@ -13,6 +13,7 @@ const Grades = () => {
     const [grade, setGrade] = useState('');
     const [students, setStudents] = useState({});
     const navigate = useNavigate();
+    
     useEffect(() => {
         fetch('http://localhost:5050/assignments')
             .then(response => response.json())
@@ -75,6 +76,8 @@ const Grades = () => {
         }
         
     };
+
+    //console.log('Grades',grades)
 
     return (
         <div className="grades-container">
