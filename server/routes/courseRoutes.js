@@ -9,6 +9,7 @@ const express = require("express");
 const { ObjectId } = require("mongodb");
 const Course = require("../models/Course.js");
 const Student = require("../models/Student.js");
+const Schedule = require("../models/Schedule.js");
 
 const router = express.Router();
 
@@ -34,15 +35,25 @@ router.get('/:id', async (req, res) => {
 
 // Create a new course
 router.post('/', async (req, res) => {
+  const schedule = new Schedule({
+    day: req.body.schedule.day,
+    startTime: req.body.schedule.startTime,
+    endTime: req.body.schedule.endTime,
+  });
+
   const course = new Course({
     name: req.body.name,
     professor: req.body.professor,
-    schedule: req.body.schedule,
+    schedules: schedule,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    assignments: [],
   });
 
   try {
+    const newSchedule = schedule.save();
     const newCourse = await course.save();
-    res.status(201).json(newCourse);
+    res.status(201).json({course: newCourse, schedule: newSchedule});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -57,7 +68,12 @@ router.patch('/:id', async (req, res) => {
         $set: {
           name: req.body.name,
           professor: req.body.professor,
-          schedule: req.body.schedule,
+          schedules: {day: req.body.schedule.day,
+                      startTime: req.body.schedule.startTime,
+                      endTime: req.body.schedule.endTime},
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          assignments: [],
         },
       },
       { new: true }
