@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
         // Redirect to the home page
         setUser(null);
         removeAuthToken();
-        navigate('/login');
+        navigate('/');
       } 
     } catch (error) {
       console.error('Logout failed', error);
@@ -128,7 +128,7 @@ const AuthProvider = ({ children }) => {
   };
   
   return (
-    <AuthContext.Provider value={{ user, signout, signup, signin, loading }}>
+    <AuthContext.Provider value={{ user, signout, signup, signin, loading, getAuthToken, setAuthToken, removeAuthToken }}>
       {children}
     </AuthContext.Provider>
   );

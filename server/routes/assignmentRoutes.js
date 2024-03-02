@@ -17,7 +17,7 @@ const router = express.Router();
 // Get all assignments
 router.get('/', async (req, res) => {
   try {
-    
+    //console.log("headers",req.headers)
     await Assignment.find({}).exec().then((data) => {
       console.log(data)
       res.json(data);

@@ -25,7 +25,7 @@ const Navbar = () => {
               <Link to="/assignments" className="nav-link">Assignments</Link>
             </li>
               
-                <LogoutButton />
+                <LogoutButton className="nav-item"/>
               </>
             ) : (
                 <>

@@ -31,11 +31,11 @@ function App() {
             <Route path="assignments" element={<Assignments />} />
             <Route path="login" element={<Login />} /> 
             <Route path="/grades" element={<Grades />} />
-        <Route path ="/editgrade/:id" element={<EditGrade/>}/>
-        <Route path ="/editassignment/:id" element={<EditAssignment/>}/>
-        <Route path ="/addassignment" element={<AddAssignment/>}/>
-        <Route path ="/viewcourse/:id" element={<ViewCourse/>}/>
-        <Route path ="/addcourse" element={<AddCourse/>}/>
+            <Route path ="/editgrade/:id" element={<EditGrade/>}/>
+            <Route path ="/editassignment/:id" element={<EditAssignment/>}/>
+            <Route path ="/addassignment" element={<AddAssignment/>}/>
+            <Route path ="/viewcourse/:id" element={<ViewCourse/>}/>
+            <Route path ="/addcourse" element={<AddCourse/>}/>
           </>
         ) : (
           <Route path="authentication/*" element={<AuthenticationPage />} />

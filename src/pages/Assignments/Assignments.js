@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
-
-
+  const { getAuthToken } = useAuth();
+  axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchAssignments();
@@ -16,14 +17,16 @@ const Assignments = () => {
   }, []);
 
   const fetchAssignments = async () => {
+    
     try {
-      const response = await axios.get('http://localhost:5050/assignments');
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/assignments`);
       const fetchedAssignments = response.data;
 
       // Fetch course names for each assignment
       const updatedAssignments = await Promise.all(
         fetchedAssignments.map(async assignment => {
-          const courseResponse = await axios.get(`http://localhost:5050/courses/${assignment.course}`);
+          const courseResponse = await axios.get(`${apiKey}/courses/${assignment.course}`);
           const courseName = courseResponse.data.name;
           return { ...assignment, course: courseName };
         })
@@ -54,6 +57,7 @@ const Assignments = () => {
     const confirmation = window.confirm('Are you sure you want to delete this grade?');
     if (confirmation) {
         try{
+          const apikey = getAuthToken();
             const response = await axios.delete(`http://localhost:5050/assignments/${id}`);
             if (response.status === 200) {
                 //Show lert if succeed

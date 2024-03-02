@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import DatePicker from 'react-datepicker'; 
 import 'react-datepicker/dist/react-datepicker.css'; 
+import { useAuth } from '../../contexts/AuthContext';
 
 function AddAssignment() {
     const [name, setName] = useState('');
@@ -17,6 +18,9 @@ function AddAssignment() {
     const [students, setStudents] = useState([]);
     const navigate = useNavigate();
     const [assignment, setAssignment] = useState([]);
+    const {getAuthToken} = useAuth();
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
     // const handleSubmit = async (e) => {
     //     e.preventDefault();
@@ -70,8 +74,9 @@ function AddAssignment() {
             // console.log('name: ', name);
             // console.log('dueDate: ', data.dueDate);
             console.log('studentId Type: ', typeof(data.studentId));
+            const apiKey = process.env.REACT_APP_API_KEY;
             //Send POST request to add new assignment 
-            const response = await axios.post('http://localhost:5050/assignments/add-assignment', data);
+            const response = await axios.post(`${apiKey}/assignments/add-assignment`, data);
             console.log('response: ', response);
             console.log('response status: ', response.status);
             // Redirect to assignments if succeed
