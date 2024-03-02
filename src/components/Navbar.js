@@ -22,6 +22,9 @@ const Navbar = () => {
               <Link to="/assignments" className="nav-link">Assignments</Link>
             </li>
             <li className="nav-item">
+              <Link to="/calendar" className="nav-link">Calendar</Link>
+            </li>
+            <li className="nav-item">
               <Link to="/logout" className="nav-link">Logout</Link>
             </li>
             {!user && (
