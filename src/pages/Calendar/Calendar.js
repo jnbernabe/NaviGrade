@@ -26,15 +26,32 @@ const localizer = dateFnsLocalizer({
 
 const events = [
   {
-    title: 'My event',
-    start: new Date(2024,2,1),
-    end: new Date(2024,2,5)
+    title: 'Testing event',
+    start: new Date(2024,2,1,8,30),
+    end: new Date(2024,2,1,14,30)
   },
   {
-    title: 'My event2',
-    start: new Date(2024,2,10),
-    end: new Date(2024,2,15)
+    title: 'Testing 2',
+    start: moment('2024-03-15T10:00:00').toDate(),
+    end: moment('2024-03-20T15:00:00').toDate(),
   }
 ];
-export default function Calendar(props) {
-  return <BigCalendar defaultView='month' {...props} localizer={localizer} events={events} startAccessor='start' endAccessor='end' locales={locales}/>};
+
+const MyCalendar = ({courses}) => {
+
+  //add map for courses here (format??)
+
+  return (
+    <div style={{height: "600px"}}>
+    <BigCalendar 
+      defaultView='week' 
+      localizer={localizer} 
+      events={events} 
+      startAccessor='start' 
+      endAccessor='end' 
+      locales={locales}/>
+    </div>
+  );
+}
+
+export default MyCalendar;

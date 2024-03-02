@@ -6,7 +6,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const root = createRoot(document.getElementById('root'));
 
