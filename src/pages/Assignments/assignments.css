@@ -1,0 +1,29 @@
+.assignments-container {
+  text-align: center;
+  padding: 50px;
+  background-color: rgba(230, 243, 195, 0.274);
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+p {
+  margin: 10px 0;
+}

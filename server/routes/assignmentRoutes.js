@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a specific assignment
+// Get a specific assignment  //e.g) localhost:5050/assignments/65debb6537494b5be4a7dfc0
 router.get('/:id', async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -106,8 +106,8 @@ router.delete('/:id', async (req, res) => {
 
 // Route to add an assignment
 router.post('/add-assignment', async (req, res) => {
-  const { name, dueDate, courseId, weight, studentId } = req.body;
-
+  const { name, dueDate,  courseId, weight, studentId } = req.body;
+  
   try {
     // Check if the course exists
     const course = await Course.findById(courseId);

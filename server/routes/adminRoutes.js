@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
     console.log('Request to get all admins:', req.user); // Log the user information
     const admins = await Admin.find();
     res.json(admins);
+    //console.log('admin',admins)
   } catch (error) {
     console.error('Error getting all admins:', error.message);
     res.status(500).json({ message: error.message });

@@ -1,0 +1,48 @@
+.grades-container {
+    text-align: center;
+    padding: 50px;
+    background-color: rgba(195, 224, 243, 0.274);
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 10px 0;
+  }
+  
+ 
+  a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+ 
+  @media all and (min-width: 480px) {
+    .entryform {
+      padding: 10px 0;
+    }
+  
+    .entryform form {
+      margin: 0 auto;
+      max-width: 600px;
+    }
+  }
+
+
+
+
+  

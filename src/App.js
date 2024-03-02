@@ -10,6 +10,12 @@ import Login from './pages/Login/Login';
 import { useAuth } from './contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Grades from './pages/Grades/Grades'
+import EditGrade from './pages/Grades/EditGrade'
+import EditAssignment from './pages/Assignments/EditAssignment';
+import AddAssignment from './pages/Assignments/AddAssignment'
+import ViewCourse from './pages/Courses/ViewCourse'
+import AddCourse from './pages/Courses/AddCourse'
 function App() {
   const { user } = useAuth();
 
@@ -24,12 +30,21 @@ function App() {
             <Route path="courses" element={<Courses />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="login" element={<Login />} /> 
+            <Route path="/grades" element={<Grades />} />
+        <Route path ="/editgrade/:id" element={<EditGrade/>}/>
+        <Route path ="/editassignment/:id" element={<EditAssignment/>}/>
+        <Route path ="/addassignment" element={<AddAssignment/>}/>
+        <Route path ="/viewcourse/:id" element={<ViewCourse/>}/>
+        <Route path ="/addcourse" element={<AddCourse/>}/>
           </>
         ) : (
           <Route path="authentication/*" element={<AuthenticationPage />} />
         )}
       </Routes>
     </>
+    
+    
+    
   );
 }
 
