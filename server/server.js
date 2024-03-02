@@ -13,7 +13,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
-const logoutRoute = require('./routes/logoutRoutes');
+
 
 dotenv.config();
 const app = express();
@@ -32,7 +32,7 @@ app.use('/courses', authenticateToken, courseRoutes);
 app.use('/assignments', authenticateToken, assignmentRoutes);
 app.use('/admin', adminRoutes);
 app.use('/users', userRoutes);
-app.use('/logout',authenticateToken, logoutRoute);
+
 
 
 

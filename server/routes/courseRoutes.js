@@ -35,25 +35,25 @@ router.get('/:id', async (req, res) => {
 
 // Create a new course
 router.post('/', async (req, res) => {
-  const schedule = new Schedule({
-    day: req.body.schedule.day,
-    startTime: req.body.schedule.startTime,
-    endTime: req.body.schedule.endTime,
-  });
+  const { name, professor, schedules, startDate, endDate, assignments } = req.body;
+try {
+  // Create a new schedule
+    const newSchedule = new Schedule(schedules);
+    await newSchedule.save();
 
-  const course = new Course({
-    name: req.body.name,
-    professor: req.body.professor,
-    schedules: schedule,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    assignments: [],
-  });
+  // Create a new course with the created schedule
+    const newCourse = new Course({
+      name,
+      professor,
+      schedules: [newSchedule._id], // Use the ID of the created schedule
+      startDate,
+      endDate,
+      assignments,
+    });
 
-  try {
-    const newSchedule = schedule.save();
-    const newCourse = await course.save();
-    res.status(201).json({course: newCourse, schedule: newSchedule});
+  
+    await newCourse.save();
+    res.status(201).json({ message: 'Course and schedule created successfully', course: newCourse });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -62,25 +62,53 @@ router.post('/', async (req, res) => {
 // Update a course
 router.patch('/:id', async (req, res) => {
   try {
+    const courseId = req.params.courseId;
+    const { name, professor, schedules, startDate, endDate, assignments } = req.body;
+
+    // Update the course
     const updatedCourse = await Course.findByIdAndUpdate(
-      req.params.id,
+      courseId,
       {
         $set: {
-          name: req.body.name,
-          professor: req.body.professor,
-          schedules: {day: req.body.schedule.day,
-                      startTime: req.body.schedule.startTime,
-                      endTime: req.body.schedule.endTime},
-          startDate: req.body.startDate,
-          endDate: req.body.endDate,
-          assignments: [],
+          name,
+          professor,
+          startDate,
+          endDate,
+          assignments,
         },
       },
       { new: true }
     );
-    res.json(updatedCourse);
+
+    if (!updatedCourse) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Update the schedules
+    if (schedules && schedules.length > 0) {
+      const updatedSchedules = await Promise.all(
+        schedules.map(async (scheduleDetails, index) => {
+          const scheduleId = updatedCourse.schedules[index];
+          return Schedule.findByIdAndUpdate(
+            scheduleId,
+            {
+              $set: scheduleDetails,
+            },
+            { new: true }
+          );
+        })
+      );
+
+      // Check if any schedule update failed
+      if (updatedSchedules.some((schedule) => !schedule)) {
+        return res.status(404).json({ message: 'Some schedules not found' });
+      }
+    }
+
+    res.json({ message: 'Course and schedules updated successfully', course: updatedCourse });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error updating course and schedules:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
@@ -108,7 +136,7 @@ router.post('/:studentid/add-course', async (req, res) => {
     // Check if the course exists
     const course = await Course.findById(courseId);
     if (!course) {
-      course = new Course();
+      return res.status(400).json({ message: 'Course not found' });
     }
 
     // Check if the student is already enrolled in the course

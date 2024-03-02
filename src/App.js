@@ -1,6 +1,6 @@
 // app.js
 import React from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import {Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Courses from './pages/Courses/Courses';
 import Assignments from './pages/Assignments/Assignments';
@@ -20,7 +20,7 @@ function App() {
       <Route path="/" element={<Home />} />
         {user ? (
           <>
-            
+            <Route path="home" element={<Home />} />
             <Route path="courses" element={<Courses />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="login" element={<Login />} /> 

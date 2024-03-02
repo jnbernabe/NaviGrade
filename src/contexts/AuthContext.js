@@ -4,42 +4,65 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
+const checkState = localStorage.getItem('token') ? true : false;
+
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(checkState);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const login = (userData) => {
-    console.log('userData:', userData); // Log user data
-    const token = userData.token || '';
-  
-    console.log('Token received in login:', token);
-    console.log('Token length:', token.length);
-    console.log('Token before check:', token);
-  
-    // Trim the token to remove leading and trailing whitespaces
-    const cleanedToken = token.trim();
-  
-    console.log('Token after trimming:', cleanedToken);
-  
-    if (cleanedToken) {
-      localStorage.setItem('token', cleanedToken);
-      console.log('Token stored in localStorage:', cleanedToken);
-    } else {
-      console.error('No token found in login data.');
+  const TOKEN_KEY = 'token';
+
+  // Function to set the authentication token in localStorage
+  const setAuthToken = (token) => {
+    localStorage.setItem(TOKEN_KEY, token);
+  };
+
+  // Function to get the authentication token from localStorage
+  const getAuthToken = () => {
+    if (!localStorage.getItem(TOKEN_KEY)) {
+      return null;
     }
-  
-    setUser(userData);
+    return localStorage.getItem(TOKEN_KEY);
+  };
+
+  // Function to remove the authentication token from localStorage
+  const removeAuthToken = () => {
+    localStorage.removeItem(TOKEN_KEY);
   };
   
-  const logout = () => {
-    setUser(null);
+  const signout = async () => {
+    try{
+     // Make a POST request to the server to logout
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await fetch(`${apiKey}/users/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+            // Include the token in the Authorization header
+            Authorization: `Bearer ${getAuthToken()}`,
+        },
+        // Include any necessary authentication tokens or credentials
+      });
+
+      // Assuming a successful logout, redirect to the home page or login page
+      if (response.ok) {
+        // Redirect to the home page
+        setUser(null);
+        removeAuthToken();
+        navigate('/login');
+      } 
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+    
   };
   
   const signup = async (email, password, firstName, lastName) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5050/users/signup', {
+      const apiKey = process.env.REACT_APP_API_KEY; 
+      const response = await fetch(`${apiKey}/users/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,8 +74,9 @@ const AuthProvider = ({ children }) => {
       console.log('Response data:', responseData);
       if (response.ok) {
         console.log('Signup successful. User data:', responseData);
+        setAuthToken(responseData.token);
         setUser(responseData);
-        navigate('/login');
+        navigate('/home');
         return true;
       } else {
         const errorData = await response.json();
@@ -69,48 +93,31 @@ const AuthProvider = ({ children }) => {
   
   const signin = async (email, password) => {
     try {
-      // Obtain the token from localStorage
-      const token = localStorage.getItem('token') || 'Zht6Nvy7Yr9Qp7KAlAIU8GzPqLUrzTSK';
-  
-      // Additional log statements for troubleshooting
-      console.log('Attempting to sign in...');
-      console.log('Token found in localStorage:', token);
-      console.log('Token before check:', token);
-      console.log('Token length:', token.length);
-  
-      // Trim the token to remove leading and trailing whitespaces
-      const cleanedToken = token.trim();
-  
-      console.log('Token after trimming:', cleanedToken);
-  
-      // Check if token is present and not empty
-      if (!cleanedToken) {
-        console.error('No token found in localStorage.');
+      // // Obtain the token from localStorage
+      const token = getAuthToken();
+
+      if (token !== null) {
+        console.log(token)
+        console.error('User Logged in already. Please logout to login with another account');
         return false;
       }
-  
-      console.log('Token before API call:', cleanedToken);
-      console.log('Making API call...');
-  
-      const response = await fetch('http://localhost:5050/users/login', {
+      const apiKey = process.env.REACT_APP_API_KEY; 
+      const response = await fetch(`${apiKey}/users/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cleanedToken}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email, password }),
-      });
-  
-      // Additional log statement
-      console.log('API call completed. Response:', response);
-  
+      });  
       // Check if the response is successful (status code 2xx)
       if (response.ok) {
         const data = await response.json();
         console.log('Sign in successful. User data:', data);
+        setAuthToken(data.token);
         setUser(data);
+        navigate('/home');
       } else {
-        console.error('Login failed. Please check your credentials.');
+        console.error('Login failed. Please check your credentials.' + response.statusText);
       }
   
       return response.ok;
@@ -121,7 +128,7 @@ const AuthProvider = ({ children }) => {
   };
   
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup, signin, loading }}>
+    <AuthContext.Provider value={{ user, signout, signup, signin, loading }}>
       {children}
     </AuthContext.Provider>
   );

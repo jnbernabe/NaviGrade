@@ -3,6 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LogoutButton from './LogoutButton';
 
 const Navbar = () => {
     const { user } = useAuth();
@@ -15,16 +16,18 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
+          {user ? (
+            <>
             <li className="nav-item">
               <Link to="/courses" className="nav-link">Courses</Link>
             </li>
             <li className="nav-item">
               <Link to="/assignments" className="nav-link">Assignments</Link>
             </li>
-            <li className="nav-item">
-              <Link to="/logout" className="nav-link">Logout</Link>
-            </li>
-            {!user && (
+              
+                <LogoutButton />
+              </>
+            ) : (
                 <>
             <li className="nav-item">
               <Link to="/authentication/signup" className="nav-link">Sign Up</Link>

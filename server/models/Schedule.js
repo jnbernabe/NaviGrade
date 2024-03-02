@@ -5,6 +5,6 @@ const scheduleSchema = new mongoose.Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
 });
-const Course = mongoose.model('Schedule', scheduleSchema);
+const Schedule = mongoose.model('Schedule', scheduleSchema);
 
-module.exports = Course;
+module.exports = Schedule;
