@@ -13,7 +13,7 @@ const Dashboard = () => {
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
-    setAssignments(fetchAssignments());
+    fetchAssignments();
   }, []);
 
   const formatDateToMDYY = (dateString) => {
@@ -26,8 +26,31 @@ const Dashboard = () => {
     return `${month}/${day}/${year} ${hours}:${minutes}`;
   };
 
+  const fetchAssignments = async () => {
+    try {
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/assignments`);
+      const fetchedAssignments = response.data;
+
+      // Fetch course names for each assignment
+      const updatedAssignments = await Promise.all(
+        fetchedAssignments.map(async (assignment) => {
+          const courseResponse = await axios.get(
+            `${apiKey}/courses/${assignment.course}`
+          );
+          const courseName = courseResponse.name;
+          return { ...assignment, course: courseName };
+        })
+      );
+
+      setAssignments(updatedAssignments);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container mx-auto">
       <h2>Dashboard</h2>
       <Button variant="primary">Add Assignment</Button>
 

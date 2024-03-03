@@ -8,7 +8,7 @@ import LogoutButton from "./LogoutButton";
 const Navbar = () => {
   const { user } = useAuth();
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-light">
       <div className="container">
         <Link to="/" className="navbar-brand">
           NaviGrade
@@ -39,17 +39,13 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/courses" className="nav-link">
-                    Courses
-                  </Link>
-                </li>
-                <li className="nav-item">
                   <Link to="/assignments" className="nav-link">
                     Assignments
                   </Link>
                 </li>
-
-                <LogoutButton className="nav-item" />
+                <li className="nav-item">
+                  <LogoutButton className="nav-item" />
+                </li>
               </>
             ) : (
               <>
