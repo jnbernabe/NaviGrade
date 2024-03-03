@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 function AddCourse() {
     const [name, setName] = useState('');
@@ -10,6 +11,9 @@ function AddCourse() {
     const [schedule, setSchedule] = useState('');
     const [assignment, setAssignment] = useState('');
     const navigate = useNavigate();
+    const { getAuthToken } = useAuth();
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+    const apiKey = process.env.REACT_APP_API_KEY;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,7 +26,7 @@ function AddCourse() {
                 assignment:assignment
             };
 
-            const response = await axios.post('http://localhost:5050/courses/', data);
+            const response = await axios.post(`${apiKey}/courses/`, data);
     
             if (response.status === 201) {
                 navigate('/courses');

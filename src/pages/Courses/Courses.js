@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import './courses.css';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-
+import { useAuth } from '../../contexts/AuthContext';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const { getAuthToken } = useAuth();
+  axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchCourses();
@@ -15,7 +17,8 @@ const Courses = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://localhost:5050/courses');
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/courses`);
       const fetchedCourses = response.data;
       setCourses(fetchedCourses);
     } catch (error) {
@@ -54,9 +57,6 @@ const Courses = () => {
     //             alert('Failed to delete grade.');
     //     }
      }
-
-
-const Courses = ({ userCourses }) => {
   return (
     < div className="courses-container">
       <h2>Available Courses</h2>
@@ -86,5 +86,5 @@ const Courses = ({ userCourses }) => {
     </div>
   );
 };
-}
+
 export default Courses;

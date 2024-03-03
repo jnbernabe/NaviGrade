@@ -27,7 +27,7 @@ const Assignments = () => {
       const updatedAssignments = await Promise.all(
         fetchedAssignments.map(async assignment => {
           const courseResponse = await axios.get(`${apiKey}/courses/${assignment.course}`);
-          const courseName = courseResponse.data.name;
+          const courseName = courseResponse.name;
           return { ...assignment, course: courseName };
         })
       );

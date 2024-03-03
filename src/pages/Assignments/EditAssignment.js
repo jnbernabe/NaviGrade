@@ -5,13 +5,17 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 function EditGrade(props) {
     const { id } = useParams();
     let navigate = useNavigate();
     const [assignment, setAssignment] = useState({ id: '', name: '', dueDate: Date(), course: '', grade: 0, weight: 0 });
     const [courses, setCourses] = useState([]); 
-    const apiUrl = `http://localhost:5050/assignments/${id}`;
+    const { getAuthToken } = useAuth();
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+    const apikey = process.env.REACT_APP_API_KEY;
+    const apiUrl = `${apikey}/assignments/${id}`;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +26,7 @@ function EditGrade(props) {
                 setAssignment({ name, dueDate: new Date(dueDate), course, weight });
 
                 // Course
-                const coursesResponse = await axios.get('http://localhost:5050/courses');
+                const coursesResponse = await axios.get(`${apikey}/assignments/courses`);
                 setCourses(coursesResponse.data);
             } catch (error) {
                 console.error('Error:', error);

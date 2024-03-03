@@ -18,9 +18,10 @@ function AddAssignment() {
     const [students, setStudents] = useState([]);
     const navigate = useNavigate();
     const [assignment, setAssignment] = useState([]);
-    const {getAuthToken} = useAuth();
+    const { getAuthToken } = useAuth();
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+    const apiKey = process.env.REACT_APP_API_KEY;
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
     // const handleSubmit = async (e) => {
     //     e.preventDefault();
@@ -74,7 +75,6 @@ function AddAssignment() {
             // console.log('name: ', name);
             // console.log('dueDate: ', data.dueDate);
             console.log('studentId Type: ', typeof(data.studentId));
-            const apiKey = process.env.REACT_APP_API_KEY;
             //Send POST request to add new assignment 
             const response = await axios.post(`${apiKey}/assignments/add-assignment`, data);
             console.log('response: ', response);
@@ -88,7 +88,7 @@ function AddAssignment() {
             }
 
             //find corresponding courses by feching courses
-            const courseResponse = await axios.get(`http://localhost:5050/courses/${course}`);
+            const courseResponse = await axios.get(`${apiKey}/courses/${course}`);
             const courseData = courseResponse.data;
     
             if (courseData) {
@@ -97,7 +97,7 @@ function AddAssignment() {
                     assignments: [...courseData.assignments, response.data._id] // 新しいassignmentの_idをObjectIdに変換して追加
                 };
                 // コースを更新する
-                await axios.patch(`http://localhost:5050/courses/${course}`, updatedCourseData);
+                await axios.patch(`${apiKey}/courses/${course}`, updatedCourseData);
             }
     
             // 成功したらassignmentsページにリダイレクトする
@@ -113,7 +113,7 @@ function AddAssignment() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('http://localhost:5050/courses');
+                const response = await axios.get(`${apiKey}/courses`);
                 setCourses(response.data);
             } catch (error) {
                 console.error('Error fetching courses:', error);
@@ -122,7 +122,7 @@ function AddAssignment() {
 
         const fetchStudents = async () => {
             try {
-                const response = await axios.get('http://localhost:5050/students');
+                const response = await axios.get(`${apiKey}/students`);
                 setStudents(response.data);
             } catch (error) {
                 console.error('Error fetching students:', error);
