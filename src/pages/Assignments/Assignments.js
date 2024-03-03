@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import './assignments.css';
-import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
-import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useState, useEffect } from "react";
+import "./assignments.css";
+import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
+import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
-  axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchAssignments();
-  
   }, []);
 
   const fetchAssignments = async () => {
-    
+    //Would be nice to add error handling if a course is not available.
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(`${apiKey}/assignments`);
@@ -25,19 +24,22 @@ const Assignments = () => {
 
       // Fetch course names for each assignment
       const updatedAssignments = await Promise.all(
-        fetchedAssignments.map(async assignment => {
-          const courseResponse = await axios.get(`${apiKey}/courses/${assignment.course}`);
+        fetchedAssignments.map(async (assignment) => {
+          const courseResponse = await axios.get(
+            `${apiKey}/courses/${assignment.course}`
+          );
           const courseName = courseResponse.name;
           return { ...assignment, course: courseName };
         })
       );
-
+      console.log("updatedAssignments", updatedAssignments); //null
       setAssignments(updatedAssignments);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
+  //console.log('assignments',assignments); //null
 
   //Format Due Date
   const formatDateToMDYY = (dateString) => {
@@ -48,53 +50,55 @@ const Assignments = () => {
     return `${month}/${day}/${year}`;
   };
 
-  
   const deleteAssignment = async (id) => {
-    //Comment out for now to avoid deleting 
-    // const updatedAssignment = assignments.filter(assignment => assignment._id !== id);
-    // setAssignments(updatedAssignment);
-
-    const confirmation = window.confirm('Are you sure you want to delete this grade?');
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this grade?"
+    );
     if (confirmation) {
-        try{
-          const apikey = getAuthToken();
-            const response = await axios.delete(`http://localhost:5050/assignments/${id}`);
-            if (response.status === 200) {
-                //Show lert if succeed
-                //alert('Assignment deleted successfully.');
-                window.location.href = '/assignments'
-            } else {
-                alert('Failed to delete grade.');
-            }
-        }catch{
-                console.error('Error:');
-                alert('Failed to delete grade.');
+      try {
+        const apikey = process.env.REACT_APP_API_KEY;
+        const response = await axios.delete(`${apikey}/assignments/${id}`);
+        if (response.status === 200) {
+          //Show lert if succeed
+          //alert('Assignment deleted successfully.');
+          window.location.href = "/assignments";
+        } else {
+          alert("Failed to delete grade.");
         }
+      } catch {
+        console.error("Error:");
+        alert("Failed to delete grade.");
+      }
     }
-};
+  };
 
   return (
     <div className="assignments-container">
       <h2>Upcoming Assignments</h2>
       <Link to="/addassignment">
-      <Button>Add</Button>
+        <Button>Add</Button>
       </Link>
-       <ul>
-          {assignments.map(assignment => (
-                <li key={assignment._id}>
-                  <div>
-                    <h3>{assignment.name}</h3>
-                  <p>Course Name:  {assignment.course}</p>
-                  <p>Due Date:  {formatDateToMDYY(assignment.dueDate)}</p>
-                  <p>Weight:  {(assignment.weight)}</p>
-                  <p><Link to={`/editassignment/${assignment._id}`}>Edit</Link></p>
-                  <Button variant ="danger" onClick={()=> deleteAssignment(assignment._id)}>Delete this assignment</Button>
-                  </div>
-
-                  
-                </li>
-              ))}
-       </ul>
+      <ul>
+        {assignments.map((assignment) => (
+          <li key={assignment._id}>
+            <div>
+              <h3>{assignment.name}</h3>
+              <p>Course Name: {assignment.course}</p>
+              <p>Due Date: {formatDateToMDYY(assignment.dueDate)}</p>
+              <p>Weight: {assignment.weight}</p>
+              <p>
+                <Link to={`/editassignment/${assignment._id}`}>Edit</Link>
+              </p>
+              <Button
+                variant="danger"
+                onClick={() => deleteAssignment(assignment._id)}
+              >
+                Delete this assignment
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
