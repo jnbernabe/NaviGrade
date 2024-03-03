@@ -58,31 +58,33 @@ const Courses = () => {
     //     }
      }
   return (
-    < div className="courses-container">
+    <div className="courses-container">
       <h2>Available Courses</h2>
       <Link to="/addcourse">
-      <Button>Add Course</Button>
+        <Button variant="primary">Add Course</Button>
       </Link>
-      <ul>
-      {courses.map(course => (
-        <li key={course.id}>
-            <Link to={`/viewcourse/${course._id}`}><h3>{course.name}</h3>   </Link>
-            <p>Professor: {course.professor}</p>
-            <p>Schedule: {formatDateToMDYY(course.schedule)}</p>
-          
-          
-            <Button variant ="danger" onClick={()=> deleteCourse(course._id)}>Delete this course</Button>
-            {/* <ul>
+      <ul className="list-group mt-3">
+        {courses.map(course => (
+          <li key={course._id} className="list-group-item mb-3">
+            <Link to={`/viewcourse/${course._id}`} className="text-decoration-none">
+              <h3>{course.name}</h3>
+            </Link>
+            <p className="mb-1">Professor: {course.professor}</p>
+            <p className="mb-1">Schedule: {formatDateToMDYY(course.schedule)}</p>
+            <Button variant="danger" onClick={() => deleteCourse(course._id)}>
+              Delete this course
+            </Button>
+            {/* Uncomment the following section if you want to display assignments */}
+            {/* <ul className="list-group mt-3">
               {course.assignments.map(assignment => (
-                <li key={assignment.id}>
+                <li key={assignment.id} className="list-group-item">
                   {assignment.name}
                 </li>
               ))}
             </ul> */}
-          
-        </li>
-      ))}
-    </ul> 
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
