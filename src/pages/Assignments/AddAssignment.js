@@ -17,7 +17,7 @@ function AddAssignment() {
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
-  const [assignment, setAssignment] = useState([]);
+
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -36,9 +36,7 @@ function AddAssignment() {
       };
 
       // Get student's data
-      const studentResponse = await axios.get(
-        `http://localhost:5050/students/${student}`
-      );
+      const studentResponse = await axios.get(`${apiKey}/students/${student}`);
       console.log("student 98: ", { student });
       const studentData = studentResponse.data;
 
@@ -49,15 +47,12 @@ function AddAssignment() {
       };
 
       // Send POST request to add the course to student's courses
-      await axios.post(`http://localhost:5050/courses/${student}/add-course`, {
+      await axios.post(`${apiKey}/courses/${student}/add-course`, {
         courseId: course,
       });
 
       // Update the student's data
-      await axios.patch(
-        `http://localhost:5050/students/${student}`,
-        updatedStudentData
-      );
+      await axios.patch(`${apiKey}/students/${student}`, updatedStudentData);
 
       //Send POST request to add new assignment
       const response = await axios.post(
@@ -116,7 +111,7 @@ function AddAssignment() {
 
     fetchCourses();
     fetchStudents();
-  });
+  }, []);
 
   return (
     <div className="assignments-container">
