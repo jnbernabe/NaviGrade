@@ -1,8 +1,11 @@
-//Home.js
+// Home.js
+
 import React from "react";
-import { Container, Button } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../styles";
+import { Link } from "react-router-dom";
+import "./Home.css"; // Import your CSS file
 
 const Home = () => {
   return (
@@ -23,14 +26,23 @@ const Home = () => {
             <li>Get estimates for final grades.</li>
             <li>Set reminders for assignment due dates.</li>
           </ul>
-          <p className="lead">
-            <Button variant="light" className="mr-3">
-              Sign Up
-            </Button>
-            <Button variant="light" className="mr-3">
-              Log In
-            </Button>
-          </p>
+
+          <Row className="home-buttons-container justify-content-center">
+            <Col xs={12} md={6} className="text-md-center mb-1">
+              <Button variant="dark" className="home-button">
+                <Link to="/authentication/signup" className="nav-link">
+                  Sign Up
+                </Link>
+              </Button>
+            </Col>
+            <Col xs={12} md={6} className="text-md-center mb-1">
+              <Button variant="dark" className="home-button">
+                <Link to="/authentication/signin" className="nav-link">
+                  Log In
+                </Link>
+              </Button>
+            </Col>
+          </Row>
         </div>
       </Container>
     </ThemeProvider>

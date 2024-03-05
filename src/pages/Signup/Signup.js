@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './Signup.css';
 
 const SignUp = () => {
   const { signup } = useAuth();
@@ -53,7 +54,9 @@ const SignUp = () => {
           <label htmlFor="lastName" className="form-label">Last Name</label>
           <input type="text" className="form-control" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </div>
-        <button type="button" className="btn btn-primary" onClick={handleSignUp}>Sign Up</button>
+        <button type="button" className="btn signup-button" onClick={handleSignUp}>
+                    Sign Up
+                </button>
       </form>
     </div>
   );

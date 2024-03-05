@@ -1,0 +1,12 @@
+/* Signup.css */
+.signup-button {
+  background-color: rgba(27, 123, 129, 0.678) !important; 
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.signup-button:hover {
+  background-color: #196869 !important; 
+}

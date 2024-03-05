@@ -4,15 +4,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import LogoutButton from "./LogoutButton";
+import "./Navbar.css";
+import logoImage from "../images/back.jpg";
 
 const Navbar = () => {
   const { user } = useAuth();
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link to="/" className="navbar-brand">
-          NaviGrade
-        </Link>
+        <div className="navbar-brand-container">
+          {/* Navbar brand logo */}
+          <img src={logoImage} alt="Logo" className="logo" />
+          {/* Navbar brand text */}
+          <Link to="/" className="navbar-brand">
+            NaviGrade
+          </Link>
+        </div>
+
         <button
           className="navbar-toggler"
           type="button"
@@ -67,4 +75,5 @@ const Navbar = () => {
     </nav>
   );
 };
+
 export default Navbar;
