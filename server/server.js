@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
+const cookieparser = require("cookie-parser");
 const { authenticateToken } = require("./middleware/authMiddleware");
 const Student = require("./models/Student");
 const studentRoutes = require("./routes/studentRoutes");
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 // Middleware
 app.use(bodyParser.json());
+app.use(cookieparser());
 
 mongoose.connect(process.env.ATLAS_URI);
 

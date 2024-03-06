@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "./Logout";
 import "./Navbar.css";
 import logoImage from "../images/back.jpg";
 
@@ -57,7 +57,9 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <LogoutButton className="nav-item" />
+                  <Link to="/logout" className="nav-link">
+                    Logout
+                  </Link>
                 </li>
               </>
             ) : (
