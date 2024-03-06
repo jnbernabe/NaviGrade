@@ -1,0 +1,11 @@
+/* Home.css */
+
+.home-buttons-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .home-button {
+    padding: 10px 15px; /* Adjust the padding as needed */
+    margin-bottom: 1px; /* Adjust the margin between buttons */
+  }

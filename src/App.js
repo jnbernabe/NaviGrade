@@ -12,6 +12,15 @@ import { useAuth } from './contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+import Grades from "./pages/Grades/Grades";
+import EditGrade from "./pages/Grades/EditGrade";
+import EditAssignment from "./pages/Assignments/EditAssignment";
+import AddAssignment from "./pages/Assignments/AddAssignment";
+import ViewCourse from "./pages/Courses/ViewCourse";
+import AddCourse from "./pages/Courses/AddCourse";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import "./styles.css";
+
 function App() {
   const { user } = useAuth();
 
@@ -27,10 +36,17 @@ function App() {
           </>} />
         {user ? (
           <>
-            
+            <Route path="home" element={<Home />} />
             <Route path="courses" element={<Courses />} />
             <Route path="assignments" element={<Assignments />} />
-            <Route path="login" element={<Login />} /> 
+            <Route path="login" element={<Login />} />
+            <Route path="/grades" element={<Grades />} />
+            <Route path="/editgrade/:id" element={<EditGrade />} />
+            <Route path="/editassignment/:id" element={<EditAssignment />} />
+            <Route path="/addassignment" element={<AddAssignment />} />
+            <Route path="/viewcourse/:id" element={<ViewCourse />} />
+            <Route path="/addcourse" element={<AddCourse />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </>
         ) : (
           <Route path="authentication/*" element={<AuthenticationPage />} />
@@ -41,5 +57,3 @@ function App() {
 }
 
 export default App;
-
-

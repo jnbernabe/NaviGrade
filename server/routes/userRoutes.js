@@ -5,6 +5,29 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
+const tokenBlacklist = [];
+
+// Middleware to check if the token is blacklisted
+const checkTokenBlacklist = (req, res, next) => {
+  const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+  if (token  && tokenBlacklist.includes(token)) {
+    return res.status(401).json({ message: 'Token revoked' });
+  }
+  // Token is not blacklisted, continue processing the request
+  next();
+};
+
+// Logout route
+router.post('/logout', checkTokenBlacklist, (req, res) => {
+   const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+  // Add the token to the blacklist
+  tokenBlacklist.push(token);
+  res.json({ message: 'Logout successful' });
+});
+
 // Signup route for students
 router.post('/signup', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -33,7 +56,7 @@ router.post('/signup', async (req, res) => {
     // Create a JWT token for authentication
     const token = jwt.sign({ studentId: savedStudent._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'Student signed up successfully', token, studentId: savedStudent._id   });
+    res.status(201).json({ message: 'Student signed up successfully', token, expiresIn: 3600, studentId: savedStudent._id});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

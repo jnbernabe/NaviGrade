@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './Login.css';
 
 const Login = () => {
   const { signin } = useAuth();
@@ -31,7 +32,7 @@ const Login = () => {
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-4">
           <div className="card">
-            <div className="card-header bg-primary text-white text-center">
+            <div className="card-header custom-header text-white text-center">
               <h2>Login</h2>
             </div>
             <div className="card-body">
@@ -44,7 +45,9 @@ const Login = () => {
                   <label htmlFor="password" className="form-label">Password</label>
                   <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="button" className="btn btn-primary btn-block" onClick={handleLogin}>Login</button>
+                <button type="button" className="btn btn-primary btn-block login-button" onClick={handleLogin}>
+                  Login
+                </button>
               </form>
             </div>
             {error && <div className="card-footer text-center"><p style={{ color: 'red' }}>{error}</p></div>}
