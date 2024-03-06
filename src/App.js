@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
-import Calendar from './pages/Calendar/Calendar';
+import CalendarContainer from './pages/Calendar/CalendarContainer';
 import Courses from './pages/Courses/Courses';
 import Assignments from './pages/Assignments/Assignments';
 import Navbar from './components/Navbar';
@@ -29,11 +29,6 @@ function App() {
       <Navbar />
       <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/calendar" element={
-          <>
-            <Calendar />
-            <div style={{ width: "100%", height: "600px", margin: "50px"}} />
-          </>} />
         {user ? (
           <>
             <Route path="home" element={<Home />} />
@@ -41,6 +36,11 @@ function App() {
             <Route path="assignments" element={<Assignments />} />
             <Route path="login" element={<Login />} />
             <Route path="/grades" element={<Grades />} />
+            <Route path="/calendar" element={
+              <>
+                <CalendarContainer />
+                <div style={{ width: "100%", height: "600px", margin: "50px"}} />
+              </>} />
             <Route path="/editgrade/:id" element={<EditGrade />} />
             <Route path="/editassignment/:id" element={<EditAssignment />} />
             <Route path="/addassignment" element={<AddAssignment />} />

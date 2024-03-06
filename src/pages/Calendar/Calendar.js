@@ -3,15 +3,14 @@ import React from 'react';
 import { 
   Calendar as BigCalendar,
   dateFnsLocalizer,
-  CalendarProps,
-  momentLocalizer 
+  CalendarProps
 } from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
+
 
 const locales = {
   'en-CA': require('date-fns/locale/en-CA'),
@@ -24,22 +23,56 @@ const localizer = dateFnsLocalizer({
   locales
 }); 
 
-const events = [
-  {
-    title: 'Testing event',
-    start: new Date(2024,2,1,8,30),
-    end: new Date(2024,2,1,14,30)
-  },
-  {
-    title: 'Testing 2',
-    start: moment('2024-03-15T10:00:00').toDate(),
-    end: moment('2024-03-20T15:00:00').toDate(),
+const getDayOfWeek = day => {
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  return days.indexOf(day.toLowerCase());
+};
+
+const MyCalendar = ({ courses }) => {
+  // Map course schedules to events
+  console.log('Courses:', courses);
+  let events = [];
+  if (courses) {
+    events = courses.flatMap(course => {
+      const courseEvents = [];
+
+      // For each schedule in the course, generate events based on the course start and end dates
+      course.schedules.forEach(schedule => {
+        const startDate = new Date(course.startDate);
+        const endDate = new Date(course.endDate);
+
+        // Find the next occurrence of the scheduled day
+        let currentDate = startDate;
+        while (currentDate <= endDate) {
+          const scheduleDay = new Date(currentDate);
+          scheduleDay.setHours(0, 0, 0, 0); // Reset hours, minutes, seconds, and milliseconds
+
+          const dayOfWeek = scheduleDay.getDay();
+          if (dayOfWeek === getDayOfWeek(schedule.day)) {
+            const startTimeParts = schedule.startTime.split(':').map(part => parseInt(part, 10));
+            const endTimeParts = schedule.endTime.split(':').map(part => parseInt(part, 10));
+
+            const startDateTime = new Date(scheduleDay);
+            startDateTime.setHours(startTimeParts[0], startTimeParts[1]);
+
+            const endDateTime = new Date(scheduleDay);
+            endDateTime.setHours(endTimeParts[0], endTimeParts[1]);
+
+            courseEvents.push({
+              id: `${course._id}_${startDateTime.getTime()}`,
+              title: course.name,
+              start: startDateTime,
+              end: endDateTime,
+            });
+          }
+
+          currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+        }
+      });
+
+      return courseEvents;
+    });
   }
-];
-
-const MyCalendar = ({courses}) => {
-
-  //add map for courses here (format??)
 
   return (
     <div style={{height: "600px"}}>
