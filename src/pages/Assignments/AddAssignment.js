@@ -17,10 +17,11 @@ function AddAssignment() {
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
-
   const { getAuthToken } = useAuth();
+
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const token = getAuthToken();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +40,6 @@ function AddAssignment() {
       const studentResponse = await axios.get(`${apiKey}/students/${student}`);
       console.log("student 98: ", { student });
       const studentData = studentResponse.data;
-
       // Update student's courses array with the new course
       const updatedStudentData = {
         ...studentData,
@@ -47,45 +47,53 @@ function AddAssignment() {
       };
 
       // Send POST request to add the course to student's courses
-      await axios.post(`${apiKey}/courses/${student}/add-course`, {
-        courseId: course,
-      });
+      await axios
+        .post(`${apiKey}/courses/${student}/add-course`, {
+          courseId: course,
+        })
+        .catch((error) => {
+          console.error("Error adding course to student:", error.message);
+        });
 
       // Update the student's data
-      await axios.patch(`${apiKey}/students/${student}`, updatedStudentData);
+      await axios
+        .patch(`${apiKey}/students/${student}`, updatedStudentData)
+        .catch((error) => {
+          console.error("Error updating student:", error.message);
+        });
 
       //Send POST request to add new assignment
       const response = await axios.post(
         `${apiKey}/assignments/add-assignment`,
         data
       );
+
       console.log("response: ", response);
       console.log("response status: ", response.status);
       // Redirect to assignments if succeed
       if (response.status === 201) {
         navigate("/assignments");
       } else {
-        const errorMessage =
-          response.data.message || "Failed to add assignment";
+        const errorMessage = response.message || "Failed to add assignment";
         alert(errorMessage);
       }
 
-      //find corresponding courses by feching courses
-      const courseResponse = await axios.get(`${apiKey}/courses/${course}`);
-      const courseData = courseResponse.data;
+      // //find corresponding courses by feching courses
+      // const courseResponse = await axios.get(`${apiKey}/courses/${course}`);
+      // const courseData = courseResponse.data;
 
-      if (courseData) {
-        const updatedCourseData = {
-          ...courseData,
-          assignments: [...courseData.assignments, response.data._id],
-        };
-        // コースを更新する
-        await axios.patch(`${apiKey}/courses/${course}`, updatedCourseData);
-      }
+      // if (courseData) {
+      //   const updatedCourseData = {
+      //     ...courseData,
+      //     assignments: [...courseData.assignments, response.data._id],
+      //   };
+      //   // コースを更新する
+      //   await axios.patch(`${apiKey}/courses/${course}`, updatedCourseData);
+      // }
 
       navigate("/assignments");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:", error.message);
       alert("Failed to add assignment");
     }
   };

@@ -28,11 +28,12 @@ const Assignments = () => {
           const courseResponse = await axios.get(
             `${apiKey}/courses/${assignment.course}`
           );
-          const courseName = courseResponse.name;
+          //console.log("courseResponse", courseResponse); //null
+          const courseName = courseResponse.data.name;
           return { ...assignment, course: courseName };
         })
       );
-      console.log("updatedAssignments", updatedAssignments); //null
+      //console.log("updatedAssignments", updatedAssignments); //null
       setAssignments(updatedAssignments);
     } catch (error) {
       console.error("Error:", error);
