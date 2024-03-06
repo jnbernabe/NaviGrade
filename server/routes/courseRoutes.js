@@ -38,15 +38,11 @@ router.post("/", async (req, res) => {
   const { name, professor, schedules, startDate, endDate, assignments } =
     req.body;
   try {
-    // Create a new schedule
-    const newSchedule = new Schedule(schedules);
-    await newSchedule.save();
-
     // Create a new course with the created schedule
     const newCourse = new Course({
       name,
       professor,
-      schedules: [newSchedule._id], // Use the ID of the created schedule
+      schedules: [schedules], // Use the ID of the created schedule
       startDate,
       endDate,
       assignments,
@@ -65,7 +61,7 @@ router.post("/", async (req, res) => {
 // Update a course
 router.patch("/:id", async (req, res) => {
   try {
-    const courseId = req.params.courseId;
+    const courseId = req.params.id;
     const { name, professor, schedules, startDate, endDate, assignments } =
       req.body;
 
@@ -76,6 +72,7 @@ router.patch("/:id", async (req, res) => {
         $set: {
           name,
           professor,
+          schedules,
           startDate,
           endDate,
           assignments,
@@ -88,30 +85,8 @@ router.patch("/:id", async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Update the schedules
-    if (schedules && schedules.length > 0) {
-      const updatedSchedules = await Promise.all(
-        schedules.map(async (scheduleDetails, index) => {
-          const scheduleId = updatedCourse.schedules[index];
-          return Schedule.findByIdAndUpdate(
-            scheduleId,
-            {
-              $set: scheduleDetails,
-            },
-            { new: true }
-          );
-        })
-      );
-
-      // Check if any schedule update failed
-      if (updatedSchedules.some((schedule) => !schedule)) {
-        return res.status(404).json({ message: "Some schedules not found" });
-      }
-    }
-
-    res.json({
+    res.status(201).json({
       message: "Course and schedules updated successfully",
-      course: updatedCourse,
     });
   } catch (error) {
     console.error("Error updating course and schedules:", error);
@@ -145,12 +120,12 @@ router.post("/:studentid/add-course", async (req, res) => {
     const course = await Course.findById(courseId);
     if (!course) {
       console.log("Course not found");
-      return res.status(400).json({ message: "Course not found" });
+      return res.status(40).json({ message: "Course not found" });
     }
 
     // Check if the student is already enrolled in the course
-    if (!student.courses.includes(courseId)) {
-      console.log("Student is not enrolled in the course");
+    if (student.courses.includes(courseId)) {
+      console.log("Student is already enrolled in the course");
       return res
         .status(400)
         .json({ message: "Student is already enrolled in the course" });
@@ -162,7 +137,7 @@ router.post("/:studentid/add-course", async (req, res) => {
     // Save the updated student to the database
     const updatedStudent = await student.save();
     //console.log("Student course Added");
-    res.status(201).json(updatedStudent);
+    res.status(201).json("Course added to student successfully");
   } catch (error) {
     console.log("Error adding course to student", error);
     res.status(500).json({ message: error.message });
