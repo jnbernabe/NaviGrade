@@ -52,6 +52,11 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link to="/calendar" className="nav-link">
+                    Calendar
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <LogoutButton className="nav-item" />
                 </li>
               </>
