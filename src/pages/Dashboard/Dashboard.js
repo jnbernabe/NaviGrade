@@ -1,11 +1,12 @@
 // Dashboard.js
 
 import React from "react";
-import { Button } from "react-bootstrap";
-import { fetchAssignments } from "../../services/dataFetcher";
+import { Button, ListGroupItem } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import ListGroup from "react-bootstrap/ListGroup";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
@@ -51,23 +52,23 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container mx-auto">
-      <h2>Dashboard</h2>
+      <h2 className="display-5">Dashboard</h2>
       <Button variant="primary">Add Assignment</Button>
 
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
-        <ul className="list-group mt-3">
+        <ListGroup className="list-group mt-3">
           {assignments.map((assignment) => (
-            <li key={assignment._id} className="list-group-item">
+            <ListGroup.Item key={assignment._id} className="list-group-item">
               <h3>{assignment.name}</h3>
               <p className="mb-1">
                 Due Date: {formatDateToMDYY(assignment.dueDate)}
               </p>
               {/* Additional assignment details can be displayed here */}
-            </li>
+            </ListGroup.Item>
           ))}
-        </ul>
+        </ListGroup>
       )}
     </div>
   );

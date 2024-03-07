@@ -26,7 +26,10 @@ const authenticateToken = (req, res, next) => {
       console.error("Error during verification:", err);
 
       if (err.name === "TokenExpiredError") {
-        console.error("Token has expired. Redirecting to login page.");
+        console.error(
+          "Token has expired. Redirecting to login page: " + client + "/logout"
+        );
+
         return res.redirect(client + "/logout");
       }
 
