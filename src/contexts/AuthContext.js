@@ -44,12 +44,12 @@ const AuthProvider = ({ children }) => {
         },
         // Include any necessary authentication tokens or credentials
       });
-
+  
       // Assuming a successful logout, redirect to the home page or login page
       if (response.ok) {
-        // Redirect to the home page
-        setUser(null);
+        // Remove both access and refresh tokens
         removeAuthToken();
+        setUser(null);
         navigate("/");
       }
     } catch (error) {
@@ -94,14 +94,13 @@ const AuthProvider = ({ children }) => {
     try {
       // // Obtain the token from localStorage
       const token = getAuthToken();
-
+  
+      // Check if the user is already authenticated
       if (token !== null) {
-        console.log(token);
-        console.error(
-          "User Logged in already. Please logout to login with another account"
-        );
+        console.error("User is already logged in. Please log out to switch accounts.");
         return false;
       }
+  
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await fetch(`${apiKey}/users/login`, {
         method: "POST",
@@ -110,25 +109,27 @@ const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ email, password }),
       });
-      // Check if the response is successful (status code 2xx)
+  
       if (response.ok) {
         const data = await response.json();
         console.log("Sign in successful. User data:", data);
+        
+        // Set both access and refresh tokens
         setAuthToken(data.token);
         setUser(data);
         navigate("/home");
+        return true;
       } else {
-        console.error(
-          "Login failed. Please check your credentials." + response.statusText
-        );
+        console.error("Login failed. Please check your credentials." + response.statusText);
       }
-
+  
       return response.ok;
     } catch (error) {
       console.error("Error during signin:", error);
       return false;
     }
   };
+  
 
   return (
     <AuthContext.Provider

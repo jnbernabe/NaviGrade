@@ -31,7 +31,6 @@ function App() {
       <Navbar />
       <Container>
         <Routes>
-          <Route path="/" element={<Home />} />
           {user ? (
             <>
               <Route path="/courses" element={<Courses />} />
@@ -59,11 +58,27 @@ function App() {
             </>
           ) : (
             <Route path="authentication/*" element={<AuthenticationPage />} />
-          )}
-        </Routes>
-      </Container>
-    </>
-  );
-}
-
-export default App;
+            )}
+  
+            {/* Make Home the default page */}
+            <Route path="/" element={<Home />} />
+  
+            {user && (
+              <>
+                {/* ... (other routes for authenticated users) */}
+                <Route path="/calendar" element={<CalendarContainer />} />
+                <Route path="/editgrade/:id" element={<EditGrade />} />
+                <Route path="/editassignment/:id" element={<EditAssignment />} />
+                <Route path="/addassignment" element={<AddAssignment />} />
+                <Route path="/viewcourse/:id" element={<ViewCourse />} />
+                <Route path="/addcourse" element={<AddCourse />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+              </>
+            )}
+          </Routes>
+        </Container>
+      </>
+    );
+  }
+  
+  export default App;
