@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 function AddCourse() {
     const [name, setName] = useState('');
     const [professor, setProfessor] = useState('');
-    const [schedule, setSchedule] = useState('');
+    const [schedule, setSchedule] = useState({ day: '', startTime: '', endTime: '' });
     const [assignment, setAssignment] = useState('');
     const navigate = useNavigate();
     const { getAuthToken } = useAuth();
@@ -18,11 +18,20 @@ function AddCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // try {
+        //     const data = {
+        //         name: name,
+        //         professor: professor,
+        //         assignment:assignment
+        //     };
+                
         try {
             const data = {
                 name: name,
                 professor: professor,
-                schedule: schedule,
+                schedules: [
+                   { schedule }
+                ],
                 assignment:assignment
             };
 
@@ -66,10 +75,24 @@ function AddCourse() {
                     <Form.Label>Schedule</Form.Label>
                     <Form.Control
                         type="text"
-                        value={schedule}
-                        onChange={(e) => setSchedule(e.target.value)}
-                        required
+                        placeholder="Day"
+                        value={schedule.day}
+                        onChange={(e) => setSchedule({ ...schedule, day: e.target.value })}
                     />
+                    <Form.Control
+                            type="text"
+                            placeholder="Start Time"
+                            value={schedule.startTime}
+                            onChange={(e) => setSchedule({ ...schedule, startTime: e.target.value })}
+                            
+                        />
+                        <Form.Control
+                            type="text"
+                            placeholder="End Time"
+                            value={schedule.endTime}
+                            onChange={(e) => setSchedule({ ...schedule, endTime: e.target.value })}
+    
+                        />
                 </Form.Group>
 
                 {/* <Form.Group>

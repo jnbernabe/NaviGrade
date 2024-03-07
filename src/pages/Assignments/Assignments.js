@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./assignments.css";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -83,7 +82,8 @@ const Assignments = () => {
         {assignments.map((assignment) => (
           <li key={assignment._id}>
             <div>
-              <h3>{assignment.name}</h3>
+              <h4>{assignment.name}</h4>
+              <h4>Grade: {assignment.grade !== null ? assignment.grade : 'TBD'}</h4>
               <p>Course Name: {assignment.course}</p>
               <p>Due Date: {formatDateToMDYY(assignment.dueDate)}</p>
               <p>Weight: {assignment.weight}</p>
