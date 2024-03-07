@@ -1,7 +1,6 @@
 .courses-container {
   text-align: center;
   padding: 50px;
-  background-color: rgba(197, 180, 245, 0.144);
 }
 
 h2 {
@@ -27,4 +26,25 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.course-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.course-card {
+  width: 30%;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 600px) {
+  .course-list {
+    flex-direction: column;
+  }
 }

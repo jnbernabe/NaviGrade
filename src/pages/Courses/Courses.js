@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./courses.css";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -55,41 +56,44 @@ const Courses = () => {
     //             alert('Failed to delete grade.');
     //     }
   };
+
   return (
     <div className="courses-container">
       <h2>Available Courses</h2>
       <Link to="/addcourse">
         <Button variant="primary">Add Course</Button>
       </Link>
-      <ul className="list-group mt-3">
+      <div
+        className="course-list"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
         {courses.map((course) => (
-          <li key={course._id} className="list-group-item mb-3">
-            <Link
-              to={`/viewcourse/${course._id}`}
-              className="text-decoration-none"
-            >
-              <h3>{course.name}</h3>
-            </Link>
-            <p className="mb-1">Professor: {course.professor}</p>
-            <p className="mb-1">
-              Schedule: {formatDateToMDYY(course.schedule)}
-            </p>
-            <Button variant="danger" onClick={() => deleteCourse(course._id)}>
-              Delete this course
-            </Button>
-            {/* Uncomment the following section if you want to display assignments */}
-            {/* <ul className="list-group mt-3">
-              {course.assignments.map(assignment => (
-                <li key={assignment.id} className="list-group-item">
-                  {assignment.name}
-                </li>
-              ))}
-            </ul> */}
-          </li>
+          <Card
+            key={course._id}
+            className="course-card"
+            style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
+          >
+            <Card.Img variant="top" src={course.image} />{" "}
+            {/* Add this line if you have images */}
+            <Card.Body>
+              <Card.Title>{course.name}</Card.Title>
+              <Card.Text>Professor: {course.professor}</Card.Text>
+              <Card.Text>
+                Schedule: {formatDateToMDYY(course.schedule)}
+              </Card.Text>
+
+              <Button variant="danger" onClick={() => deleteCourse(course._id)}>
+                Delete this course
+              </Button>
+            </Card.Body>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
-
 export default Courses;
