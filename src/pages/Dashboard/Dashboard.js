@@ -11,10 +11,12 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
+  const [studentName, setStudentName] = useState('');
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchAssignments();
+    fetchUserName();
   }, []);
 
   const formatDateToMDYY = (dateString) => {
@@ -50,9 +52,25 @@ const Dashboard = () => {
     }
   };
 
+  const fetchUserName = async () =>{
+    try{
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/userinfo`);
+      const fetchedUserId = response.data.user.userId;
+      //console.log('fetchedUserId',fetchedUserId)
+
+      const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+      const studentFirstName = studentResponse.data.firstName;
+      setStudentName(studentFirstName);
+      //console.log('studentName',studentFirstName);
+    }catch(error){
+      console.error("Error:", error);
+    }
+  }
+
   return (
     <div className="dashboard-container mx-auto">
-      <h2 className="display-5">Dashboard</h2>
+      <h2 className="display-5">{studentName}'s Dashboard </h2>
       <Button variant="primary">Add Assignment</Button>
 
       {assignments.length === 0 ? (

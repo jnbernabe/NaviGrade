@@ -22,8 +22,8 @@ function EditGrade(props) {
             try {
                 // Assignment
                 const result = await axios.get(apiUrl);
-                const { name, dueDate, course, weight } = result.data;
-                setAssignment({ name, dueDate: new Date(dueDate), course, weight });
+                const { name, dueDate, course, weight,grade } = result.data;
+                setAssignment({ name, dueDate: new Date(dueDate), course, weight,grade });
 
                 // Course
                 const coursesResponse = await axios.get(`${apikey}/assignments/courses`);
@@ -42,7 +42,8 @@ function EditGrade(props) {
             name: assignment.name,
             weight: assignment.weight,
             dueDate: assignment.dueDate.toISOString(),
-            course: assignment.course
+            course: assignment.course,
+            grade: assignment.grade
         };
         axios.patch(apiUrl, data)
             .then((result) => {
@@ -96,6 +97,17 @@ function EditGrade(props) {
                         step="0.01"
                         min="0"
                         max="1"
+                   />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Grade </Form.Label>
+                    <Form.Control
+                        type="number"
+                        value={assignment.grade}
+                        onChange={(e) => setAssignment({ ...assignment, grade: e.target.value })}
+                       
+                        min="0"
+                      
                    />
                 </Form.Group>
                 <Button variant="primary" type="submit">
