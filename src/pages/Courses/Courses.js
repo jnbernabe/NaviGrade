@@ -91,9 +91,9 @@ const Courses = () => {
                 <ul>End: {course.schedules[0]!=null? course.schedules[0].endTime:'TBD'} </ul>
               </Card.Text>
 
-              <Button variant="danger" onClick={() => deleteCourse(course._id)}>
+              {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
                 Delete this course
-              </Button>
+              </Button> */}
             </Card.Body>
           </Card>
         ))}
