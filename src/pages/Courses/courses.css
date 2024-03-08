@@ -1,6 +1,7 @@
 .courses-container {
   text-align: center;
   padding: 50px;
+  height: 100vh;
 }
 
 h2 {
