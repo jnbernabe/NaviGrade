@@ -15,7 +15,9 @@ function AddAssignment() {
   const [student, setStudent] = useState("");
   const [grade, setGrade] = useState("");
   const [courses, setCourses] = useState([]);
-  const [students, setStudents] = useState([]);
+  //const [students, setStudents] = useState([]);
+  const [studentName, setStudentName] = useState('');
+  const [studentId,setStudentId] = useState('');
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
 
@@ -33,31 +35,35 @@ function AddAssignment() {
         dueDate: dueDate.toISOString(),
         courseId: course,
         weight: weight,
-        studentId: student,
+        studentId: studentId,
       };
 
-      // Get student's data
-      const studentResponse = await axios.get(`${apiKey}/students/${student}`);
+
+      //Get student's data
+      const studentResponse = await axios.get(`${apiKey}/students/${studentId}`);
       console.log("student 98: ", { student });
       const studentData = studentResponse.data;
-      // Update student's courses array with the new course
+      //Update student's courses array with the new course
       const updatedStudentData = {
         ...studentData,
         courses: [...studentData.courses, course],
       };
+      
+      console.log('student',student);
+
 
       // Send POST request to add the course to student's courses
       await axios
-        .post(`${apiKey}/courses/${student}/add-course`, {
+        .post(`${apiKey}/courses/${studentId}/add-course`, {
           courseId: course,
         })
         .catch((error) => {
           console.error("Error adding course to student:", error.message);
         });
 
-      // Update the student's data
+      // Update  student's data
       await axios
-        .patch(`${apiKey}/students/${student}`, updatedStudentData)
+        .patch(`${apiKey}/students/${studentId}`, updatedStudentData)
         .catch((error) => {
           console.error("Error updating student:", error.message);
         });
@@ -78,18 +84,7 @@ function AddAssignment() {
         alert(errorMessage);
       }
 
-      // //find corresponding courses by feching courses
-      // const courseResponse = await axios.get(`${apiKey}/courses/${course}`);
-      // const courseData = courseResponse.data;
 
-      // if (courseData) {
-      //   const updatedCourseData = {
-      //     ...courseData,
-      //     assignments: [...courseData.assignments, response.data._id],
-      //   };
-      //   // コースを更新する
-      //   await axios.patch(`${apiKey}/courses/${course}`, updatedCourseData);
-      // }
 
       navigate("/assignments");
     } catch (error) {
@@ -108,25 +103,43 @@ function AddAssignment() {
       }
     };
 
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get(`${apiKey}/students`);
-        setStudents(response.data);
-      } catch (error) {
-        console.error("Error fetching students:", error);
+    // const fetchStudents = async () => {
+    //   try {
+    //     const response = await axios.get(`${apiKey}/students`);
+    //     setStudents(response.data);
+    //   } catch (error) {
+    //     console.error("Error fetching students:", error);
+    //   }
+    // };
+    
+    const fetchUserName = async () =>{
+      try{
+        const apiKey = process.env.REACT_APP_API_KEY;
+        const response = await axios.get(`${apiKey}/userinfo`);
+        const fetchedUserId = response.data.user.userId;
+        //console.log('fetchedUserId',fetchedUserId)
+        setStudentId(fetchedUserId);
+        //console.log('fetchedUserId type:', typeof({studentId}));
+        const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+        const studentFirstName = studentResponse.data.firstName;
+        setStudentName(studentFirstName);
+        //console.log('studentName',studentFirstName);
+      }catch(error){
+        console.error("Error:", error);
       }
-    };
-
+    }
     fetchCourses();
-    fetchStudents();
+    //fetchStudents();
+    fetchUserName();
   }, []);
 
   return (
     <div className="assignments-container">
-      <h2>Add Assignment</h2>
+      <h2>Add Assignment </h2>
+      <p>User:  {studentName}</p>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Assignment Name</Form.Label>
           <Form.Control
             type="text"
             value={name}
@@ -135,7 +148,8 @@ function AddAssignment() {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Due Date</Form.Label>
+          <Form.Label>Due Date </Form.Label>
+          <div></div>
           <DatePicker
             selected={dueDate}
             onChange={(date) => setDueDate(date)}
@@ -172,17 +186,16 @@ function AddAssignment() {
         <Form.Group>
           <Form.Label>Student</Form.Label>
           <Form.Control
-            as="select"
-            value={student}
+            value={studentName}
             onChange={(e) => setStudent(e.target.value)}
             required
           >
-            <option value="">Select Student</option>
+           {/* <option value="">Select Student</option>
             {students.map((student) => (
               <option key={student._id} value={student._id}>
                 {student.firstName}
               </option>
-            ))}
+            ))}  */}
           </Form.Control>
         </Form.Group>
         <Form.Group>

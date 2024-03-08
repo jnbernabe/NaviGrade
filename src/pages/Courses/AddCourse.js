@@ -8,7 +8,10 @@ import { useAuth } from '../../contexts/AuthContext';
 function AddCourse() {
     const [name, setName] = useState('');
     const [professor, setProfessor] = useState('');
-    const [schedule, setSchedule] = useState('');
+    const [schedule, setSchedule] = useState({ day: '', startTime: '', endTime: '' });
+    const [day,setDay] =useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [assignment, setAssignment] = useState('');
     const navigate = useNavigate();
     const { getAuthToken } = useAuth();
@@ -18,16 +21,25 @@ function AddCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        
+       
         try {
+            // Create a new schedule
             const data = {
-                name: name,
-                professor: professor,
-                schedule: schedule,
-                assignment:assignment
+                name:name,
+                professor:professor,
+                schedule:[
+                    {day:schedule.day,
+                    startTime:schedule.startTime,
+                    endTime:schedule.endTime}],
+                startDate:'',
+                endDate:'',
+                assignments:[]
             };
-
+        
+           
             const response = await axios.post(`${apiKey}/courses/`, data);
-    
+
             if (response.status === 201) {
                 navigate('/courses');
             } else {
@@ -48,6 +60,7 @@ function AddCourse() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                         type="text"
+                        placeholder="Course Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
@@ -57,6 +70,7 @@ function AddCourse() {
                     <Form.Label>Professor</Form.Label>
                     <Form.Control
                         type="text"
+                        placeholder="Professor's Name"
                         value={professor}
                         onChange={(e) => setProfessor(e.target.value)}
                         required
@@ -66,10 +80,24 @@ function AddCourse() {
                     <Form.Label>Schedule</Form.Label>
                     <Form.Control
                         type="text"
-                        value={schedule}
-                        onChange={(e) => setSchedule(e.target.value)}
-                        required
+                        placeholder="Day"
+                        value={schedule.day}
+                        onChange={(e) => setSchedule({ ...schedule, day: e.target.value })}
                     />
+                    <Form.Control
+                            type="text"
+                            placeholder="Start Time"
+                            value={schedule.startTime}
+                            onChange={(e) => setSchedule({ ...schedule, startTime: e.target.value })}
+                            
+                        />
+                        <Form.Control
+                            type="text"
+                            placeholder="End Time"
+                            value={schedule.endTime}
+                            onChange={(e) => setSchedule({ ...schedule, endTime: e.target.value })}
+    
+                        />
                 </Form.Group>
 
                 {/* <Form.Group>

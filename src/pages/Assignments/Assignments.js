@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./assignments.css";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { useHistory } from 'react-router-dom';
-import Table from "react-bootstrap/Table";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -12,9 +9,11 @@ const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
+  const [studentName, setStudentName] = useState('');
 
   useEffect(() => {
     fetchAssignments();
+    fetchUserName();
   }, []);
 
   const fetchAssignments = async () => {
@@ -41,6 +40,22 @@ const Assignments = () => {
       console.error("Error:", error);
     }
   };
+
+  const fetchUserName = async () =>{
+    try{
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/userinfo`);
+      const fetchedUserId = response.data.user.userId;
+      //console.log('fetchedUserId',fetchedUserId)
+
+      const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+      const studentFirstName = studentResponse.data.firstName;
+      setStudentName(studentFirstName);
+      console.log('studentName',studentFirstName);
+    }catch(error){
+      console.error("Error:", error);
+    }
+  }
 
   //console.log('assignments',assignments); //null
 
@@ -77,7 +92,7 @@ const Assignments = () => {
 
   /*return (
     <div className="assignments-container">
-      <h2>Upcoming Assignments</h2>
+      <h2>Upcoming Assignments for {studentName}</h2>
       <Link to="/addassignment">
         <Button>Add</Button>
       </Link>
@@ -85,7 +100,8 @@ const Assignments = () => {
         {assignments.map((assignment) => (
           <li key={assignment._id}>
             <div>
-              <h3>{assignment.name}</h3>
+              <h4>{assignment.name}</h4>
+              <h4>Grade: {assignment.grade !== null ? assignment.grade : 'TBD'}</h4>
               <p>Course Name: {assignment.course}</p>
               <p>Due Date: {formatDateToMDYY(assignment.dueDate)}</p>
               <p>Weight: {assignment.weight}</p>

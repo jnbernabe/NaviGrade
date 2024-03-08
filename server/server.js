@@ -43,6 +43,18 @@ app.listen(PORT, () => {
   console.log(`Server is running on port: http://localhost:${PORT}/`);
 });
 
+
+app.get("/userinfo", authenticateToken, (req, res) => {
+  try{
+    const user = req.user;
+    res.json({ user });
+
+  }catch(error){
+    res.status(500).json({ message: error.message });
+  }
+ 
+});
+
 // // server.js
 // const express = require('express');
 // const cors = require('cors');

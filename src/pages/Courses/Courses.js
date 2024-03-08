@@ -11,6 +11,7 @@ const Courses = () => {
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
+  console.log('Token ', getAuthToken());
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -26,35 +27,35 @@ const Courses = () => {
     }
   };
 
-  //Format Due Date
-  const formatDateToMDYY = (dateString) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear().toString().substr(-2); //cut first 2 digits of the year 2024->24
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0"); // add leading zero if minutes < 10
-    return `${month}/${day}/${year} ${hours}:${minutes}`;
-  };
+  //Format Due Date - Don't need this atm
+  // const formatDateToMDYY = (dateString) => {
+  //   const date = new Date(dateString);
+  //   const month = date.getMonth() + 1;
+  //   const day = date.getDate();
+  //   const year = date.getFullYear().toString().substr(-2); //cut first 2 digits of the year 2024->24
+  //   const hours = date.getHours();
+  //   const minutes = date.getMinutes().toString().padStart(2, "0"); // add leading zero if minutes < 10
+  //   return `${month}/${day}/${year} ${hours}:${minutes}`;
+  // };
 
   const deleteCourse = async (id) => {
     //******************Only admin should be able to delete course?************
     //Otherwise, gives a conflict and make no sense when displaying assignments when course is not available
     // const confirmation = window.confirm('Are you sure you want to delete this grade?');
     // if (confirmation) {
-    //     try{
-    //         const response = await axios.delete(`http://localhost:5050/courses/${id}`);
-    //         if (response.status === 200) {
-    //             //Show lert if succeed
-    //             alert('Assignment deleted successfully.');
-    //             window.location.href = '/courses'
-    //         } else {
-    //             alert('Failed to delete grade.');
-    //         }
-    //     }catch{
-    //             console.error('Error:');
-    //             alert('Failed to delete grade.');
-    //     }
+        // try{
+        //     const response = await axios.delete(`http://localhost:5050/courses/${id}`);
+        //     if (response.status === 200) {
+        //         //Show lert if succeed
+        //         alert('Assignment deleted successfully.');
+        //         window.location.href = '/courses'
+        //     } else {
+        //         alert('Failed to delete grade.');
+        //     }
+        // }catch{
+        //         console.error('Error:');
+        //         alert('Failed to delete grade.');
+        // }
   };
 
   return (
@@ -83,7 +84,11 @@ const Courses = () => {
               <Card.Title>{course.name}</Card.Title>
               <Card.Text>Professor: {course.professor}</Card.Text>
               <Card.Text>
-                Schedule: {formatDateToMDYY(course.schedule)}
+                {/* Schedule: {formatDateToMDYY(course.schedule)} */}
+                <h5>Schedule: </h5>
+                <ul>{course.schedules[0]!=null? course.schedules[0].day:'TBD'} </ul>
+                <ul>Start: {course.schedules[0]!=null? course.schedules[0].startTime:'TBD'} </ul>
+                <ul>End: {course.schedules[0]!=null? course.schedules[0].endTime:'TBD'} </ul>
               </Card.Text>
 
               <Button variant="danger" onClick={() => deleteCourse(course._id)}>
