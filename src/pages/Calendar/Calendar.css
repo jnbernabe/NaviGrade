@@ -1,0 +1,115 @@
+/* Calendar.css */
+/* Main container styling */
+.rbc-calendar {
+  background-color: #191a1c !important; /* grey */ 
+  color: #ededed !important; /* white */
+  max-width: 100%;
+}
+
+/* Toolbar styling */
+.rbc-toolbar {
+  background-color: #299193; /* Darker grey for toolbar */
+  color: #ffffff; /* white */
+}
+.rbc-toolbar button {
+  background-color: #299193;
+  color: #ffffff;
+}
+.rbc-toolbar button.rbc-active {
+  background-color: #273f40;
+  color: #ffffff;
+}
+
+/* Date cell styling */
+.rbc-month-view .rbc-month-row + .rbc-month-row,
+.rbc-month-view .rbc-header {
+  border-bottom: 1px solid #103738; /* Border color between rows and headers */
+  background-color: #202727 ;
+}
+
+/* Change color of days in previous and next months */
+.rbc-off-range {
+  background-color: #273f40; /* Dark grey */;
+  color: #ffffff; /* White */
+  
+}
+
+/* Time view styling */
+.rbc-time-coloumn {
+  background-color: #171c1c;
+  color: #ffffff;
+
+}
+.rbc-timeslot-group {
+  border-color: #213536; /* Dark grey */
+}
+/* Event styling */
+.rbc-event {
+  background-color: #299193; /*Item colour matches app colour */
+  color: #191a1c; /* Default event text color matches app background */
+}
+
+.rbc-event-allday {
+  background-color: #659ec1; /*Item colour matches app colour */
+  color: #191a1c; /* Default event text color matches app background */
+}
+
+/* Selected event styling */
+.rbc-selected {
+  background-color: #273f40; /* Selected event background color */
+  color: #ffffff; /* Selected event text color */
+}
+
+/* Today's date styling */
+.rbc-today {
+  background-color: #06191a; 
+  color: #25868a; /* text */
+}
+
+/* Week View Row and Column Line Color */
+.rbc-row-bg, .rbc-header, .rbc-timeslot-group {
+  border-color: #273f40; /* Dark grey */
+}
+
+.rbc-event-content {
+  white-space: normal; /* Allow text to wrap within the content cell */
+  word-wrap: break-word; /* Break long words to fit within the cell */
+}
+
+/* Adjust for mobile devices */
+@media (max-width: 767px) {
+  /* Adjust the height of the calendar container for mobile devices */
+  .rbc-calendar {
+    width: 400px;
+  }
+
+  .rbc-event {
+    font-size: 10px; /* Adjust font size as needed */
+  }
+  .rbc-event-content {
+    white-space: normal; /* Allow text to wrap within the content cell */
+    word-wrap: break-word; /* Break long words to fit within the cell */
+  }
+  /* Reduce day of the week text size */
+  .rbc-header,.rbc-row-content,.rbc-date-cell {
+    font-size: 10px; 
+  }
+
+    /* Adjust alignment of week view columns  to look better in mobile view*/
+  .rbc-time-header-content {
+    display: flex;
+    width: (calc(100%/7)); /* Adjust width to align with content */
+  }
+
+  .rbc-time-content {
+    display: flex;
+    width: (calc(100%/7)); /* Adjust width to align with content */
+  }
+
+  /* Agenda view column adjusment and font chage  */
+  .rbc-agenda-view {
+    font-size: 10px; 
+    width: (calc(100%/3))
+  }
+
+}

@@ -2,8 +2,10 @@
 
 import React from "react";
 import { Button, ListGroupItem } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Card from "react-bootstrap/Card";
 import { useAuth } from "../../contexts/AuthContext";
 import ListGroup from "react-bootstrap/ListGroup";
 import "./Dashboard.css";
@@ -51,7 +53,6 @@ const Dashboard = () => {
       console.error("Error:", error);
     }
   };
-
   const fetchUserName = async () =>{
     try{
       const apiKey = process.env.REACT_APP_API_KEY;
@@ -72,21 +73,20 @@ const Dashboard = () => {
     <div className="dashboard-container mx-auto">
       <h2 className="display-5">{studentName}'s Dashboard </h2>
       <Button variant="primary">Add Assignment</Button>
-
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
-        <ListGroup className="list-group mt-3">
+        <div className="assignment-list">
           {assignments.map((assignment) => (
-            <ListGroup.Item key={assignment._id} className="list-group-item">
-              <h3>{assignment.name}</h3>
-              <p className="mb-1">
-                Due Date: {formatDateToMDYY(assignment.dueDate)}
-              </p>
-              {/* Additional assignment details can be displayed here */}
-            </ListGroup.Item>
+            <Card key={assignment._id} className="assignment-card">
+              <Card.Body>
+                <Card.Title>{assignment.name}</Card.Title>
+                <Card.Text>Due Date: {formatDateToMDYY(assignment.dueDate)}</Card.Text>
+                
+              </Card.Body>
+            </Card>
           ))}
-        </ListGroup>
+        </div>
       )}
     </div>
   );

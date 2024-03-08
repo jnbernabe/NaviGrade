@@ -11,8 +11,6 @@ import AuthenticationPage from "./components/AuthenticationPage";
 import Login from "./pages/Login/Login";
 import { useAuth } from "./contexts/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-
 import Grades from "./pages/Grades/Grades";
 import EditGrade from "./pages/Grades/EditGrade";
 import EditAssignment from "./pages/Assignments/EditAssignment";
