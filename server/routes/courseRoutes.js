@@ -10,7 +10,7 @@ const { ObjectId } = require("mongodb");
 const Course = require("../models/Course.js");
 const Student = require("../models/Student.js");
 const Schedule = require("../models/Schedule.js");
-
+const mongoose = require('mongoose');
 const router = express.Router();
 
 // Get all courses
@@ -33,22 +33,58 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//Create a new course
+// router.post("/", async (req, res) => {
+//   const { name, professor, schedules, startDate, endDate, assignments } =
+//     req.body;
+//   try {
+//     // Create a new course with the created schedule
+//     const newCourse = new Course({
+//       name,
+//       professor,
+//       schedules: [schedules], // Use the ID of the created schedule
+//       startDate,
+//       endDate,
+//       assignments,
+//     });
+
+//     await newCourse.save();
+//     res.status(201).json({
+//       message: "Course and schedule created successfully",
+//       course: newCourse,
+//     });
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// });
+
+
+
 // Create a new course
 router.post("/", async (req, res) => {
-  const { name, professor, schedules, startDate, endDate, assignments } =
-    req.body;
+  const { name, professor, schedule, startDate, endDate, assignments } = req.body;
+ 
   try {
+    // Create a new schedule
+    const newSchedule = new Schedule({
+      day: schedule[0].day,
+      startTime: schedule[0].startTime,
+      endTime: schedule[0].endTime
+    });
+    await newSchedule.save();
+    console.log('startDate->',startDate)
     // Create a new course with the created schedule
     const newCourse = new Course({
       name,
       professor,
-      schedules: [schedules], // Use the ID of the created schedule
+      schedules: [newSchedule], 
       startDate,
       endDate,
-      assignments,
+      assignments
     });
 
     await newCourse.save();
+    console.log('newCourse->',newCourse)
     res.status(201).json({
       message: "Course and schedule created successfully",
       course: newCourse,
@@ -57,6 +93,7 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 
 // Update a course
 router.patch("/:id", async (req, res) => {

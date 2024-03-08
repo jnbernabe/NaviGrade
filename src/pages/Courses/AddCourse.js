@@ -9,6 +9,9 @@ function AddCourse() {
     const [name, setName] = useState('');
     const [professor, setProfessor] = useState('');
     const [schedule, setSchedule] = useState({ day: '', startTime: '', endTime: '' });
+    const [day,setDay] =useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [assignment, setAssignment] = useState('');
     const navigate = useNavigate();
     const { getAuthToken } = useAuth();
@@ -18,25 +21,25 @@ function AddCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // try {
-        //     const data = {
-        //         name: name,
-        //         professor: professor,
-        //         assignment:assignment
-        //     };
-                
+        
+       
         try {
+            // Create a new schedule
             const data = {
-                name: name,
-                professor: professor,
-                schedules: [
-                   { schedule }
-                ],
-                assignment:assignment
+                name:name,
+                professor:professor,
+                schedule:[
+                    {day:schedule.day,
+                    startTime:schedule.startTime,
+                    endTime:schedule.endTime}],
+                startDate:'',
+                endDate:'',
+                assignments:[]
             };
-
+        
+           
             const response = await axios.post(`${apiKey}/courses/`, data);
-    
+
             if (response.status === 201) {
                 navigate('/courses');
             } else {
@@ -57,6 +60,7 @@ function AddCourse() {
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                         type="text"
+                        placeholder="Course Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
@@ -66,6 +70,7 @@ function AddCourse() {
                     <Form.Label>Professor</Form.Label>
                     <Form.Control
                         type="text"
+                        placeholder="Professor's Name"
                         value={professor}
                         onChange={(e) => setProfessor(e.target.value)}
                         required

@@ -43,19 +43,19 @@ const Courses = () => {
     //Otherwise, gives a conflict and make no sense when displaying assignments when course is not available
     // const confirmation = window.confirm('Are you sure you want to delete this grade?');
     // if (confirmation) {
-    //     try{
-    //         const response = await axios.delete(`http://localhost:5050/courses/${id}`);
-    //         if (response.status === 200) {
-    //             //Show lert if succeed
-    //             alert('Assignment deleted successfully.');
-    //             window.location.href = '/courses'
-    //         } else {
-    //             alert('Failed to delete grade.');
-    //         }
-    //     }catch{
-    //             console.error('Error:');
-    //             alert('Failed to delete grade.');
-    //     }
+        // try{
+        //     const response = await axios.delete(`http://localhost:5050/courses/${id}`);
+        //     if (response.status === 200) {
+        //         //Show lert if succeed
+        //         alert('Assignment deleted successfully.');
+        //         window.location.href = '/courses'
+        //     } else {
+        //         alert('Failed to delete grade.');
+        //     }
+        // }catch{
+        //         console.error('Error:');
+        //         alert('Failed to delete grade.');
+        // }
   };
 
   return (

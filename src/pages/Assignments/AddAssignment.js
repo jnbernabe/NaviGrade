@@ -38,7 +38,7 @@ function AddAssignment() {
 
       // Get student's data
       const studentResponse = await axios.get(`${apiKey}/students/${student}`);
-      console.log("student 98: ", { student });
+      ///console.log("student 98: ", { student });
       const studentData = studentResponse.data;
       // Update student's courses array with the new course
       const updatedStudentData = {
