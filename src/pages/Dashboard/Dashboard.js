@@ -52,6 +52,7 @@ const Dashboard = () => {
     }
   };
 
+  /* II wanted to add cards here so that it was consistent with the format of courses */
   return (
     <div className="dashboard-container mx-auto">
       <h2>Dashboard</h2>
@@ -68,7 +69,7 @@ const Dashboard = () => {
               <Card.Body>
                 <Card.Title>{assignment.name}</Card.Title>
                 <Card.Text>Due Date: {formatDateToMDYY(assignment.dueDate)}</Card.Text>
-                {/* Additional assignment details can be displayed here */}
+                
               </Card.Body>
             </Card>
           ))}
