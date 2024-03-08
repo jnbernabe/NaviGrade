@@ -1,5 +1,5 @@
 //Calendar.js
-import React from 'react';
+import React, {useState} from 'react';
 import { 
   Calendar as BigCalendar,
   dateFnsLocalizer,
@@ -10,6 +10,12 @@ import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import DatePicker from 'react-datepicker';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+
+//css files
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+require('./Calendar.css')
 
 
 const locales = {
@@ -30,7 +36,18 @@ const getDayOfWeek = day => {
 
 const MyCalendar = ({ courses , assignments}) => {
   // Map course schedules to events
-  console.log('Courses:', courses);
+  //console.log('Courses:', courses);
+
+  //event handler for clicking events 
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const handleEventClick = event => {
+    // Set the selected event when an event item is clicked
+    setSelectedEvent(event);
+  };
+  const handleCloseModal = event => {
+    setSelectedEvent(null);
+  };
+
   let events = [];
   
     events = courses.flatMap(course => {
@@ -73,7 +90,7 @@ const MyCalendar = ({ courses , assignments}) => {
     return courseEvents;
   });
 
-  console.log('Assignments:', assignments.dueDate);
+  //console.log('Assignments:', assignments.dueDate);
   // Add events for assignments
   if (assignments) {
     events = events.concat(
@@ -87,6 +104,7 @@ const MyCalendar = ({ courses , assignments}) => {
     );
   }
 
+
   return (
     <div style={{height: "600px"}}>
     <BigCalendar 
@@ -95,7 +113,25 @@ const MyCalendar = ({ courses , assignments}) => {
       events={events} 
       startAccessor={(event) => new Date(event.start)} 
       endAccessor={(event) => new Date(event.end)} 
-      locales={locales}/>
+      locales={locales}
+      onSelectEvent={handleEventClick} // Handle click event on event items
+      />
+      {selectedEvent && (
+        <Modal show={true} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedEvent.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Start: {selectedEvent.start.toString()}</p>
+            <p>End: {selectedEvent.end.toString()}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -4,14 +4,15 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import { setDate } from 'date-fns';
 
 function AddCourse() {
     const [name, setName] = useState('');
     const [professor, setProfessor] = useState('');
     const [schedule, setSchedule] = useState({ day: '', startTime: '', endTime: '' });
-    const [day,setDay] =useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    //const [day,setDay] =useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [assignment, setAssignment] = useState('');
     const navigate = useNavigate();
     const { getAuthToken } = useAuth();
@@ -73,6 +74,24 @@ function AddCourse() {
                         placeholder="Professor's Name"
                         value={professor}
                         onChange={(e) => setProfessor(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Start Date</Form.Label>
+                    <Form.Control
+                        type="Date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>End Date</Form.Label>
+                    <Form.Control
+                        type="Date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
                         required
                     />
                 </Form.Group>
