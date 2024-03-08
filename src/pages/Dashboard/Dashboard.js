@@ -13,10 +13,12 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
+  const [studentName, setStudentName] = useState('');
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchAssignments();
+    fetchUserName();
   }, []);
 
   const formatDateToMDYY = (dateString) => {
@@ -51,15 +53,26 @@ const Dashboard = () => {
       console.error("Error:", error);
     }
   };
+  const fetchUserName = async () =>{
+    try{
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(`${apiKey}/userinfo`);
+      const fetchedUserId = response.data.user.userId;
+      //console.log('fetchedUserId',fetchedUserId)
 
-  /* II wanted to add cards here so that it was consistent with the format of courses */
+      const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+      const studentFirstName = studentResponse.data.firstName;
+      setStudentName(studentFirstName);
+      //console.log('studentName',studentFirstName);
+    }catch(error){
+      console.error("Error:", error);
+    }
+  }
+
   return (
     <div className="dashboard-container mx-auto">
-      <h2>Dashboard</h2>
-      <Link to="/addassignment">
-        <Button variant="primary">Add Assignment</Button>
-      </Link>
-  
+      <h2 className="display-5">{studentName}'s Dashboard </h2>
+      <Button variant="primary">Add Assignment</Button>
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (

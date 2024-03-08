@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
-import Card from "react-bootstrap/Card";
+//UI popup
+import Modal from 'react-bootstrap/Modal';
 
 
 const Assignments = () => {
@@ -12,6 +13,10 @@ const Assignments = () => {
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const [studentName, setStudentName] = useState('');
+
+  //UI popup
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
 
   useEffect(() => {
     fetchAssignments();
@@ -70,16 +75,22 @@ const Assignments = () => {
     return `${month}/${day}/${year}`;
   };
 
+  //UI popup
+  const handleCloseConfirmation = () => setShowConfirmation(false);
+  //UI popup
+  const handleShowConfirmation = (id) => {
+  setAssignmentIdToDelete(id);
+  setShowConfirmation(true);
+  };
+
   const deleteAssignment = async (id) => {
-    const confirmation = window.confirm(
-      "Are you sure you want to delete this grade?"
-    );
-    if (confirmation) {
+ 
       try {
         const apikey = process.env.REACT_APP_API_KEY;
         const response = await axios.delete(`${apikey}/assignments/${id}`);
+        //TODO: need to delete from student assignments[]
         if (response.status === 200) {
-          //Show lert if succeed
+          //Show alert if succeed
           //alert('Assignment deleted successfully.');
           window.location.href = "/assignments";
         } else {
@@ -89,7 +100,7 @@ const Assignments = () => {
         console.error("Error:");
         alert("Failed to delete grade.");
       }
-    }
+    
   };
 
   /*return (
@@ -110,12 +121,29 @@ const Assignments = () => {
               <p>
                 <Link to={`/editassignment/${assignment._id}`}>Edit</Link>
               </p>
-              <Button
+              <Modal show={showConfirmation} onHide={handleCloseConfirmation}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Are you sure you want to delete this grade?</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseConfirmation}>
+                  Cancel
+                </Button>
+                <Button variant="primary" onClick={() => deleteAssignment(assignmentIdToDelete)}>
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+              {/* <Button
                 variant="danger"
                 onClick={() => deleteAssignment(assignment._id)}
               >
                 Delete this assignment
-              </Button>
+              </Button> */}
+              <Button variant="danger" onClick={() => handleShowConfirmation(assignment._id)}>Delete</Button>
+
             </div>
           </li>
         ))}

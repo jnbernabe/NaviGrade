@@ -27,16 +27,16 @@ const Courses = () => {
     }
   };
 
-  //Format Due Date - Don't need this atm
-  // const formatDateToMDYY = (dateString) => {
-  //   const date = new Date(dateString);
-  //   const month = date.getMonth() + 1;
-  //   const day = date.getDate();
-  //   const year = date.getFullYear().toString().substr(-2); //cut first 2 digits of the year 2024->24
-  //   const hours = date.getHours();
-  //   const minutes = date.getMinutes().toString().padStart(2, "0"); // add leading zero if minutes < 10
-  //   return `${month}/${day}/${year} ${hours}:${minutes}`;
-  // };
+  //Format Due Date 
+  const formatDateToMDYY = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear().toString().substr(-2); //cut first 2 digits of the year 2024->24
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0"); // add leading zero if minutes < 10
+    return `${month}/${day}/${year} ${hours}:${minutes}`;
+  };
 
   const deleteCourse = async (id) => {
     //******************Only admin should be able to delete course?************
@@ -91,9 +91,9 @@ const Courses = () => {
                 <ul>End: {course.schedules[0]!=null? course.schedules[0].endTime:'TBD'} </ul>
               </Card.Text>
 
-              <Button variant="danger" onClick={() => deleteCourse(course._id)}>
+              {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
                 Delete this course
-              </Button>
+              </Button> */}
             </Card.Body>
           </Card>
         ))}
