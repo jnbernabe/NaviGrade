@@ -1,7 +1,7 @@
 .assignments-container {
   text-align: center;
   padding: 50px;
-  background-color: rgba(230, 243, 195, 0.274);
+  height: 100vh;
 }
 
 h2 {
@@ -26,4 +26,12 @@ h3 {
 
 p {
   margin: 10px 0;
+}
+
+.assignment-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }

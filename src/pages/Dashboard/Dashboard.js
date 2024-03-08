@@ -1,11 +1,14 @@
 // Dashboard.js
 
 import React from "react";
-import { Button } from "react-bootstrap";
-import { fetchAssignments } from "../../services/dataFetcher";
+import { Button, ListGroupItem } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Card from "react-bootstrap/Card";
 import { useAuth } from "../../contexts/AuthContext";
+import ListGroup from "react-bootstrap/ListGroup";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
@@ -49,25 +52,28 @@ const Dashboard = () => {
     }
   };
 
+  /* II wanted to add cards here so that it was consistent with the format of courses */
   return (
     <div className="dashboard-container mx-auto">
       <h2>Dashboard</h2>
-      <Button variant="primary">Add Assignment</Button>
-
+      <Link to="/addassignment">
+        <Button variant="primary">Add Assignment</Button>
+      </Link>
+  
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
-        <ul className="list-group mt-3">
+        <div className="assignment-list">
           {assignments.map((assignment) => (
-            <li key={assignment._id} className="list-group-item">
-              <h3>{assignment.name}</h3>
-              <p className="mb-1">
-                Due Date: {formatDateToMDYY(assignment.dueDate)}
-              </p>
-              {/* Additional assignment details can be displayed here */}
-            </li>
+            <Card key={assignment._id} className="assignment-card">
+              <Card.Body>
+                <Card.Title>{assignment.name}</Card.Title>
+                <Card.Text>Due Date: {formatDateToMDYY(assignment.dueDate)}</Card.Text>
+                
+              </Card.Body>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

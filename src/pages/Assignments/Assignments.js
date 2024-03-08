@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./assignments.css";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import { useHistory } from 'react-router-dom';
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
@@ -73,7 +75,7 @@ const Assignments = () => {
     }
   };
 
-  return (
+  /*return (
     <div className="assignments-container">
       <h2>Upcoming Assignments</h2>
       <Link to="/addassignment">
@@ -102,6 +104,42 @@ const Assignments = () => {
       </ul>
     </div>
   );
-};
+};*/
+
+/* II wanted to add cards here so that it was consistent with the format of courses */
+return (
+  <div className="assignments-container">
+    <h2>Upcoming Assignments</h2>
+    <Link to="/addassignment">
+      <Button>Add</Button>
+    </Link>
+    <div className="assignment-list">
+      {assignments.map((assignment) => (
+        <Card key={assignment._id} className="assignment-card">
+          <Card.Body>
+            <Card.Title>{assignment.name}</Card.Title>
+            <Card.Text>Course Name: {assignment.course}</Card.Text>
+            <Card.Text>Due Date: {formatDateToMDYY(assignment.dueDate)}</Card.Text>
+            <Card.Text>Weight: {assignment.weight}</Card.Text>
+        
+            <Button 
+              variant="primary"style={{ height: '40px' }}>
+              <Link to={`/editassignment/${assignment._id}`}style={{ color: 'white'}}>Edit</Link>
+            </Button>
+
+            <Button
+              variant="danger" style ={{height: '40px'}}
+              onClick={() => deleteAssignment(assignment._id)}
+            >
+              Delete this assignment
+            </Button>
+            
+          </Card.Body>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+}
 
 export default Assignments;

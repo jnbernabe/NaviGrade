@@ -16,12 +16,11 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     //console.log("headers",req.headers)
-    await Assignment.find({})
-      .exec()
-      .then((data) => {
-        //console.log(data);
-        res.json(data);
-      });
+    const assignments = await Assignment.find();
+    if (assignments.length === 0) {
+      return res.status(404).json({ message: "No assignments found" });
+    }
+    res.status(201).json(assignments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -31,6 +30,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
     res.json(assignment);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -110,22 +112,17 @@ router.post("/add-assignment", async (req, res) => {
 
   try {
     // Check if the course exists
-    const course = await Course.findById(courseId)
-      .exec()
-      .catch((error) => {
-        console.error("Error finding course:", error.message);
-        return res.status(400).json({ message: "Course not found" });
-      });
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
     // Check if the student exists
-    const student = await Student.findById(studentId)
-      .exec()
-      .catch((error) => {
-        console.error("Error finding student:", error.message);
-        return res
-          .status(400)
-          .json({ message: `Student with ID ${studentId} not found` });
-      });
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
     // Check if the student is enrolled in the course
     if (!student.courses.includes(courseId.toString())) {
@@ -145,19 +142,12 @@ router.post("/add-assignment", async (req, res) => {
     course.assignments.push(assignment);
     student.assignments.push(assignment);
 
-    await assignment.save().catch((error) => {
-      console.error("Error saving assignment:", error.message);
-    });
-    await student.save().catch((error) => {
-      console.error("Error saving student:", error.message);
-    });
-    await course.save().catch((error) => {
-      console.error("Error saving course:", error.message);
-    });
+    await assignment.save();
+    await student.save();
+    await course.save();
 
     return res.status(201).json({
       message: "Assignment added successfully",
-      assignment: assignment._id,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -198,6 +188,26 @@ router.post("/:assignmentId/add-grade", async (req, res) => {
     await assignment.save();
 
     res.status(201).json({ message: "Grade added or updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Delete all assignments of a student
+router.delete("/student/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    // Check if the student exists
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Delete all assignments associated with the student
+    await Assignment.deleteMany({ student: studentId });
+
+    res.json({ message: "All assignments deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

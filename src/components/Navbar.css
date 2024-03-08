@@ -1,29 +1,23 @@
-/* Navbar.css */
-
-.navbar-brand-container {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-brand {
-  margin-right: 10px;
-}
-
 .logo {
   width: 80px;
   height: auto;
   margin-left: 10px;
   margin-right: 10px;
 }
-
-.navbar-nav .logout-button {
-  background-color: rgba(27, 123, 129, 0.678) !important;
-  color: #fff;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
+.navbar {
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
-
-.navbar-nav .logout-button:hover {
-  background-color: #196869 !important;
+nav-link {
+  color: #299193;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 0 10px;
 }
