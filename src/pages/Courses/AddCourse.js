@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function AddCourse() {
     const [name, setName] = useState('');
@@ -13,6 +15,8 @@ function AddCourse() {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [assignment, setAssignment] = useState('');
+    const [startDate, setstartDate] = useState(new Date());
+    const [endDate, setendDate] = useState(new Date());
     const navigate = useNavigate();
     const { getAuthToken } = useAuth();
     axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
@@ -32,8 +36,8 @@ function AddCourse() {
                     {day:schedule.day,
                     startTime:schedule.startTime,
                     endTime:schedule.endTime}],
-                startDate:'',
-                endDate:'',
+                startDate:startDate.toISOString(),
+                endDate:endDate.toISOString(),
                 assignments:[]
             };
         
@@ -109,6 +113,25 @@ function AddCourse() {
                         required
                     />
                 </Form.Group> */}
+
+                    <Form.Group>
+                    <Form.Label>Start Date</Form.Label>
+                    <div></div>
+                    <DatePicker
+                        selected={startDate}
+                        onChange={(date)=>setstartDate(date)}
+                    />
+                
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>End Date</Form.Label>
+                    <div></div>
+                    <DatePicker
+                        selected={endDate}
+                        onChange={(date)=>setendDate(date)}
+                    />
+                
+                </Form.Group>
 
                 <Button variant="primary" type="submit">
                     Save
