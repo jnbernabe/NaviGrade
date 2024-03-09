@@ -72,7 +72,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container mx-auto">
       <h2 className="display-5">{studentName}'s Dashboard </h2>
-      <Button variant="primary">Add Assignment</Button>
+      {/*<Button variant="primary">Add Assignment</Button>*/}
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
