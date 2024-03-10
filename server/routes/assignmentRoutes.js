@@ -1,7 +1,5 @@
 // routes/assignmentRoutes.js
-
 // import express from "express";
-
 // import { ObjectId } from "mongodb";
 // import Assignment from "../models/Assignment.js";
 
