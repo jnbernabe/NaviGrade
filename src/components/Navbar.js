@@ -3,13 +3,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar as BootstrapNavbar, Nav, Container } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth, AuthProvider } from "../contexts/AuthContext";
+import { useEffect } from "react";
 
 import "./Navbar.css";
 import logoImage from "../images/back.jpg";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, userDetails } = useAuth(AuthProvider);
 
   return (
     <BootstrapNavbar
@@ -68,6 +69,9 @@ const Navbar = () => {
             )}
           </Nav>
         </BootstrapNavbar.Collapse>
+        <BootstrapNavbar.Text className="text-white">
+          {userDetails ? `Welcome, ${JSON.parse(userDetails).Fname}` : " "}
+        </BootstrapNavbar.Text>
       </Container>
     </BootstrapNavbar>
   );

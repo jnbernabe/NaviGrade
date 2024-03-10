@@ -11,7 +11,6 @@ const Courses = () => {
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
-  console.log('Token ', getAuthToken());
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -27,7 +26,7 @@ const Courses = () => {
     }
   };
 
-  //Format Due Date 
+  //Format Due Date
   const formatDateToMDYY = (dateString) => {
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
@@ -43,19 +42,19 @@ const Courses = () => {
     //Otherwise, gives a conflict and make no sense when displaying assignments when course is not available
     // const confirmation = window.confirm('Are you sure you want to delete this grade?');
     // if (confirmation) {
-        // try{
-        //     const response = await axios.delete(`http://localhost:5050/courses/${id}`);
-        //     if (response.status === 200) {
-        //         //Show lert if succeed
-        //         alert('Assignment deleted successfully.');
-        //         window.location.href = '/courses'
-        //     } else {
-        //         alert('Failed to delete grade.');
-        //     }
-        // }catch{
-        //         console.error('Error:');
-        //         alert('Failed to delete grade.');
-        // }
+    // try{
+    //     const response = await axios.delete(`http://localhost:5050/courses/${id}`);
+    //     if (response.status === 200) {
+    //         //Show lert if succeed
+    //         alert('Assignment deleted successfully.');
+    //         window.location.href = '/courses'
+    //     } else {
+    //         alert('Failed to delete grade.');
+    //     }
+    // }catch{
+    //         console.error('Error:');
+    //         alert('Failed to delete grade.');
+    // }
   };
 
   return (
@@ -86,9 +85,23 @@ const Courses = () => {
               <Card.Text>
                 {/* Schedule: {formatDateToMDYY(course.schedule)} */}
                 <h5>Schedule: </h5>
-                <ul>{course.schedules[0]!=null? course.schedules[0].day:'TBD'} </ul>
-                <ul>Start: {course.schedules[0]!=null? course.schedules[0].startTime:'TBD'} </ul>
-                <ul>End: {course.schedules[0]!=null? course.schedules[0].endTime:'TBD'} </ul>
+                <ul>
+                  {course.schedules[0] != null
+                    ? course.schedules[0].day
+                    : "TBD"}{" "}
+                </ul>
+                <ul>
+                  Start:{" "}
+                  {course.schedules[0] != null
+                    ? course.schedules[0].startTime
+                    : "TBD"}{" "}
+                </ul>
+                <ul>
+                  End:{" "}
+                  {course.schedules[0] != null
+                    ? course.schedules[0].endTime
+                    : "TBD"}{" "}
+                </ul>
               </Card.Text>
 
               {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
