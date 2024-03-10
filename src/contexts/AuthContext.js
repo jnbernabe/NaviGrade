@@ -1,21 +1,28 @@
 // src/contexts/AuthContext.js
-import React, { createContext, useContext, useState } from "react";
+import { check } from "express-validator";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 const checkState = localStorage.getItem("token") ? true : false;
+const checkUserState = localStorage.getItem("user")
+  ? localStorage.getItem("user")
+  : null;
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(checkState);
+  const [userDetails, setUserDetails] = useState(checkUserState);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const TOKEN_KEY = "token";
+  const USER_KEY = "user";
 
   // Function to set the authentication token in localStorage
-  const setAuthToken = (token) => {
+  const setAuthToken = (token, user) => {
     localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, user);
   };
 
   // Function to get the authentication token from localStorage
@@ -26,10 +33,29 @@ const AuthProvider = ({ children }) => {
     return localStorage.getItem(TOKEN_KEY);
   };
 
+  const getUserDetails = () => {
+    if (!localStorage.getItem(USER_KEY)) {
+      return null;
+    }
+    return localStorage.getItem(USER_KEY);
+  };
+
   // Function to remove the authentication token from localStorage
   const removeAuthToken = () => {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   };
+
+  // useEffect(() => {
+  //   if (checkState) {
+  //     const userDetails = getUserDetails();
+  //     setUser(checkState);
+  //     setUserDetails(userDetails);
+  //     console.log(user, userDetails);
+  //   }
+  //   setUser(null);
+  //   setUserDetails(null);
+  // }, []);
 
   const signout = async () => {
     try {
@@ -44,12 +70,13 @@ const AuthProvider = ({ children }) => {
         },
         // Include any necessary authentication tokens or credentials
       });
-  
+
       // Assuming a successful logout, redirect to the home page or login page
       if (response.ok) {
         // Remove both access and refresh tokens
         removeAuthToken();
         setUser(null);
+        setUserDetails(null);
         navigate("/");
       }
     } catch (error) {
@@ -73,8 +100,10 @@ const AuthProvider = ({ children }) => {
       console.log("Response data:", responseData);
       if (response.ok) {
         console.log("Signup successful. User data:", responseData);
-        setAuthToken(responseData.token);
-        setUser(responseData);
+        const userjson = JSON.stringify(responseData.user);
+        setAuthToken(responseData.token, userjson);
+        setUser(responseData.user);
+        setUserDetails(userjson);
         navigate("/home");
         return true;
       } else {
@@ -94,13 +123,15 @@ const AuthProvider = ({ children }) => {
     try {
       // // Obtain the token from localStorage
       const token = getAuthToken();
-  
+
       // Check if the user is already authenticated
       if (token !== null) {
-        console.error("User is already logged in. Please log out to switch accounts.");
+        console.error(
+          "User is already logged in. Please log out to switch accounts."
+        );
         return false;
       }
-  
+
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await fetch(`${apiKey}/users/login`, {
         method: "POST",
@@ -109,32 +140,37 @@ const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log("Sign in successful. User data:", data);
-        
         // Set both access and refresh tokens
-        setAuthToken(data.token);
-        setUser(data);
+        const userjson = JSON.stringify(data.user);
+        setAuthToken(data.token, userjson);
+        setUser(data.token);
+        setUserDetails(userjson);
         navigate("/home");
         return true;
       } else {
-        console.error("Login failed. Please check your credentials." + response.statusText);
+        console.error(
+          "Login failed. Please check your credentials." + response.statusText
+        );
       }
-  
+
       return response.ok;
     } catch (error) {
       console.error("Error during signin:", error);
       return false;
     }
   };
-  
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        userDetails,
+        setUser,
+        setUserDetails,
         signout,
         signup,
         signin,
