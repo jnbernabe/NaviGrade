@@ -34,7 +34,7 @@ function App() {
               <Route path="/courses" element={<Courses />} />
               <Route path="/assignments" element={<Assignments />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
+
               <Route path="/grades" element={<Grades />} />
               <Route
                 path="/calendar"
@@ -56,27 +56,28 @@ function App() {
             </>
           ) : (
             <Route path="authentication/*" element={<AuthenticationPage />} />
-            )}
-  
-            {/* Make Home the default page */}
-            <Route path="/" element={<Home />} />
-  
-            {user && (
-              <>
-                {/* ... (other routes for authenticated users) */}
-                <Route path="/calendar" element={<CalendarContainer />} />
-                <Route path="/editgrade/:id" element={<EditGrade />} />
-                <Route path="/editassignment/:id" element={<EditAssignment />} />
-                <Route path="/addassignment" element={<AddAssignment />} />
-                <Route path="/viewcourse/:id" element={<ViewCourse />} />
-                <Route path="/addcourse" element={<AddCourse />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-              </>
-            )}
-          </Routes>
-        </Container>
-      </>
-    );
-  }
-  
-  export default App;
+          )}
+
+          {/* Make Home the default page */}
+          <Route path="/" element={<Home />} />
+          <Route path="/logout" element={<Logout />} />
+
+          {user && (
+            <>
+              {/* ... (other routes for authenticated users) */}
+              <Route path="/calendar" element={<CalendarContainer />} />
+              <Route path="/editgrade/:id" element={<EditGrade />} />
+              <Route path="/editassignment/:id" element={<EditAssignment />} />
+              <Route path="/addassignment" element={<AddAssignment />} />
+              <Route path="/viewcourse/:id" element={<ViewCourse />} />
+              <Route path="/addcourse" element={<AddCourse />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </>
+          )}
+        </Routes>
+      </Container>
+    </>
+  );
+}
+
+export default App;

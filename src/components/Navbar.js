@@ -30,10 +30,15 @@ const Navbar = () => {
         <BootstrapNavbar.Toggle aria-controls="navbarNav" />
 
         <BootstrapNavbar.Collapse id="navbarNav">
-          <Nav className="ml-auto w-100">
+          <Nav className="ml-auto w-100" bsPrefix>
             {user ? (
               <>
-                <Nav.Link as={Link} to="/dashboard" className="nav-link">
+                <Nav.Link
+                  as={Link}
+                  to="/dashboard"
+                  className="nav-link"
+                  bsPrefix
+                >
                   Dashboard
                 </Nav.Link>
                 <Nav.Link as={Link} to="/courses" className="nav-link">

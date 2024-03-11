@@ -4,11 +4,12 @@ import "./courses.css";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const { getAuthToken } = useAuth();
+  const { user, userDetails } = useAuth(AuthProvider);
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const Courses = () => {
 
   return (
     <div className="courses-container">
-      <h2>Available Courses</h2>
+      <h2 className="display-5">Available Courses</h2>
       <Link to="/addcourse">
         <Button variant="primary">Add Course</Button>
       </Link>
@@ -76,6 +77,7 @@ const Courses = () => {
             key={course._id}
             className="course-card"
             style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
+            bsPrefix
           >
             <Card.Img variant="top" src={course.image} />{" "}
             {/* Add this line if you have images */}
