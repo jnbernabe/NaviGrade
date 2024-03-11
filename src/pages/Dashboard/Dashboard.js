@@ -1,20 +1,22 @@
 // Dashboard.js
 
 import React from "react";
-import { Button, ListGroupItem } from "react-bootstrap";
-import { Link } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Card from "react-bootstrap/Card";
-import { useAuth } from "../../contexts/AuthContext";
-import ListGroup from "react-bootstrap/ListGroup";
-import "./Dashboard.css";
+import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 
+import "./Dashboard.css";
+///eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWUxMWY2MzQyZmRjMzQzODZiNzk1MTAiLCJpYXQiOjE3MTAxMTYxOTAsImV4cCI6MTcxMDExOTc5MH0.Xhp8W-B-7VekpbVF0sFx0PL8lliy2-YyEChXGeATV9c
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
-  const [studentName, setStudentName] = useState('');
+  const [studentName, setStudentName] = useState("");
+  const { user, userDetails } = useAuth(AuthProvider);
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
+
+  const parsedUser = JSON.parse(userDetails);
 
   useEffect(() => {
     fetchAssignments();
@@ -53,36 +55,39 @@ const Dashboard = () => {
       console.error("Error:", error);
     }
   };
-  const fetchUserName = async () =>{
-    try{
+  const fetchUserName = async () => {
+    try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(`${apiKey}/userinfo`);
       const fetchedUserId = response.data.user.userId;
       //console.log('fetchedUserId',fetchedUserId)
 
-      const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+      const studentResponse = await axios.get(
+        `${apiKey}/students/${fetchedUserId}`
+      );
       const studentFirstName = studentResponse.data.firstName;
       setStudentName(studentFirstName);
       //console.log('studentName',studentFirstName);
-    }catch(error){
+    } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   return (
     <div className="dashboard-container mx-auto">
-      <h2 className="display-5">{studentName}'s Dashboard </h2>
+      <h2 className="display-5">{parsedUser.Fname}'s Dashboard </h2>
       {/*<Button variant="primary">Add Assignment</Button>*/}
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
         <div className="assignment-list">
           {assignments.map((assignment) => (
-            <Card key={assignment._id} className="assignment-card">
+            <Card key={assignment._id} className="assignment-card" bsPrefix>
               <Card.Body>
                 <Card.Title>{assignment.name}</Card.Title>
-                <Card.Text>Due Date: {formatDateToMDYY(assignment.dueDate)}</Card.Text>
-                
+                <Card.Text>
+                  Due Date: {formatDateToMDYY(assignment.dueDate)}
+                </Card.Text>
               </Card.Body>
             </Card>
           ))}

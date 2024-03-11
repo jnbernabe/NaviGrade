@@ -193,6 +193,31 @@ router.post("/:assignmentId/add-grade", async (req, res) => {
   }
 });
 
+// Get all assignments of a student
+router.get("/student/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    // Check if the student exists
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Get all assignments associated with the student
+    const assignments = await Assignment.find({ student: studentId });
+    if (assignments.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No assignments found for the student" });
+    }
+
+    res.status(200).json(assignments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Delete all assignments of a student
 router.delete("/student/:studentId", async (req, res) => {
   try {

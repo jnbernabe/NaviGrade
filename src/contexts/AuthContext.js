@@ -1,7 +1,8 @@
 // src/contexts/AuthContext.js
-import { check } from "express-validator";
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
@@ -56,6 +57,17 @@ const AuthProvider = ({ children }) => {
   //   setUser(null);
   //   setUserDetails(null);
   // }, []);
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        signout();
+      }
+    }
+  }, []);
 
   const signout = async () => {
     try {
@@ -187,6 +199,7 @@ const AuthProvider = ({ children }) => {
 
 const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
