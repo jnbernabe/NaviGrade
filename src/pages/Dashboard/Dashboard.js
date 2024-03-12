@@ -12,14 +12,6 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
-  const [studentName, setStudentName] = useState("");
-  const [studentCourses, setStudentCourses] = useState([]);
-  const [studentAssignments, setStudentAssignments] = useState([]);
-
-  const [studentCoursesName, setStudentCoursesName] = useState([]);
-  const [studentAssignmentsName, setStudentAssignmentsName] = useState([]);
-  const [assignmentDueDates, setAssignmentDueDates] = useState([]);
-
   const { user, userDetails } = useAuth(AuthProvider);
 
   const userInfo = JSON.parse(userDetails);
@@ -86,7 +78,7 @@ const Dashboard = () => {
     // </div>
 
     <div className="dashboard-container mx-auto">
-      <h3 className="display-5"> Dashboard for {studentName} </h3>
+      <h3 className="display-5"> Dashboard for {userInfo.Fname} </h3>
 
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>
