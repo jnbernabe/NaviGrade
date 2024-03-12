@@ -212,7 +212,7 @@ const Dashboard = () => {
           <p>Assignments</p>
 
           {studentAssignmentsName.map((assignment, index) => (
-            <Card key={index} className="assignment-card">
+            <Card key={index} className="assignment-card" bsPrefix>
               <Card.Body>
                 <Card.Title>{assignment}</Card.Title>
                 <Card.Text>
