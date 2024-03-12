@@ -10,7 +10,7 @@ const { ObjectId } = require("mongodb");
 const Course = require("../models/Course.js");
 const Student = require("../models/Student.js");
 const Schedule = require("../models/Schedule.js");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const router = express.Router();
 
 // Get all courses
@@ -58,33 +58,32 @@ router.get("/:id", async (req, res) => {
 //   }
 // });
 
-
-
 // Create a new course
 router.post("/", async (req, res) => {
-  const { name, professor, schedule, startDate, endDate, assignments } = req.body;
- 
+  const { name, professor, schedule, startDate, endDate, assignments } =
+    req.body;
+
   try {
     // Create a new schedule
     const newSchedule = new Schedule({
       day: schedule[0].day,
       startTime: schedule[0].startTime,
-      endTime: schedule[0].endTime
+      endTime: schedule[0].endTime,
     });
     await newSchedule.save();
-    console.log('startDate->',startDate)
+    console.log("startDate->", startDate);
     // Create a new course with the created schedule
     const newCourse = new Course({
       name,
       professor,
-      schedules: [newSchedule], 
+      schedules: [newSchedule],
       startDate,
       endDate,
-      assignments
+      assignments,
     });
 
     await newCourse.save();
-    console.log('newCourse->',newCourse)
+    console.log("newCourse->", newCourse);
     res.status(201).json({
       message: "Course and schedule created successfully",
       course: newCourse,
@@ -93,7 +92,6 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
 
 // Update a course
 router.patch("/:id", async (req, res) => {
@@ -173,7 +171,7 @@ router.post("/:studentid/add-course", async (req, res) => {
 
     // Save the updated student to the database
     const updatedStudent = await student.save();
-    //console.log("Student course Added");
+    console.log("Student course Added");
     res.status(201).json("Course added to student successfully");
   } catch (error) {
     console.log("Error adding course to student", error);

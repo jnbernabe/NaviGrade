@@ -11,22 +11,25 @@ const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const { getAuthToken } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
-  const [studentName, setStudentName] = useState("");
+  //const [studentName, setStudentName] = useState("");
   const { user, userDetails } = useAuth(AuthProvider);
   //UI popup
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
 
+  const userInfo = JSON.parse(userDetails);
   useEffect(() => {
     fetchAssignments();
-    fetchUserName();
+    //fetchUserName();
   }, []);
 
   const fetchAssignments = async () => {
     //Would be nice to add error handling if a course is not available.
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/assignments`);
+      const response = await axios.get(
+        `${apiKey}/assignments/student/${userInfo.id}`
+      );
       const fetchedAssignments = response.data;
 
       // Fetch course names for each assignment
@@ -47,23 +50,23 @@ const Assignments = () => {
     }
   };
 
-  const fetchUserName = async () => {
-    try {
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/userinfo`);
-      const fetchedUserId = response.data.user.userId;
-      //console.log('fetchedUserId',fetchedUserId)
+  // const fetchUserName = async () => {
+  //   try {
+  //     const apiKey = process.env.REACT_APP_API_KEY;
+  //     const response = await axios.get(`${apiKey}/userinfo`);
+  //     const fetchedUserId = response.data.user.userId;
+  //     //console.log('fetchedUserId',fetchedUserId)
 
-      const studentResponse = await axios.get(
-        `${apiKey}/students/${fetchedUserId}`
-      );
-      const studentFirstName = studentResponse.data.firstName;
-      setStudentName(studentFirstName);
-      //console.log("studentName", studentFirstName);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  //     const studentResponse = await axios.get(
+  //       `${apiKey}/students/${fetchedUserId}`
+  //     );
+  //     const studentFirstName = studentResponse.data.firstName;
+  //     setStudentName(studentFirstName);
+  //     //console.log("studentName", studentFirstName);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   //console.log('assignments',assignments); //null
 
@@ -104,7 +107,7 @@ const Assignments = () => {
 
   return (
     <div className="assignments-container">
-      <h2>Upcoming Assignments for {studentName}</h2>
+      <h2>Upcoming Assignments for {userInfo.Fname}</h2>
       <Link to="/addassignment">
         <Button>Add</Button>
       </Link>
