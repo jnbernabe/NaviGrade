@@ -50,7 +50,7 @@ router.get("/:id", async (req, res) => {
 // });
 
 // Get all courses for a specific student
-router.get("/student/:studentid/courses", async (req, res) => {
+router.get("/student/:studentid/", async (req, res) => {
   try {
     const { studentid } = req.params;
     const student = await Student.findById(studentid).populate("courses");

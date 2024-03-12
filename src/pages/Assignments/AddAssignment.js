@@ -62,13 +62,6 @@ function AddAssignment() {
           console.error("Error adding course to student:", error.message);
         });
 
-      // // Update  student's data
-      // await axios
-      //   .patch(`${apiKey}/students/${studentId}`, updatedStudentData)
-      //   .catch((error) => {
-      //     console.error("Error updating student:", error.message);
-      //   });
-
       //Send POST request to add new assignment
       const response = await axios.post(
         `${apiKey}/assignments/add-assignment`,
@@ -95,45 +88,16 @@ function AddAssignment() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${apiKey}/courses`);
+        const response = await axios.get(
+          `${apiKey}/courses/student/${userInfo.id}`
+        );
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
     };
+    fetchCourses();
   }, []);
-
-  // const fetchStudents = async () => {
-  //   try {
-  //     const response = await axios.get(`${apiKey}/students`);
-  //     setStudents(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching students:", error);
-  //   }
-  // };
-
-  //   const fetchUserName = async () => {
-  //     try {
-  //       const apiKey = process.env.REACT_APP_API_KEY;
-  //       const response = await axios.get(`${apiKey}/userinfo`);
-  //       const fetchedUserId = response.data.user.userId;
-  //       //console.log('fetchedUserId',fetchedUserId)
-  //       setStudentId(fetchedUserId);
-  //       //console.log('fetchedUserId type:', typeof({studentId}));
-  //       const studentResponse = await axios.get(
-  //         `${apiKey}/students/${fetchedUserId}`
-  //       );
-  //       const studentFirstName = studentResponse.data.firstName;
-  //       setStudentName(studentFirstName);
-  //       //console.log('studentName',studentFirstName);
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     }
-  //   };
-  //   fetchCourses();
-  //   //fetchStudents();
-  //   fetchUserName();
-  // }, []);
 
   return (
     <div className="assignments-container">

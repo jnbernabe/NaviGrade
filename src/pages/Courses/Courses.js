@@ -10,6 +10,8 @@ const Courses = () => {
   const [courses, setCourses] = useState([]);
   const { getAuthToken } = useAuth();
   const { user, userDetails } = useAuth(AuthProvider);
+
+  const userInfo = JSON.parse(userDetails);
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
@@ -19,7 +21,9 @@ const Courses = () => {
   const fetchCourses = async () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/courses`);
+      const response = await axios.get(
+        `${apiKey}/courses/student/${userInfo.id}`
+      );
       const fetchedCourses = response.data;
       setCourses(fetchedCourses);
     } catch (error) {
