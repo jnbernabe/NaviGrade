@@ -108,7 +108,7 @@ router.delete("/:id", async (req, res) => {
 
 // Route to add an assignment
 router.post("/add-assignment", async (req, res) => {
-  const { name, dueDate, courseId, weight, studentId } = req.body;
+  const { name, dueDate, courseId, weight, studentId, grade } = req.body;
 
   try {
     // Check if the course exists
@@ -138,6 +138,7 @@ router.post("/add-assignment", async (req, res) => {
       course: courseId,
       weight: weight || 1, // Default weight is set to 1 if not provided
       student: studentId,
+      grade: grade || 0,
     });
     course.assignments.push(assignment);
     student.assignments.push(assignment);
