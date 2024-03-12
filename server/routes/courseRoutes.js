@@ -1,15 +1,6 @@
-// routes/courseRoutes.js
-
-// import express from "express";
-
-// import { ObjectId } from "mongodb";
-// import Course from "../models/Course.js";
-
 const express = require("express");
-const { ObjectId } = require("mongodb");
 const Course = require("../models/Course.js");
 const Student = require("../models/Student.js");
-const Schedule = require("../models/Schedule.js");
 const mongoose = require("mongoose");
 const router = express.Router();
 
@@ -58,6 +49,20 @@ router.get("/:id", async (req, res) => {
 //   }
 // });
 
+// Get all courses for a specific student
+router.get("/student/:studentid/courses", async (req, res) => {
+  try {
+    const { studentid } = req.params;
+    const student = await Student.findById(studentid).populate("courses");
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    res.json(student.courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Create a new course
 router.post("/", async (req, res) => {
   const { name, professor, schedule, startDate, endDate, assignments } =
@@ -65,18 +70,13 @@ router.post("/", async (req, res) => {
 
   try {
     // Create a new schedule
-    const newSchedule = new Schedule({
-      day: schedule[0].day,
-      startTime: schedule[0].startTime,
-      endTime: schedule[0].endTime,
-    });
-    await newSchedule.save();
+
     console.log("startDate->", startDate);
     // Create a new course with the created schedule
     const newCourse = new Course({
       name,
       professor,
-      schedules: [newSchedule],
+      schedules: [schedule],
       startDate,
       endDate,
       assignments,
@@ -170,7 +170,7 @@ router.post("/:studentid/add-course", async (req, res) => {
     student.courses.push(courseId);
 
     // Save the updated student to the database
-    const updatedStudent = await student.save();
+    await student.save();
     console.log("Student course Added");
     res.status(201).json("Course added to student successfully");
   } catch (error) {

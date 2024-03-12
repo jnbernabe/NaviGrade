@@ -12,12 +12,9 @@ function AddAssignment() {
   const [dueDate, setDueDate] = useState(new Date());
   const [course, setCourse] = useState("");
   const [weight, setWeight] = useState("");
-  const [student, setStudent] = useState("");
   const [grade, setGrade] = useState("");
   const [courses, setCourses] = useState([]);
-  //const [students, setStudents] = useState([]);
-  const [studentName, setStudentName] = useState("");
-  const [studentId, setStudentId] = useState("");
+
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
   const { user, userDetails } = useAuth(AuthProvider);
@@ -25,6 +22,8 @@ function AddAssignment() {
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const apiKey = process.env.REACT_APP_API_KEY;
   const token = getAuthToken();
+
+  const userInfo = JSON.parse(userDetails);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +35,7 @@ function AddAssignment() {
         dueDate: dueDate.toISOString(),
         courseId: course,
         weight: weight,
-        studentId: studentId,
+        studentId: userInfo.id,
         grade: grade,
       };
 
@@ -52,11 +51,11 @@ function AddAssignment() {
       //   courses: [...studentData.courses, course],
       // };
 
-      console.log("student", student);
+      console.log("student", userInfo);
 
       // Send POST request to add the course to student's courses
       await axios
-        .post(`${apiKey}/courses/${studentId}/add-course`, {
+        .post(`${apiKey}/courses/${userInfo.id}/add-course`, {
           courseId: course,
         })
         .catch((error) => {
@@ -102,43 +101,44 @@ function AddAssignment() {
         console.error("Error fetching courses:", error);
       }
     };
-
-    // const fetchStudents = async () => {
-    //   try {
-    //     const response = await axios.get(`${apiKey}/students`);
-    //     setStudents(response.data);
-    //   } catch (error) {
-    //     console.error("Error fetching students:", error);
-    //   }
-    // };
-
-    const fetchUserName = async () => {
-      try {
-        const apiKey = process.env.REACT_APP_API_KEY;
-        const response = await axios.get(`${apiKey}/userinfo`);
-        const fetchedUserId = response.data.user.userId;
-        //console.log('fetchedUserId',fetchedUserId)
-        setStudentId(fetchedUserId);
-        //console.log('fetchedUserId type:', typeof({studentId}));
-        const studentResponse = await axios.get(
-          `${apiKey}/students/${fetchedUserId}`
-        );
-        const studentFirstName = studentResponse.data.firstName;
-        setStudentName(studentFirstName);
-        //console.log('studentName',studentFirstName);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-    fetchCourses();
-    //fetchStudents();
-    fetchUserName();
   }, []);
+
+  // const fetchStudents = async () => {
+  //   try {
+  //     const response = await axios.get(`${apiKey}/students`);
+  //     setStudents(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching students:", error);
+  //   }
+  // };
+
+  //   const fetchUserName = async () => {
+  //     try {
+  //       const apiKey = process.env.REACT_APP_API_KEY;
+  //       const response = await axios.get(`${apiKey}/userinfo`);
+  //       const fetchedUserId = response.data.user.userId;
+  //       //console.log('fetchedUserId',fetchedUserId)
+  //       setStudentId(fetchedUserId);
+  //       //console.log('fetchedUserId type:', typeof({studentId}));
+  //       const studentResponse = await axios.get(
+  //         `${apiKey}/students/${fetchedUserId}`
+  //       );
+  //       const studentFirstName = studentResponse.data.firstName;
+  //       setStudentName(studentFirstName);
+  //       //console.log('studentName',studentFirstName);
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   };
+  //   fetchCourses();
+  //   //fetchStudents();
+  //   fetchUserName();
+  // }, []);
 
   return (
     <div className="assignments-container">
       <h2>Add Assignment </h2>
-      <p>User: {studentName}</p>
+      <p>User: {userInfo.Fname}</p>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Assignment Name</Form.Label>
@@ -187,11 +187,7 @@ function AddAssignment() {
         </Form.Group>
         <Form.Group>
           <Form.Label>Student</Form.Label>
-          <Form.Control
-            value={studentName}
-            onChange={(e) => setStudent(e.target.value)}
-            required
-          >
+          <Form.Control value={userInfo.Fname} required>
             {/* <option value="">Select Student</option>
             {students.map((student) => (
               <option key={student._id} value={student._id}>
