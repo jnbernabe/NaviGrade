@@ -16,8 +16,8 @@ function AddAssignment() {
   const [grade, setGrade] = useState("");
   const [courses, setCourses] = useState([]);
   //const [students, setStudents] = useState([]);
-  const [studentName, setStudentName] = useState('');
-  const [studentId,setStudentId] = useState('');
+  const [studentName, setStudentName] = useState("");
+  const [studentId, setStudentId] = useState("");
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
 
@@ -38,9 +38,10 @@ function AddAssignment() {
         studentId: studentId,
       };
 
-
       //Get student's data
-      const studentResponse = await axios.get(`${apiKey}/students/${studentId}`);
+      const studentResponse = await axios.get(
+        `${apiKey}/students/${studentId}`
+      );
       console.log("student 98: ", { student });
       const studentData = studentResponse.data;
       //Update student's courses array with the new course
@@ -48,9 +49,8 @@ function AddAssignment() {
         ...studentData,
         courses: [...studentData.courses, course],
       };
-      
-      console.log('student',student);
 
+      console.log("student", student);
 
       // Send POST request to add the course to student's courses
       await axios
@@ -84,8 +84,6 @@ function AddAssignment() {
         alert(errorMessage);
       }
 
-
-
       navigate("/assignments");
     } catch (error) {
       console.error("Error:", error.message);
@@ -111,23 +109,25 @@ function AddAssignment() {
     //     console.error("Error fetching students:", error);
     //   }
     // };
-    
-    const fetchUserName = async () =>{
-      try{
+
+    const fetchUserName = async () => {
+      try {
         const apiKey = process.env.REACT_APP_API_KEY;
         const response = await axios.get(`${apiKey}/userinfo`);
         const fetchedUserId = response.data.user.userId;
         //console.log('fetchedUserId',fetchedUserId)
         setStudentId(fetchedUserId);
         //console.log('fetchedUserId type:', typeof({studentId}));
-        const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
+        const studentResponse = await axios.get(
+          `${apiKey}/students/${fetchedUserId}`
+        );
         const studentFirstName = studentResponse.data.firstName;
         setStudentName(studentFirstName);
         //console.log('studentName',studentFirstName);
-      }catch(error){
+      } catch (error) {
         console.error("Error:", error);
       }
-    }
+    };
     fetchCourses();
     //fetchStudents();
     fetchUserName();
@@ -136,7 +136,7 @@ function AddAssignment() {
   return (
     <div className="assignments-container">
       <h2>Add Assignment </h2>
-      <p>User:  {studentName}</p>
+      <p>User: {studentName}</p>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Assignment Name</Form.Label>
@@ -190,7 +190,7 @@ function AddAssignment() {
             onChange={(e) => setStudent(e.target.value)}
             required
           >
-           {/* <option value="">Select Student</option>
+            {/* <option value="">Select Student</option>
             {students.map((student) => (
               <option key={student._id} value={student._id}>
                 {student.firstName}

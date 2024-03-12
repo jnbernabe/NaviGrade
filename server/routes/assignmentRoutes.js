@@ -1,5 +1,7 @@
 // routes/assignmentRoutes.js
+
 // import express from "express";
+
 // import { ObjectId } from "mongodb";
 // import Assignment from "../models/Assignment.js";
 
@@ -106,7 +108,7 @@ router.delete("/:id", async (req, res) => {
 
 // Route to add an assignment
 router.post("/add-assignment", async (req, res) => {
-  const { name, dueDate, courseId, weight, studentId } = req.body;
+  const { name, dueDate, courseId, weight, studentId, grade } = req.body;
 
   try {
     // Check if the course exists
@@ -136,6 +138,7 @@ router.post("/add-assignment", async (req, res) => {
       course: courseId,
       weight: weight || 1, // Default weight is set to 1 if not provided
       student: studentId,
+      grade: grade || 0,
     });
     course.assignments.push(assignment);
     student.assignments.push(assignment);
@@ -186,6 +189,31 @@ router.post("/:assignmentId/add-grade", async (req, res) => {
     await assignment.save();
 
     res.status(201).json({ message: "Grade added or updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all assignments of a student
+router.get("/student/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    // Check if the student exists
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Get all assignments associated with the student
+    const assignments = await Assignment.find({ student: studentId });
+    if (assignments.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No assignments found for the student" });
+    }
+
+    res.status(200).json(assignments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
