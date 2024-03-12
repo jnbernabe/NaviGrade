@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 
 function AddAssignment() {
   const [name, setName] = useState("");
@@ -20,6 +20,7 @@ function AddAssignment() {
   const [studentId, setStudentId] = useState("");
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
+  const { user, userDetails } = useAuth(AuthProvider);
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -36,19 +37,20 @@ function AddAssignment() {
         courseId: course,
         weight: weight,
         studentId: studentId,
+        grade: grade,
       };
 
-      //Get student's data
-      const studentResponse = await axios.get(
-        `${apiKey}/students/${studentId}`
-      );
-      console.log("student 98: ", { student });
-      const studentData = studentResponse.data;
-      //Update student's courses array with the new course
-      const updatedStudentData = {
-        ...studentData,
-        courses: [...studentData.courses, course],
-      };
+      // //Get student's data
+      // const studentResponse = await axios.get(
+      //   `${apiKey}/students/${studentId}`
+      // );
+      // console.log("student 98: ", { student });
+      // const studentData = studentResponse.data;
+      // //Update student's courses array with the new course
+      // const updatedStudentData = {
+      //   ...studentData,
+      //   courses: [...studentData.courses, course],
+      // };
 
       console.log("student", student);
 
@@ -61,12 +63,12 @@ function AddAssignment() {
           console.error("Error adding course to student:", error.message);
         });
 
-      // Update  student's data
-      await axios
-        .patch(`${apiKey}/students/${studentId}`, updatedStudentData)
-        .catch((error) => {
-          console.error("Error updating student:", error.message);
-        });
+      // // Update  student's data
+      // await axios
+      //   .patch(`${apiKey}/students/${studentId}`, updatedStudentData)
+      //   .catch((error) => {
+      //     console.error("Error updating student:", error.message);
+      //   });
 
       //Send POST request to add new assignment
       const response = await axios.post(

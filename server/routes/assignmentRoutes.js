@@ -95,12 +95,33 @@ router.patch("/:assignmentId", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// Delete an assignment by Id, Also delete that assignment from courses with it and students with it
+router.delete("/:assignmentId", async (req, res) => {
+  const { assignmentId } = req.params;
 
-// Delete an assignment
-router.delete("/:id", async (req, res) => {
   try {
-    const deletedAssignment = await Assignment.findByIdAndDelete(req.params.id);
-    res.json(deletedAssignment);
+    // Check if the assignment exists
+    const assignment = await Assignment.findById(assignmentId);
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    // Delete the assignment from courses
+    await Course.updateMany(
+      { assignments: assignmentId },
+      { $pull: { assignments: assignmentId } }
+    );
+
+    // Delete the assignment from students
+    await Student.updateMany(
+      { assignments: assignmentId },
+      { $pull: { assignments: assignmentId } }
+    );
+
+    // Delete the assignment
+    await Assignment.findByIdAndDelete(assignmentId);
+
+    res.json({ message: "Assignment deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
