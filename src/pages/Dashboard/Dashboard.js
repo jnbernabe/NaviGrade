@@ -20,11 +20,13 @@ const Dashboard = () => {
   const [studentAssignmentsName, setStudentAssignmentsName] = useState([]);
   const [assignmentDueDates, setAssignmentDueDates] = useState([]);
 
+  const { user, userDetails } = useAuth(AuthProvider);
+
+  const userInfo = JSON.parse(userDetails);
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
   useEffect(() => {
     fetchAssignments();
-    fetchUserInfo();
   }, []);
 
   const formatDateToMDYY = (dateString) => {
@@ -40,7 +42,9 @@ const Dashboard = () => {
   const fetchAssignments = async () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/assignments`);
+      const response = await axios.get(
+        `${apiKey}/assignments/student/${userInfo.id}`
+      );
       const fetchedAssignments = response.data;
 
       // Fetch course names for each assignment
@@ -54,127 +58,6 @@ const Dashboard = () => {
         })
       );
       setAssignments(updatedAssignments);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  // const fetchUserName = async () =>{
-  //   try{
-  //     const apiKey = process.env.REACT_APP_API_KEY;
-  //     const response = await axios.get(`${apiKey}/userinfo`);
-  //     const fetchedUserId = response.data.user.userId;
-  //     //console.log('fetchedUserId',fetchedUserId)
-
-  //     const studentResponse = await axios.get(`${apiKey}/students/${fetchedUserId}`);
-  //     const studentFirstName = studentResponse.data.firstName;
-  //     setStudentName(studentFirstName);
-
-  //   }catch(error){
-  //     console.error("Error:", error);
-  //   }
-  // }
-
-  const fetchUserInfo = async () => {
-    try {
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/userinfo`);
-      const fetchedUserId = response.data.user.userId;
-      //console.log('fetchedUserId',fetchedUserId)
-
-      const studentResponse = await axios.get(
-        `${apiKey}/students/${fetchedUserId}`
-      );
-
-      //getting user's firstname
-      const studentFirstName = studentResponse.data.firstName;
-      setStudentName(studentFirstName);
-
-      // Getting user's courses
-      let studentCourses = [];
-      if (
-        studentResponse.data.courses &&
-        Array.isArray(studentResponse.data.courses)
-      ) {
-        studentCourses = studentResponse.data.courses;
-        //console.log('studentCourses',studentCourses);
-        setStudentCourses(studentCourses);
-      }
-
-      // Getting user's assignments
-      let studentAssignments = [];
-      if (
-        studentResponse.data.assignments &&
-        Array.isArray(studentResponse.data.assignments)
-      ) {
-        studentAssignments = studentResponse.data.assignments;
-        //console.log('studentAssignments',studentAssignments);
-        setStudentAssignments(studentAssignments);
-      }
-
-      // getting names for courses and assignments
-      const fetchCourseNames = async () => {
-        const courses = await Promise.all(
-          studentCourses.map(async (courseId) => {
-            try {
-              const courseResponse = await axios.get(
-                `${apiKey}/courses/${courseId}`
-              );
-              return courseResponse.data.name;
-            } catch (error) {
-              console.error("Error fetching course:", error);
-              return null;
-            }
-          })
-        );
-        return courses.filter((course) => course !== null); // filter null
-      };
-
-      const fetchAssignmentNames = async () => {
-        const assignments = await Promise.all(
-          studentAssignments.map(async (assignmentId) => {
-            try {
-              const assignmentResponse = await axios.get(
-                `${apiKey}/assignments/${assignmentId}`
-              );
-              return assignmentResponse.data.name;
-            } catch (error) {
-              console.error("Error fetching assignment:", error);
-              return null;
-            }
-          })
-        );
-        return assignments.filter((assignment) => assignment !== null); // filter null
-      };
-
-      const fetchAssignmentDueDates = async () => {
-        const assignments = await Promise.all(
-          studentAssignments.map(async (assignmentId) => {
-            try {
-              const assignmentResponse = await axios.get(
-                `${apiKey}/assignments/${assignmentId}`
-              );
-              return assignmentResponse.data.dueDate;
-            } catch (error) {
-              console.error("Error fetching assignment:", error);
-              return null;
-            }
-          })
-        );
-        return assignments.filter((assignment) => assignment !== null); // filter null
-      };
-
-      const courses = await fetchCourseNames();
-      setStudentCoursesName(courses);
-      const assignments = await fetchAssignmentNames();
-      setStudentAssignmentsName(assignments);
-
-      const assignmentsDueDate = await fetchAssignmentDueDates();
-      setAssignmentDueDates(assignmentsDueDate);
-
-      console.log("Course Names:", courses);
-      console.log("Assignment Names:", assignments);
-      console.log("assignmentsDueDate", assignmentsDueDate);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -205,23 +88,24 @@ const Dashboard = () => {
     <div className="dashboard-container mx-auto">
       <h3 className="display-5"> Dashboard for {studentName} </h3>
 
-      {studentAssignmentsName.length === 0 ? (
+      {assignments.length === 0 ? (
         <p>No assignments currently.</p>
       ) : (
         <div className="assignment-list">
           <p>Assignments</p>
-
-          {studentAssignmentsName.map((assignment, index) => (
-            <Card key={index} className="assignment-card" bsPrefix>
-              <Card.Body>
-                <Card.Title>{assignment}</Card.Title>
-                <Card.Text>
-                  Due Date: {formatDateToMDYY(assignmentDueDates)}
-                </Card.Text>
-                {/* Add more information necessary */}
-              </Card.Body>
-            </Card>
-          ))}
+          <ul>
+            {assignments.map((assignment) => (
+              <li key={assignment._id}>
+                <div>
+                  <h4>{assignment.name}</h4>
+                  <h4>
+                    Grade: {assignment.grade !== 0 ? assignment.grade : "TBD"}
+                  </h4>
+                  <p>Due Date: {formatDateToMDYY(assignment.dueDate)}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
