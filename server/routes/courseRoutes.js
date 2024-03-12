@@ -69,26 +69,25 @@ router.post("/", async (req, res) => {
     req.body;
 
   try {
-    // Create a new schedule
-
-    console.log("startDate->", startDate);
+    console.log("schedule->", schedule);
     // Create a new course with the created schedule
     const newCourse = new Course({
       name,
       professor,
-      schedules: [schedule],
+      schedules: [...schedule],
       startDate,
       endDate,
       assignments,
     });
 
     await newCourse.save();
-    console.log("newCourse->", newCourse);
+    //console.log("newCourse->", newCourse);
     res.status(201).json({
       message: "Course and schedule created successfully",
-      course: newCourse,
+      courseId: newCourse._id,
     });
   } catch (error) {
+    //console.log("Error creating course and schedule:", error);
     res.status(400).json({ message: error.message });
   }
 });
@@ -143,6 +142,8 @@ router.delete("/:id", async (req, res) => {
 router.post("/:studentid/add-course", async (req, res) => {
   const { courseId } = req.body;
   const { studentid } = req.params;
+  console.log(req.body);
+
   try {
     // Check if the student exists
     const student = await Student.findById(studentid);
@@ -152,10 +153,11 @@ router.post("/:studentid/add-course", async (req, res) => {
     }
 
     // Check if the course exists
+    //console.log("courseId", courseId);
     const course = await Course.findById(courseId);
     if (!course) {
       console.log("Course not found");
-      return res.status(40).json({ message: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Check if the student is already enrolled in the course
