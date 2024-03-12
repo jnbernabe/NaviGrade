@@ -3,13 +3,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar as BootstrapNavbar, Nav, Container } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth, AuthProvider } from "../contexts/AuthContext";
+import { useEffect } from "react";
 
 import "./Navbar.css";
 import logoImage from "../images/back.jpg";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, userDetails } = useAuth(AuthProvider);
 
   return (
     <BootstrapNavbar
@@ -29,10 +30,15 @@ const Navbar = () => {
         <BootstrapNavbar.Toggle aria-controls="navbarNav" />
 
         <BootstrapNavbar.Collapse id="navbarNav">
-          <Nav className="ml-auto w-100">
+          <Nav className="ml-auto w-100" bsPrefix>
             {user ? (
               <>
-                <Nav.Link as={Link} to="/dashboard" className="nav-link">
+                <Nav.Link
+                  as={Link}
+                  to="/dashboard"
+                  className="nav-link"
+                  bsPrefix
+                >
                   Dashboard
                 </Nav.Link>
                 <Nav.Link as={Link} to="/courses" className="nav-link">
@@ -68,6 +74,9 @@ const Navbar = () => {
             )}
           </Nav>
         </BootstrapNavbar.Collapse>
+        <BootstrapNavbar.Text className="text-white">
+          {userDetails ? `Welcome, ${JSON.parse(userDetails).Fname}` : " "}
+        </BootstrapNavbar.Text>
       </Container>
     </BootstrapNavbar>
   );
