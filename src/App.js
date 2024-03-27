@@ -13,6 +13,7 @@ import { useAuth } from "./contexts/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Grades from "./pages/Grades/Grades";
 import EditGrade from "./pages/Grades/EditGrade";
+import EditCourse from "./pages/Courses/EditCourse"
 import EditAssignment from "./pages/Assignments/EditAssignment";
 import AddAssignment from "./pages/Assignments/AddAssignment";
 import ViewCourse from "./pages/Courses/ViewCourse";
@@ -48,6 +49,7 @@ function App() {
                 }
               />
               <Route path="/editgrade/:id" element={<EditGrade />} />
+              <Route path="/editcourse/:id" element={<EditCourse />} />
               <Route path="/editassignment/:id" element={<EditAssignment />} />
               <Route path="/addassignment" element={<AddAssignment />} />
               <Route path="/viewcourse/:id" element={<ViewCourse />} />
@@ -67,6 +69,7 @@ function App() {
               {/* ... (other routes for authenticated users) */}
               <Route path="/calendar" element={<CalendarContainer />} />
               <Route path="/editgrade/:id" element={<EditGrade />} />
+              <Route path="/editcourse/:id" element={<EditCourse />} />
               <Route path="/editassignment/:id" element={<EditAssignment />} />
               <Route path="/addassignment" element={<AddAssignment />} />
               <Route path="/viewcourse/:id" element={<ViewCourse />} />

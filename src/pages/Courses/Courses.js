@@ -108,6 +108,7 @@ const Courses = () => {
                     ? course.schedules[0].endTime
                     : "TBD"}{" "}
                 </ul>
+                <p><Link to={`/editcourse/${course._id}`}>Edit</Link></p> 
               </Card.Text>
 
               {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
