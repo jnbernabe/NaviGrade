@@ -12,6 +12,50 @@ const Course = require("../models/Course");
 
 const router = express.Router();
 
+// Route handler for marking assignments as completed
+// router.post("/:id/mark-completed", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     // Perform logic to mark the assignment with the specified ID as completed
+//     // For example, update the assignment status in the database
+//     const assignment = await Assignment.findById(id);
+//     if (!assignment) {
+//       return res.status(404).json({ message: "Assignment not found" });
+//     }
+//     // Assuming there's a 'completed' field in the assignment schema
+//     assignment.completed = true;
+//     await assignment.save();
+//     res.status(200).json({ message: `Assignment ${id} marked as completed` });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Failed to mark assignment as completed" });
+//   }
+// });
+
+router.post("/:id/mark-completed", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the assignment by ID
+    const assignment = await Assignment.findById(id);
+
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    // Update the 'completed' field to true
+    assignment.completed = true;
+
+    // Save the updated assignment
+    await assignment.save();
+
+    res.status(200).json({ message: `Assignment ${id} marked as completed` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to mark assignment as completed" });
+  }
+});
+
 // Get all assignments
 router.get("/", async (req, res) => {
   try {

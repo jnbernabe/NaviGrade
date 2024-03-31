@@ -50,6 +50,10 @@ const Navbar = () => {
                 <Nav.Link as={Link} to="/calendar" className="nav-link">
                   Calendar
                 </Nav.Link>
+                <Nav.Link as={Link} to="/mygrades" className="nav-link">
+                  My Grades
+                </Nav.Link>
+
                 <Nav.Link as={Link} to="/logout" className="nav-link">
                   Logout
                 </Nav.Link>

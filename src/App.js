@@ -1,4 +1,4 @@
-// app.js
+//App.js
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
@@ -11,9 +11,10 @@ import AuthenticationPage from "./components/AuthenticationPage";
 import Login from "./pages/Login/Login";
 import { useAuth } from "./contexts/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
+import MyGrades from "./pages/Grades/MyGrades";
 import Grades from "./pages/Grades/Grades";
 import EditGrade from "./pages/Grades/EditGrade";
-import EditCourse from "./pages/Courses/EditCourse"
+import EditCourse from "./pages/Courses/EditCourse";
 import EditAssignment from "./pages/Assignments/EditAssignment";
 import AddAssignment from "./pages/Assignments/AddAssignment";
 import ViewCourse from "./pages/Courses/ViewCourse";
@@ -36,7 +37,9 @@ function App() {
               <Route path="/assignments" element={<Assignments />} />
               <Route path="/login" element={<Login />} />
 
+              <Route path="/mygrades" element={<MyGrades />} />
               <Route path="/grades" element={<Grades />} />
+
               <Route
                 path="/calendar"
                 element={
