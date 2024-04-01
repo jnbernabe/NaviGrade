@@ -23,25 +23,23 @@ const Assignments = () => {
 
   const fetchAssignments = async () => {
     try {
+      console.log("Fetching assignments...");
       const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(
-        `${apiKey}/assignments/student/${userInfo.id}`
-      );
+      const response = await axios.get(`${apiKey}/assignments/student/${userInfo.id}`);
+      console.log("Assignments fetched successfully:", response.data);
       const fetchedAssignments = response.data;
-
+  
       const updatedAssignments = await Promise.all(
         fetchedAssignments.map(async (assignment) => {
-          const courseResponse = await axios.get(
-            `${apiKey}/courses/${assignment.course}`
-          );
+          const courseResponse = await axios.get(`${apiKey}/courses/${assignment.course}`);
           const courseName = courseResponse.data.name;
           return { ...assignment, course: courseName };
         })
       );
-
+  
       setAssignments(updatedAssignments);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching assignments:", error);
     }
   };
 
@@ -75,47 +73,20 @@ const Assignments = () => {
   };
 
 
-
   const markAssignmentAsCompleted = async (id) => {
     try {
       const apikey = process.env.REACT_APP_API_KEY;
       await axios.post(`${apikey}/completed-assignments/${id}/mark-completed`);
-      // Refresh assignments after marking as completed
-      fetchAssignments();
+      // Remove the completed assignment from the list of assignments
+      setAssignments((prevAssignments) =>
+        prevAssignments.filter((assignment) => assignment._id !== id)
+      );
+      alert("Assignment marked as completed successfully!");
     } catch (error) {
       console.error("Error marking assignment as completed:", error);
       alert("Failed to mark assignment as completed");
     }
-};
-
-
-// const markAssignmentAsCompleted = async (id) => {
-//   try {
-//     const apikey = process.env.REACT_APP_API_KEY;
-//     await axios.post(`${apikey}/completed-assignments/${id}/mark-completed/${userInfo.id}`);
-//     // Trigger estimation of grades
-//     estimateGrades();
-//     // Refresh assignments after marking as completed
-//     fetchAssignments();
-//   } catch (error) {
-//     console.error("Error marking assignment as completed:", error);
-//     alert("Failed to mark assignment as completed");
-//   }
-// };
-
-// const estimateGrades = async () => {
-//   try {
-//     const apikey = process.env.REACT_APP_API_KEY;
-//     await axios.get(`${apikey}/estimate-grade/${userInfo.id}`);
-//     // Optionally, you can update the state with the newly estimated grades
-//     // setEstimatedGrades(newGrades);
-//   } catch (error) {
-//     console.error("Error estimating grades:", error);
-//     // Handle error
-//   }
-// };
-
-
+  };
   return (
     <div className="assignments-container">
       <h2>Upcoming Assignments for {userInfo.Fname}</h2>
