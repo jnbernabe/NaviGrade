@@ -107,7 +107,7 @@ const Assignments = () => {
 
   return (
     <div className="assignments-container">
-      <h2>Upcoming Assignments for {userInfo.Fname}</h2>
+      <h2>Upcoming Assignments for {userInfo.firstName}</h2>
       <Link to="/addassignment">
         <Button>Add</Button>
       </Link>

@@ -1,16 +1,50 @@
 // src/components/Navbar.js
 
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Navbar as BootstrapNavbar, Nav, Container } from "react-bootstrap";
 import { useAuth, AuthProvider } from "../contexts/AuthContext";
-import { useEffect } from "react";
-
+import ProfileDisplay from "./ProfilePopUp/ProfileDisplay";
 import "./Navbar.css";
 import logoImage from "../images/back.jpg";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const { user, userDetails } = useAuth(AuthProvider);
+  const [showModal, setShowModal] = useState(false);
+
+  let userInfo;
+  if (userDetails) {
+    try {
+      userInfo = JSON.parse(userDetails);
+      //console.log("User details:", userInfo);
+    } catch (error) {
+      console.error("Error parsing userDetails:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (userDetails) {
+      try {
+        userInfo = JSON.parse(userDetails);
+        //console.log("User details:", userInfo);
+      } catch (error) {
+        console.error("Error parsing userDetails:", error);
+      }
+    }
+  }, [userDetails]);
+
+  const handleOpenModal = (userInfo) => {
+    if (userInfo) {
+      console.log("User info:", userInfo);
+      ProfileDisplay(userInfo);
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <BootstrapNavbar
@@ -75,8 +109,21 @@ const Navbar = () => {
           </Nav>
         </BootstrapNavbar.Collapse>
         <BootstrapNavbar.Text className="text-white">
-          {userDetails ? `Welcome, ${JSON.parse(userDetails).Fname}` : " "}
+          {userInfo && userInfo.firstName
+            ? `Welcome, ${userInfo.firstName}`
+            : " "}
         </BootstrapNavbar.Text>
+        {user ? (
+          <>
+            <ProfileDisplay
+              show={showModal}
+              handleClose={handleCloseModal}
+              user={userInfo}
+            />
+          </>
+        ) : (
+          console.log("No user")
+        )}
       </Container>
     </BootstrapNavbar>
   );

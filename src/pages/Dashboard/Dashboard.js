@@ -78,7 +78,7 @@ const Dashboard = () => {
     // </div>
 
     <div className="dashboard-container mx-auto">
-      <h3 className="display-5"> Dashboard for {userInfo.Fname} </h3>
+      <h3 className="display-5"> Dashboard for {userInfo.firstName} </h3>
 
       {assignments.length === 0 ? (
         <p>No assignments currently.</p>

@@ -102,7 +102,7 @@ function AddAssignment() {
   return (
     <div className="assignments-container">
       <h2>Add Assignment </h2>
-      <p>User: {userInfo.Fname}</p>
+      <p>User: {userInfo.firstName}</p>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Assignment Name</Form.Label>
@@ -151,7 +151,7 @@ function AddAssignment() {
         </Form.Group>
         <Form.Group>
           <Form.Label>Student</Form.Label>
-          <Form.Control value={userInfo.Fname} required>
+          <Form.Control value={userInfo.firstName} required>
             {/* <option value="">Select Student</option>
             {students.map((student) => (
               <option key={student._id} value={student._id}>

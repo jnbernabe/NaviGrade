@@ -69,8 +69,8 @@ router.post("/signup", async (req, res) => {
       expiresIn: 3600,
       user: {
         id: savedStudent._id,
-        Fname: savedStudent.firstName,
-        Lname: savedStudent.lastName,
+        firstName: savedStudent.firstName,
+        lastName: savedStudent.lastName,
         email: savedStudent.email,
       },
     });
@@ -125,8 +125,8 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: student._id,
-        Fname: student.firstName,
-        Lname: student.lastName,
+        firstName: student.firstName,
+        lastName: student.lastName,
         email: student.email,
       },
     }); // expiresIn is in seconds (1 hour in this example)
