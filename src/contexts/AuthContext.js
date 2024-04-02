@@ -34,6 +34,10 @@ const AuthProvider = ({ children }) => {
     return localStorage.getItem(TOKEN_KEY);
   };
 
+  const setUserInfo = (user) => {
+    localStorage.setItem(USER_KEY, user);
+  };
+
   const getUserDetails = () => {
     if (!localStorage.getItem(USER_KEY)) {
       return null;
@@ -183,6 +187,7 @@ const AuthProvider = ({ children }) => {
         userDetails,
         setUser,
         setUserDetails,
+        setUserInfo,
         signout,
         signup,
         signin,

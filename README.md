@@ -4,7 +4,7 @@ SRC
 Contains React App
 Run with npm start
 
-SERVER
+SERVERpm start
 contains backend for app
 run with nodemon server (requires cd in to server folder)
 
