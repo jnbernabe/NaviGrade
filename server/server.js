@@ -16,7 +16,7 @@ const assignmentRoutes = require("./routes/assignmentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
 const Assignment = require("./models/Assignment");
-
+const completedassignments = require("./routes/completedAssignmentRoutes");
 
 dotenv.config();
 const app = express();
@@ -33,6 +33,7 @@ mongoose.connect(process.env.ATLAS_URI);
 app.use("/students", authenticateToken, studentRoutes);
 app.use("/courses", authenticateToken, courseRoutes);
 app.use("/assignments", authenticateToken, assignmentRoutes);
+app.use("/completed-assignments", authenticateToken, completedassignments);
 app.use("/admin", adminRoutes);
 app.use("/users", userRoutes);
 
@@ -42,20 +43,30 @@ app.use((err, _req, res, _next) => {
 });
 
 // Route handler for marking assignments as completed
-app.post("/completed-assignments/:id/mark-completed", authenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    // Find the assignment by ID and update its 'completed' field to true
-    const assignment = await Assignment.findByIdAndUpdate(id, { completed: true }, { new: true });
-    if (!assignment) {
-      return res.status(404).json({ message: "Assignment not found" });
+app.post(
+  "/completed-assignments/:id/mark-completed",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      // Find the assignment by ID and update its 'completed' field to true
+      const assignment = await Assignment.findByIdAndUpdate(
+        id,
+        { completed: true },
+        { new: true }
+      );
+      if (!assignment) {
+        return res.status(404).json({ message: "Assignment not found" });
+      }
+      res.status(200).json({ message: `Assignment ${id} marked as completed` });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ message: "Failed to mark assignment as completed" });
     }
-    res.status(200).json({ message: `Assignment ${id} marked as completed` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to mark assignment as completed" });
   }
-});
+);
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
   console.log(`Server is running on port: http://localhost:${PORT}/`);
@@ -69,7 +80,3 @@ app.get("/userinfo", authenticateToken, (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
-

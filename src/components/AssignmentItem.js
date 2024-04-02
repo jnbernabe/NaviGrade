@@ -1,5 +1,6 @@
 // components/AssignmentItem.js
-import React from 'react';
+import React from "react";
+import { Card } from "react-bootstrap";
 // import axios from 'axios';
 
 const AssignmentItem = ({ assignment, studentId }) => {
@@ -10,16 +11,6 @@ const AssignmentItem = ({ assignment, studentId }) => {
     const year = date.getFullYear().toString().substr(-2);
     return `${month}/${day}/${year}`;
   };
-
-//   const markAsCompleted = async () => {
-//     try {
-//       await axios.post(`http://localhost:5050/completed-assignments/${assignment._id}/mark-completed/${studentId}`);
-//       alert('Assignment marked as completed successfully');
-//     } catch (error) {
-//       console.error('Error marking assignment as completed:', error);
-//       alert('Failed to mark assignment as completed');
-//     }
-//   };
 
   return (
     <div>

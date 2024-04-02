@@ -1,20 +1,25 @@
 // routes/completedAssignments.js
 const express = require("express");
 const router = express.Router();
-const Assignment = require("../models/Assignment");
+const {
+  getCompletedAssignments,
+  markAssignmentAsCompleted,
+  markAssignmentAsIncomplete,
+} = require("../controllers/completedassignmentscontroller");
 
 // Route to fetch completed assignments
 router.get("/", async (req, res) => {
-  try {
-    const completedAssignments = await Assignment.find({ completed: true });
-    if (completedAssignments.length === 0) {
-      return res.status(404).json({ message: "No completed assignments found" });
-    }
-    res.status(200).json(completedAssignments);
-  } catch (error) {
-    console.error("Error fetching completed assignments:", error);
-    res.status(500).json({ message: "Failed to fetch completed assignments" });
-  }
+  getCompletedAssignments(req, res);
+});
+
+// Route to mark an assignment as completed
+router.post("/:id/mark-completed", async (req, res) => {
+  markAssignmentAsCompleted(req, res);
+});
+
+// Route to update assignment status to complete = false
+router.put("/:id/mark-incomplete", async (req, res) => {
+  markAssignmentAsIncomplete(req, res);
 });
 
 module.exports = router;

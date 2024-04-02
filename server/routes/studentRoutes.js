@@ -4,10 +4,6 @@
 // import Student from "../models/Student.js";
 
 const express = require("express");
-const ObjectId = require("mongodb").ObjectId;
-const Student = require("../models/Student.js");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
 const {
   getAllStudents,

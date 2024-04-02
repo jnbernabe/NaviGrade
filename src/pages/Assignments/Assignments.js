@@ -7,49 +7,52 @@ import axios from "axios";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import AssignmentItem from "../../components/AssignmentItem";
 import Modal from "react-bootstrap/Modal";
+import CompletedAssignments from "./CompletedAssignments";
+import { Card, Container, Col, Row, ButtonGroup } from "react-bootstrap";
+import ToastPopup from "../../components/ToastPopup";
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
-  const { getAuthToken } = useAuth();
-  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
-  const { user, userDetails } = useAuth(AuthProvider);
-  const userInfo = JSON.parse(userDetails);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
+  const [showA, setShowA] = useState(true);
+  const [showB, setShowB] = useState(true);
+  const { user, userDetails } = useAuth(AuthProvider);
+  const { getAuthToken } = useAuth();
+  const toggleShowA = () => setShowA(!showA);
+  const toggleShowB = () => setShowB(!showB);
+  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
+
+  const userInfo = JSON.parse(userDetails);
 
   useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        //console.log("Fetching assignments...");
+        const apiKey = process.env.REACT_APP_API_KEY;
+        const response = await axios.get(
+          `${apiKey}/assignments/student/${userInfo.id}`
+        );
+        //console.log("Assignments fetched successfully:", response.data);
+        const fetchedAssignments = response.data;
+
+        const updatedAssignments = await Promise.all(
+          fetchedAssignments.map(async (assignment) => {
+            const courseResponse = await axios.get(
+              `${apiKey}/courses/${assignment.course}`
+            );
+            const courseName = courseResponse.data.name;
+            return { ...assignment, course: courseName };
+          })
+        );
+
+        setAssignments(updatedAssignments);
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    };
     fetchAssignments();
-  }, []);
-
-  const fetchAssignments = async () => {
-    try {
-      console.log("Fetching assignments...");
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(`${apiKey}/assignments/student/${userInfo.id}`);
-      console.log("Assignments fetched successfully:", response.data);
-      const fetchedAssignments = response.data;
-  
-      const updatedAssignments = await Promise.all(
-        fetchedAssignments.map(async (assignment) => {
-          const courseResponse = await axios.get(`${apiKey}/courses/${assignment.course}`);
-          const courseName = courseResponse.data.name;
-          return { ...assignment, course: courseName };
-        })
-      );
-  
-      setAssignments(updatedAssignments);
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
-    }
-  };
-
-  const formatDateToMDYY = (dateString) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear().toString().substr(-2);
-    return `${month}/${day}/${year}`;
-  };
+  }, [assignments, userInfo.id]);
 
   const handleCloseConfirmation = () => setShowConfirmation(false);
   const handleShowConfirmation = (id) => {
@@ -72,70 +75,107 @@ const Assignments = () => {
     }
   };
 
-
   const markAssignmentAsCompleted = async (id) => {
     try {
       const apikey = process.env.REACT_APP_API_KEY;
-      await axios.post(`${apikey}/completed-assignments/${id}/mark-completed`);
-      // Remove the completed assignment from the list of assignments
-      setAssignments((prevAssignments) =>
-        prevAssignments.filter((assignment) => assignment._id !== id)
+      let response = await axios.post(
+        `${apikey}/completed-assignments/${id}/mark-completed`
       );
-      alert("Assignment marked as completed successfully!");
+      if (response.status === 201) {
+        setAssignments((prevAssignments) =>
+          prevAssignments.filter((assignment) => assignment._id !== id)
+        );
+        //alert("Assignment marked as completed successfully!");
+        toggleShowA();
+      }
     } catch (error) {
       console.error("Error marking assignment as completed:", error);
       alert("Failed to mark assignment as completed");
     }
   };
+  // Rest of the code...
+
   return (
-    <div className="assignments-container">
-      <h2>Upcoming Assignments for {userInfo.firstName}</h2>
-      <Link to="/addassignment">
-        <Button>Add</Button>
-      </Link>
-      <ul>
-        {assignments.map((assignment) => (
-          <li key={assignment._id}>
-            <AssignmentItem assignment={assignment} studentId={userInfo.id} />
-            <Button
-              variant="danger"
-              onClick={() => handleShowConfirmation(assignment._id)}
-            >
-              Delete
-            </Button>
-            <Link to={`/editassignment/${assignment._id}`}>
-              <Button>Edit</Button>
+    <>
+      <Container>
+        <Row>
+          <Col>
+            <h2>Upcoming Assignments for {userInfo.firstName}</h2>
+            <Link to="/addassignment">
+              <Button>Add</Button>
             </Link>
-            <Button
-              variant="success"
-              onClick={() => markAssignmentAsCompleted(assignment._id)}
-            >
-              Mark as Completed
-            </Button>
-          </li>
-        ))}
-      </ul>
-      <Modal show={showConfirmation} onHide={handleCloseConfirmation}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Deletion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this assignment?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirmation}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => deleteAssignment(assignmentIdToDelete)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+          </Col>
+          <Col>
+            <h2>Completed Assignments</h2>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="assignments-container">
+              {assignments
+                .filter((assignment) => assignment.completed === false)
+                .map((assignment) => (
+                  <Card
+                    key={assignment._id}
+                    className="assignment-card"
+                    style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
+                    bsPrefix
+                  >
+                    <AssignmentItem
+                      assignment={assignment}
+                      studentId={userInfo.id}
+                    />
+                    <ButtonGroup>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleShowConfirmation(assignment._id)}
+                      >
+                        Delete
+                      </Button>
+                      <Button href={`/editassignment/${assignment._id}`}>
+                        Edit
+                      </Button>
+                      <Button
+                        variant="success"
+                        onClick={() =>
+                          markAssignmentAsCompleted(assignment._id)
+                        }
+                      >
+                        Mark as Completed
+                      </Button>
+                    </ButtonGroup>
+                  </Card>
+                ))}
+            </div>
+            <Modal show={showConfirmation} onHide={handleCloseConfirmation}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Are you sure you want to delete this assignment?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseConfirmation}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => deleteAssignment(assignmentIdToDelete)}
+                >
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <ToastPopup show={showA} />
+          </Col>
+
+          <Col>
+            <CompletedAssignments />
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
 export default Assignments;
-
-
