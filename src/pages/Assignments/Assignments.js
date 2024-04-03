@@ -8,7 +8,7 @@ import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import AssignmentItem from "../../components/AssignmentItem";
 import Modal from "react-bootstrap/Modal";
 import CompletedAssignments from "./CompletedAssignments";
-import { Card, Container, Col, Row, ButtonGroup } from "react-bootstrap";
+import { Card, Container, Col, Row, ButtonGroup ,ProgressBar } from "react-bootstrap";
 import ToastPopup from "../../components/ToastPopup";
 
 const Assignments = () => {
@@ -108,7 +108,7 @@ const Assignments = () => {
       alert("Failed to mark assignment as completed");
     }
   };
-  // Rest of the code...
+  // sort
   const handleSortChange = (value) => {
     if (value === sortBy) {
       // If already sorted by this value, toggle sorting order
@@ -136,7 +136,8 @@ const Assignments = () => {
   });
 
 
-
+// Calculate percentage of completed assignments
+const completedPercentage = Math.round((assignments.filter(assignment => assignment.completed).length / assignments.length) * 100);
 
   return (
    
@@ -164,17 +165,14 @@ const Assignments = () => {
           <>
             Congrats, {userInfo.firstName}!
             <p className="fs-1">
-          {/* {assignments.filter(assignment => assignment.completed).length} */}
           {assignments.filter(assignment => assignment.completed).length}/{assignments.length}
         </p>
         Assignments Completed
+        <ProgressBar now={completedPercentage} label={`${completedPercentage}%`} />
           </>
         )}
       </p>
-
-
-
-
+     
       
     </Col> 
   </Row>
