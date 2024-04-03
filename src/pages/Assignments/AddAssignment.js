@@ -14,6 +14,10 @@ function AddAssignment() {
   const [weight, setWeight] = useState("");
   const [grade, setGrade] = useState("");
   const [courses, setCourses] = useState([]);
+ //not sure if we should include completed field here
+//  const [completed,setCompleted] = useState(false);
+  const [memo, setMemo] = useState("");
+  const [priority, setPriority] = useState(0);
 
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
@@ -37,6 +41,9 @@ function AddAssignment() {
         weight: weight,
         studentId: userInfo.id,
         grade: grade,
+        //completed:completed,
+        memo:memo,
+        priority:priority
       };
 
       // //Get student's data
@@ -98,6 +105,18 @@ function AddAssignment() {
     };
     fetchCourses();
   }, []);
+
+  const handlePriorityChange = (e) => {
+    // Ensure input is within the range of 0 to 10
+    const newValue = Math.max(0, Math.min(10, e.target.value));
+    setPriority(newValue);
+  };
+
+  const handleGradeChange = (e) => {
+    // Ensure input is within the range of 0 to 100
+    const newValue = Math.max(0, Math.min(100, e.target.value));
+    setGrade(newValue);
+  };
 
   return (
     <div className="assignments-container">
@@ -165,9 +184,37 @@ function AddAssignment() {
           <Form.Control
             type="number"
             value={grade}
-            onChange={(e) => setGrade(e.target.value)}
+            onChange={handleGradeChange}
+            min="0"
+            max="100"
           />
         </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Priority</Form.Label>
+          <Form.Control
+            type="number"
+            value={priority}
+            // onChange={(e) => setPriority(e.target.value)}
+            onChange={handlePriorityChange}
+          min="0"
+          max="10"
+          />
+        </Form.Group>
+
+
+        <Form.Group>
+          <Form.Label>Memo</Form.Label>
+          <Form.Control
+           as="textarea"
+           placeholder="Memo Space"
+           rows={5}
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+          />
+        </Form.Group>
+
+
         <Button variant="primary" type="submit">
           Save
         </Button>

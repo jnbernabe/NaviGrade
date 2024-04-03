@@ -17,6 +17,14 @@ const AssignmentItem = ({ assignment, studentId }) => {
       <p>Assignment Name: {assignment.name}</p>
       <p>Due Date: {formatDateToMDYY(assignment.dueDate)}</p>
       {/* Add more details as needed */}
+       {/* if there's memo, display memo value */}
+      {assignment.memo !== "" && (
+        <p>Memo: {assignment.memo}</p>
+      )}
+       {/* if priority is not 0 (0 is default), display priority value */}
+      {assignment.priority !== 0 && (
+        <p>Priority: {assignment.priority}</p>
+      )}
     </div>
   );
 };

@@ -98,11 +98,11 @@ const Assignments = () => {
   return (
     <>
       <Container>
-        <Row>
+        <Row >
           <Col>
             <h2>Upcoming Assignments for {userInfo.firstName}</h2>
             <Link to="/addassignment">
-              <Button>Add</Button>
+              <Button>Add New Assignment</Button>
             </Link>
           </Col>
           <Col>

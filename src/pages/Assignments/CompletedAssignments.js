@@ -33,7 +33,9 @@ const CompletedAssignments = () => {
         {
           completed: false,
         }
+        
       );
+      window.location.reload();
 
       console.log("Assignment marked as incomplete successfully");
       // Update the completedAssignments state to reflect the change
@@ -48,6 +50,7 @@ const CompletedAssignments = () => {
           return assignment;
         });
       });
+      window.location.reload();
     } catch (error) {
       console.error("Error marking assignment as incomplete:", error);
     }

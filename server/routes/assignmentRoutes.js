@@ -1,7 +1,5 @@
 // routes/assignmentRoutes.js
-
 // import express from "express";
-
 // import { ObjectId } from "mongodb";
 // import Assignment from "../models/Assignment.js";
 
@@ -92,6 +90,9 @@ router.post("/", async (req, res) => {
     grade: req.body.grade,
     weight: req.body.weight,
     student: req.body.student,
+    completed: req.body.completed,  //new field
+    memo:req.body.memo,             //new field
+    priority:req.body.priority      //new field
   });
 
   try {
@@ -105,7 +106,7 @@ router.post("/", async (req, res) => {
 // Route to update an assignment
 router.patch("/:assignmentId", async (req, res) => {
   const { assignmentId } = req.params;
-  const { weight, grade, dueDate, name } = req.body;
+  const { weight, grade, dueDate, name ,priority,completed,memo} = req.body;
 
   try {
     // Check if the assignment exists
@@ -129,6 +130,18 @@ router.patch("/:assignmentId", async (req, res) => {
 
     if (name !== undefined) {
       assignment.name = name;
+    }
+
+    if(completed!== undefined){
+      assignment.completed = completed
+    }
+
+    if(memo!== undefined){
+      assignment.memo = memo
+    }
+
+    if(priority!== undefined){
+      assignment.priority = priority
     }
 
     // Save the updated assignment to the database
@@ -173,7 +186,7 @@ router.delete("/:assignmentId", async (req, res) => {
 
 // Route to add an assignment
 router.post("/add-assignment", async (req, res) => {
-  const { name, dueDate, courseId, weight, studentId, grade } = req.body;
+  const { name, dueDate, courseId, weight, studentId, grade , completed, memo,priority} = req.body;
 
   try {
     // Check if the course exists
@@ -204,6 +217,9 @@ router.post("/add-assignment", async (req, res) => {
       weight: weight || 1, // Default weight is set to 1 if not provided
       student: studentId,
       grade: grade || 0,
+      completed: completed || false,
+      memo: memo || "",
+      priority: priority || 0
     });
     course.assignments.push(assignment);
     student.assignments.push(assignment);
