@@ -125,8 +125,7 @@ function EditGrade(props) {
                         type="number"
                         value={assignment.grade}
                         onChange={(e) => setAssignment({ ...assignment, grade: e.target.value })}
-                       
-                        min="0"
+                        
                         max="100"
                       
                    />

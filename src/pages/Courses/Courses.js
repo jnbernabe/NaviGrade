@@ -108,6 +108,10 @@ const Courses = () => {
                     ? course.schedules[0].endTime
                     : "TBD"}{" "}
                 </ul>
+                {course.memo !== "" && (
+                <p>Memo: {course.memo}</p>
+                 )} 
+
                 <p><Link to={`/editcourse/${course._id}`}>Edit</Link></p> 
               </Card.Text>
 
