@@ -21,6 +21,7 @@ function EditCourse(props) {
         ],
         startDate: null,
         endDate: null,
+        memo:""
     });
 
     const apiUrl = `http://localhost:5050/courses/${id}`;
@@ -29,8 +30,8 @@ function EditCourse(props) {
         const fetchData = async () => {
             try {
                 const result = await axios.get(apiUrl);
-                const { name, professor, schedules, startDate, endDate } = result.data;
-                setCourse({ name, professor, schedules, startDate, endDate });
+                const { name, professor, schedules, startDate, endDate,memo } = result.data;
+                setCourse({ name, professor, schedules, startDate, endDate,memo });
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -120,6 +121,16 @@ function EditCourse(props) {
                         selected={new Date(course.endDate)}
                         onChange={(date) => setCourse({ ...course, endDate: date })}
                     />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Memo </Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={5}
+                        value={course.memo}
+                        onChange={(e) => setCourse({ ...course, memo: e.target.value })}
+                   />
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Save

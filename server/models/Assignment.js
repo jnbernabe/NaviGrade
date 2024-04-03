@@ -16,7 +16,9 @@ const assignmentSchema = new mongoose.Schema({
     ref: "Student",
     required: true,
   },
-  completed: { type: Boolean, default: false } // New field for tracking completion status
+  completed: { type: Boolean, default: false }, // New field for tracking completion status
+  memo: { type: String, default: "" },  // New field for memo space
+  priority: { type: Number, default: 0 } //New field for priority 
 });
 
 const Assignment = mongoose.model("Assignment", assignmentSchema);

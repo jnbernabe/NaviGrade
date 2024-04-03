@@ -66,7 +66,7 @@ router.get("/student/:studentid/", async (req, res) => {
 
 // Create a new course
 router.post("/", async (req, res) => {
-  const { name, professor, schedule, startDate, endDate, assignments } =
+  const { name, professor, schedule, startDate, endDate, assignments, memo } =
     req.body;
 
   try {
@@ -79,6 +79,7 @@ router.post("/", async (req, res) => {
       startDate,
       endDate,
       assignments,
+      memo
     });
 
     await newCourse.save();
@@ -97,7 +98,7 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const courseId = req.params.id;
-    const { name, professor, schedules, startDate, endDate, assignments } =
+    const { name, professor, schedules, startDate, endDate, assignments,memo } =
       req.body;
 
     // Update the course
@@ -111,6 +112,7 @@ router.patch("/:id", async (req, res) => {
           startDate,
           endDate,
           assignments,
+          memo
         },
       },
       { new: true }

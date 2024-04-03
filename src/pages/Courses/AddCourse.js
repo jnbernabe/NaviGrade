@@ -17,6 +17,7 @@ function AddCourse() {
   });
   const [startDate, setstartDate] = useState(new Date());
   const [endDate, setendDate] = useState(new Date());
+  const [memo, setMemo] = useState("");
   const navigate = useNavigate();
   const { getAuthToken } = useAuth();
   const { user, userDetails } = useAuth(AuthProvider);
@@ -43,6 +44,7 @@ function AddCourse() {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
         assignments: [],
+        memo:memo
       };
 
       const response = await axios.post(`${apiKey}/courses/`, data);
@@ -143,6 +145,19 @@ function AddCourse() {
             onChange={(date) => setendDate(date)}
           />
         </Form.Group>
+
+
+        <Form.Group>
+          <Form.Label>Memo</Form.Label>
+          <Form.Control
+           as="textarea"
+           placeholder="Memo Space"
+           rows={5}
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+          />
+        </Form.Group>
+
 
         <Button variant="primary" type="submit">
           Save
