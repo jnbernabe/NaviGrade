@@ -41,13 +41,15 @@ const Dashboard = () => {
 
       // Fetch course names for each assignment
       const updatedAssignments = await Promise.all(
-        fetchedAssignments.map(async (assignment) => {
-          const courseResponse = await axios.get(
-            `${apiKey}/courses/${assignment.course}`
-          );
-          const courseName = courseResponse.name;
-          return { ...assignment, course: courseName };
-        })
+        fetchedAssignments
+          .filter((assignment) => !assignment.completed)
+          .map(async (assignment) => {
+            const courseResponse = await axios.get(
+              `${apiKey}/courses/${assignment.course}`
+            );
+            const courseName = courseResponse.name;
+            return { ...assignment, course: courseName };
+          })
       );
       setAssignments(updatedAssignments);
     } catch (error) {
