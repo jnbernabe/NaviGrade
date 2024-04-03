@@ -19,6 +19,32 @@ import {
 import ToastPopup from "../../components/ToastPopup";
 import ModalPopUp from "../../components/ModalPopup";
 
+export const calculateStudentLevel = (completedPercentage) => {
+  if (completedPercentage >= 90) {
+    return "🚀 Superstar!";
+  } else if (completedPercentage >= 80) {
+    return "🌟 Acing it!";
+  } else if (completedPercentage >= 70) {
+    return "🎉 Rocking it!";
+  } else if (completedPercentage >= 60) {
+    return "😎 Doing great!";
+  } else if (completedPercentage >= 50) {
+    return "🤩 Solid effort!";
+  } else if (completedPercentage >= 40) {
+    return "👏 Getting there!";
+  } else if (completedPercentage >= 30) {
+    return "🤔 Needs a boost!";
+  } else if (completedPercentage >= 20) {
+    return "😅 Room for improvement!";
+  } else if (completedPercentage >= 10) {
+    return "😬 Getting tough!";
+  } else {
+    return "😢 Struggling";
+  }
+};
+
+
+
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -152,30 +178,7 @@ const Assignments = () => {
       100
   );
 
-  const calculateStudentLevel = (completedPercentage) => {
-    if (completedPercentage >= 90) {
-      return "🚀 Superstar!";
-    } else if (completedPercentage >= 80) {
-      return "🌟 Acing it!";
-    } else if (completedPercentage >= 70) {
-      return "🎉 Rocking it!";
-    } else if (completedPercentage >= 60) {
-      return "😎 Doing great!";
-    } else if (completedPercentage >= 50) {
-      return "🤩 Solid effort!";
-    } else if (completedPercentage >= 40) {
-      return "👏 Getting there!";
-    } else if (completedPercentage >= 30) {
-      return "🤔 Needs a boost!";
-    } else if (completedPercentage >= 20) {
-      return "😅 Room for improvement!";
-    } else if (completedPercentage >= 10) {
-      return "😬 Getting tough!";
-    } else {
-      return "😢 Struggling";
-    }
-  };
-
+  
   return (
     <>
       <Container>
