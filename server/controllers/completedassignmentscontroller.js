@@ -18,6 +18,35 @@ const getCompletedAssignments = async (req, res) => {
   }
 };
 
+const getCompletedAssignmentsForStudent = async (req, res) => {
+  try {
+    // Retrieve the student ID from the request parameters
+    const { studentId } = req.params;
+    // Query the Assignment Database to retrieve completed assignments for the student
+    const completedAssignments = await Assignment.find({
+      student: studentId,
+      completed: true,
+    });
+    //console.log("completedAssignments", completedAssignments);
+    if (completedAssignments.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No completed assignments found for the student" });
+    }
+    // Return the completed assignments
+    res.status(200).json(completedAssignments);
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error(
+      "Error retrieving completed assignments for the student:",
+      error
+    );
+    res.status(500).json({
+      message: "Failed to fetch completed assignments for the student",
+    });
+  }
+};
+
 //function to mark an assignment as completed
 const markAssignmentAsCompleted = async (req, res) => {
   try {
@@ -35,7 +64,7 @@ const markAssignmentAsCompleted = async (req, res) => {
     await assignment.save();
     // Return a success message
     res
-      .status(200)
+      .status(201)
       .json({ message: "Assignment marked as completed successfully" });
   } catch (error) {
     // Handle any errors that occur during the process
@@ -76,4 +105,5 @@ module.exports = {
   getCompletedAssignments,
   markAssignmentAsCompleted,
   markAssignmentAsIncomplete,
+  getCompletedAssignmentsForStudent,
 };

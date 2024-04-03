@@ -5,11 +5,17 @@ const {
   getCompletedAssignments,
   markAssignmentAsCompleted,
   markAssignmentAsIncomplete,
+  getCompletedAssignmentsForStudent,
 } = require("../controllers/completedassignmentscontroller");
 
 // Route to fetch completed assignments
 router.get("/", async (req, res) => {
   getCompletedAssignments(req, res);
+});
+
+router.get("/:studentId", async (req, res) => {
+  //console.log("req.params.studentId", req.params.studentId);
+  getCompletedAssignmentsForStudent(req, res);
 });
 
 // Route to mark an assignment as completed

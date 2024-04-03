@@ -2,18 +2,14 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-function ModalPopup({ title, text, display }) {
-  const [show, setShow] = useState(display);
+function ModalPopup({ title, text }) {
+  const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch static backdrop modal
-      </Button>
-
       <Modal
         show={show}
         onHide={handleClose}

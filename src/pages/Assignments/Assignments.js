@@ -8,19 +8,25 @@ import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import AssignmentItem from "../../components/AssignmentItem";
 import Modal from "react-bootstrap/Modal";
 import CompletedAssignments from "./CompletedAssignments";
-import { Card, Container, Col, Row, ButtonGroup ,ProgressBar } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Col,
+  Row,
+  ButtonGroup,
+  ProgressBar,
+} from "react-bootstrap";
 import ToastPopup from "../../components/ToastPopup";
+import ModalPopUp from "../../components/ModalPopup";
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
-  const [showA, setShowA] = useState(true);
-  const [showB, setShowB] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
   const { user, userDetails } = useAuth(AuthProvider);
   const { getAuthToken } = useAuth();
-  const toggleShowA = () => setShowA(!showA);
-  const toggleShowB = () => setShowB(!showB);
 
   //sorting function
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
@@ -59,9 +65,6 @@ const Assignments = () => {
           (assignment) => assignment.completed && assignment.grade !== undefined
         );
         setShowGradeSortButton(hasGrades);
-
-
-
       } catch (error) {
         console.error("Error fetching assignments:", error);
       }
@@ -73,6 +76,13 @@ const Assignments = () => {
   const handleShowConfirmation = (id) => {
     setAssignmentIdToDelete(id);
     setShowConfirmation(true);
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   const deleteAssignment = async (id) => {
@@ -100,8 +110,8 @@ const Assignments = () => {
         setAssignments((prevAssignments) =>
           prevAssignments.filter((assignment) => assignment._id !== id)
         );
-        //alert("Assignment marked as completed successfully!");
-        toggleShowA();
+        window.location.reload();
+        //handleShowModal();
       }
     } catch (error) {
       console.error("Error marking assignment as completed:", error);
@@ -135,80 +145,77 @@ const Assignments = () => {
     return 0;
   });
 
+  // Calculate percentage of completed assignments
+  const completedPercentage = Math.round(
+    (assignments.filter((assignment) => assignment.completed).length /
+      assignments.length) *
+      100
+  );
 
-// Calculate percentage of completed assignments
-const completedPercentage = Math.round((assignments.filter(assignment => assignment.completed).length / assignments.length) * 100);
-
-
-const calculateStudentLevel = (completedPercentage) => {
-  if (completedPercentage >= 90) {
-    return "🚀 Superstar!";
-  } else if (completedPercentage >= 80) {
-    return "🌟 Acing it!";
-  } else if (completedPercentage >= 70) {
-    return "🎉 Rocking it!";
-  } else if (completedPercentage >= 60) {
-    return "😎 Doing great!";
-  } else if (completedPercentage >= 50) {
-    return "🤩 Solid effort!";
-  } else if (completedPercentage >= 40) {
-    return "👏 Getting there!";
-  } else if (completedPercentage >= 30) {
-    return "🤔 Needs a boost!";
-  } else if (completedPercentage >= 20) {
-    return "😅 Room for improvement!";
-  } else if (completedPercentage >= 10) {
-    return "😬 Getting tough!";
-  } else {
-    return "😢 Struggling";
-  }
-};
+  const calculateStudentLevel = (completedPercentage) => {
+    if (completedPercentage >= 90) {
+      return "🚀 Superstar!";
+    } else if (completedPercentage >= 80) {
+      return "🌟 Acing it!";
+    } else if (completedPercentage >= 70) {
+      return "🎉 Rocking it!";
+    } else if (completedPercentage >= 60) {
+      return "😎 Doing great!";
+    } else if (completedPercentage >= 50) {
+      return "🤩 Solid effort!";
+    } else if (completedPercentage >= 40) {
+      return "👏 Getting there!";
+    } else if (completedPercentage >= 30) {
+      return "🤔 Needs a boost!";
+    } else if (completedPercentage >= 20) {
+      return "😅 Room for improvement!";
+    } else if (completedPercentage >= 10) {
+      return "😬 Getting tough!";
+    } else {
+      return "😢 Struggling";
+    }
+  };
 
   return (
-   
     <>
-    <Container>
-    <Row>
-    <Col>
-      <h2 className="text-center">Upcoming Assignments </h2>
-       {/* for {userInfo.firstName} */}
-      <Link to="/addassignment">
-        <Button className="d-block mx-auto">Add New Assignment</Button>
-      </Link>
-    </Col>
-    
-    
-     <Col>
-      <h2 className="text-center">Completed Assignments</h2>
-      <p className="text-center">
-
-{assignments.filter(assignment => assignment.completed).length == 0 ? (
-          <>
-            No Assignments Completed
-          </>
-        ) : (
-          <>
-            Congrats, {userInfo.firstName}!
-            <p className="fs-1">
-          {assignments.filter(assignment => assignment.completed).length}/{assignments.length}
-        </p>
-        Assignments Completed
-        <ProgressBar now={completedPercentage} label={`${completedPercentage}%`} />
-        <p>
-        Your Student Level: {calculateStudentLevel(completedPercentage)}
-      </p>
-
-          </>
-        )}
-      </p>
-     
-      
-    </Col> 
-  </Row>
-      <Row>
-        <Col>
-          <div className="assignments-container">
+      <Container>
+        <Row>
+          <p className="text-center">
+            {assignments.filter((assignment) => assignment.completed).length ==
+            0 ? (
+              <>No Assignments Completed</>
+            ) : (
+              <>
+                Congrats, {userInfo.firstName}!
+                <p className="fs-1">
+                  {
+                    assignments.filter((assignment) => assignment.completed)
+                      .length
+                  }
+                  /{assignments.length}
+                </p>
+                Assignments Completed
+                <ProgressBar
+                  now={completedPercentage}
+                  label={`${completedPercentage}%`}
+                />
+                <p>
+                  Your Student Level:{" "}
+                  {calculateStudentLevel(completedPercentage)}
+                </p>
+              </>
+            )}
+          </p>
+        </Row>
+        <Row>
+          <Col>
+            <h2 className="text-center">Upcoming Assignments </h2>
+            {/* for {userInfo.firstName} */}
+            <Link to="/addassignment"></Link>
             <ButtonGroup>
+              <Button className="d-block mx-auto" href="/addassignment">
+                Add New Assignment
+              </Button>
               <Button
                 variant="success"
                 onClick={() => handleSortChange("dueDate")}
@@ -222,75 +229,83 @@ const calculateStudentLevel = (completedPercentage) => {
                 Sort by Priority
               </Button>
             </ButtonGroup>
-            {sortedAssignments
-              .filter((assignment) => assignment.completed === false)
-              .map((assignment) => (
-                <Card
-                  key={assignment._id}
-                  className="assignment-card"
-                  style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-                  bsPrefix
-                >
-                  <AssignmentItem
-                    assignment={assignment}
-                    studentId={userInfo.id}
-                  />
-                  <ButtonGroup>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleShowConfirmation(assignment._id)}
-                    >
-                      Delete
-                    </Button>
-                    <Button href={`/editassignment/${assignment._id}`}>
-                      Edit
-                    </Button>
-                    <Button
-                      variant="success"
-                      onClick={() =>
-                        markAssignmentAsCompleted(assignment._id)
-                      }
-                    >
-                      Mark as Completed
-                    </Button>
-                  </ButtonGroup>
-                </Card>
-              ))}
-          </div>
-          <Modal
-            show={showConfirmation}
-            onHide={handleCloseConfirmation}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Confirm Deletion</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Are you sure you want to delete this assignment?
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={handleCloseConfirmation}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => deleteAssignment(assignmentIdToDelete)}
-              >
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          <ToastPopup show={showA} />
-        </Col>
+          </Col>
 
-        <Col>
-          <CompletedAssignments />
-        </Col>
-      </Row>
-    </Container>
-  </>
+          <Col>
+            <h2 className="text-center">Completed Assignments</h2>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="assignments-container">
+              {sortedAssignments
+                .filter((assignment) => assignment.completed === false)
+                .map((assignment) => (
+                  <Card
+                    key={assignment._id}
+                    className="assignment-card"
+                    style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
+                    bsPrefix
+                  >
+                    <AssignmentItem
+                      assignment={assignment}
+                      studentId={userInfo.id}
+                    />
+                    <ButtonGroup>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleShowConfirmation(assignment._id)}
+                      >
+                        Delete
+                      </Button>
+                      <Button href={`/editassignment/${assignment._id}`}>
+                        Edit
+                      </Button>
+                      <Button
+                        variant="success"
+                        onClick={() =>
+                          markAssignmentAsCompleted(assignment._id)
+                        }
+                      >
+                        Mark as Completed
+                      </Button>
+                    </ButtonGroup>
+                  </Card>
+                ))}
+            </div>
+            <Modal show={showConfirmation} onHide={handleCloseConfirmation}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Are you sure you want to delete this assignment?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseConfirmation}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => deleteAssignment(assignmentIdToDelete)}
+                >
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <ModalPopUp
+              show={showModal}
+              onHide={handleCloseModal}
+              title="Completed!"
+              text="Sucessfully marked as completed"
+            />
+          </Col>
+
+          <Col>
+            <CompletedAssignments />
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
