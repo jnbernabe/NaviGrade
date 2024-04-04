@@ -20,7 +20,6 @@ import ViewCourse from "./pages/Courses/ViewCourse";
 import AddCourse from "./pages/Courses/AddCourse";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Logout from "./components/Logout";
-import GradeEntry from "./pages/Grades/GradeEntry"; // Import GradeEntry component
 import CompletedAssignments from "./pages/Assignments/CompletedAssignments";
 import "./styles.css";
 
@@ -59,7 +58,6 @@ function App() {
               <Route path="/viewcourse/:id" element={<ViewCourse />} />
               <Route path="/addcourse" element={<AddCourse />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/grade-entry" element={<GradeEntry />}/>
               <Route path="/completed-assignments" element={<CompletedAssignments />} />
  
             </>
@@ -82,7 +80,6 @@ function App() {
               <Route path="/viewcourse/:id" element={<ViewCourse />} />
               <Route path="/addcourse" element={<AddCourse />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/grade-entry" element={<GradeEntry />}/>
               <Route path="/completed-assignments" element={<CompletedAssignments />} />
             </>
           )}

@@ -1,4 +1,6 @@
+//controllers/completedassignmentscontroller.js
 const Assignment = require("../models/Assignment");
+const Grade = require("../models/Grade");
 
 const getCompletedAssignments = async (req, res) => {
   try {
@@ -101,9 +103,55 @@ const markAssignmentAsIncomplete = async (req, res) => {
   }
 };
 
+// Function to estimate final grades for a student
+const estimateFinalGrades = async (studentId) => {
+  try {
+    // Get all completed assignments for the student
+    const completedAssignments = await Assignment.find({
+      student: studentId,
+      completed: true,
+    });
+
+    // Calculate total grade for each course
+    const courseGrades = {};
+    for (const assignment of completedAssignments) {
+      const grade = await Grade.findOne({
+        assignment: assignment._id,
+        student: studentId,
+      });
+      if (grade) {
+        const courseId = assignment.course;
+        if (!courseGrades[courseId]) {
+          courseGrades[courseId] = {
+            totalGrade: 0,
+            totalWeight: 0,
+          };
+        }
+        courseGrades[courseId].totalGrade += grade.grade * assignment.weight;
+        courseGrades[courseId].totalWeight += assignment.weight;
+      }
+    }
+
+    // Calculate final grade for each course
+    const finalGrades = {};
+    for (const courseId in courseGrades) {
+      const { totalGrade, totalWeight } = courseGrades[courseId];
+      const finalGrade = (totalGrade / totalWeight) * 100;
+      finalGrades[courseId] = finalGrade.toFixed(2);
+    }
+
+    return finalGrades;
+  } catch (error) {
+    console.error("Error estimating final grades:", error);
+    throw new Error("Failed to estimate final grades");
+  }
+};
+
 module.exports = {
   getCompletedAssignments,
   markAssignmentAsCompleted,
   markAssignmentAsIncomplete,
   getCompletedAssignmentsForStudent,
+  estimateFinalGrades,
 };
+
