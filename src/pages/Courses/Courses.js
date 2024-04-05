@@ -64,7 +64,7 @@ const Courses = () => {
 
   return (
     <div className="courses-container">
-      <h2 className="display-5">Available Courses</h2>
+      <h2 className="display-5">My Courses</h2>
       <Link to="/addcourse">
         <Button variant="primary">Add Course</Button>
       </Link>
