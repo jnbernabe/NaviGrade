@@ -18,7 +18,7 @@ const userRoutes = require("./routes/userRoutes");
 const Assignment = require("./models/Assignment");
 const completedassignments = require("./routes/completedAssignmentRoutes");
 const { estimateFinalGrades } = require("./controllers/completedassignmentscontroller");
-
+const emailRoutes = require("./routes/appMailRoutes")
 
 dotenv.config();
 const app = express();
@@ -38,6 +38,8 @@ app.use("/assignments", authenticateToken, assignmentRoutes);
 app.use("/completed-assignments", authenticateToken, completedassignments);
 app.use("/admin", adminRoutes);
 app.use("/users", userRoutes);
+//email
+app.use("/email",emailRoutes)
 
 // Error handling middleware
 app.use((err, _req, res, _next) => {
