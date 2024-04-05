@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import { Card, Button } from "react-bootstrap";
 import { formatDateToMDYY } from "../../utils/serviceWorkers";
+import { ToastContainer, toast } from "react-toastify";
 
 const CompletedAssignments = () => {
   const { getAuthToken } = useAuth();
@@ -43,6 +44,7 @@ const CompletedAssignments = () => {
         }
       );
       window.location.reload();
+      toast("Assignment marked as incomplete successfully");
 
       console.log("Assignment marked as incomplete successfully");
       // Update the completedAssignments state to reflect the change
@@ -60,12 +62,14 @@ const CompletedAssignments = () => {
       window.location.reload();
     } catch (error) {
       console.error("Error marking assignment as incomplete:", error);
+      toast("Failed to mark assignment as incomplete");
     }
   };
 
   return (
     <>
       <div className="assignments-container">
+        <ToastContainer />
         {!completedAssignments.length == 0 ? (
           completedAssignments.map((assignment) => (
             <Card
