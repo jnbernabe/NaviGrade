@@ -86,16 +86,20 @@ const Dashboard = () => {
     ${diffDays} day(s) left`);
   };
 
+  const notifyEmailSentMessage = () =>{
+    toast("Email sent");
+  }
 //email notification 
 const handleSendEmail = async () => {
+ 
   try {
     const sortedAssignments = [...assignments].sort((a, b) => {
       return new Date(a.dueDate) - new Date(b.dueDate);
     });
-
-    
+    if(sortedAssignments.length == 0){
+      toast("You do not have any assignment");
+    }
     const closestAssignment = sortedAssignments[0];
-  
     const today = new Date();
     const dueDate = new Date(closestAssignment.dueDate);
     const diffTime = dueDate - today;
@@ -109,6 +113,8 @@ const handleSendEmail = async () => {
     });
     console.log('dueDate' ,dueDate)
     console.log("Email sent")
+    // pop up message
+    notifyEmailSentMessage();
   } catch (error) {
     console.error("Error sending email:", error);
    
@@ -142,7 +148,7 @@ const fetchCourses = async () => {
       />
           <div className="button-container" >
               <Button variant="warning" onClick={notifyClosestAssignment}>
-                What should I do!?
+                What is due next?
               </Button>
               <ToastContainer />
               <Button variant="info" onClick={handleSendEmail}>Send me a reminder Email</Button>
