@@ -3,6 +3,7 @@ import { Modal, Button, Form,ProgressBar } from "react-bootstrap";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import { calculateStudentLevel } from "../../pages/Assignments/Assignments";
+import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
 const ProfileDisplay = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -10,8 +11,7 @@ const ProfileDisplay = ({ user }) => {
   const [updatedUser, setUpdatedUser] = useState({ ...user });
   
   const [totalAssignments, setTotalAssignments] = useState(0);
-  const [completedAssignments, setCompletedAssignments] = useState(0);
-
+ 
   const { getAuthToken, setUserInfo } = useAuth();
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const handleClose = () => {
@@ -23,32 +23,6 @@ const ProfileDisplay = ({ user }) => {
   const handleInputChange = (event) => {
     setUpdatedUser({ ...updatedUser, [event.target.name]: event.target.value });
   };
-
-  const fetchAssignments = async () => {
-    try {
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await axios.get(
-        `${apiKey}/assignments/student/${user.id}`
-      );
-
-      const fetchedAssignments = response.data;
-      const total = fetchedAssignments.length;
-      const completed = fetchedAssignments.filter(
-        (assignment) => assignment.completed
-      ).length;
-
-      setTotalAssignments(total);
-      setCompletedAssignments(completed);
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAssignments();
-  }, [user.id]); // Fetch assignments when user id changes
-
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -78,9 +52,26 @@ const ProfileDisplay = ({ user }) => {
     setEditMode(false); // Switch back to view mode after submitting the form
   };
 
-  const completedPercentage = Math.round(
-     completedAssignments/ totalAssignments*100
-  );
+   const fetchAssignments = async () => {
+    try {
+      const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.get(
+        `${apiKey}/assignments/student/${user.id}`
+      );
+
+      const fetchedAssignments = response.data;
+  
+      setTotalAssignments(fetchedAssignments);
+   
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [user.id]); // Fetch assignments when user id changes
+
 
   return (
     <>
@@ -136,16 +127,21 @@ const ProfileDisplay = ({ user }) => {
               </p>
               {/* Add more profile information as needed */}
               
-            <p>Completed Assignment: {completedAssignments} / {totalAssignments}</p>
+            {/* <p>Completed Assignment: {completedAssignments} / {totalAssignments}</p> */}
         
-            <ProgressBar
+            {/* <ProgressBar
                   now={completedPercentage}
                   label={`${completedPercentage}%`}
                 />
                 <p>
                   Your Student Level:{" "}
                   {calculateStudentLevel(completedPercentage)}
-                </p>
+                </p> */}
+
+              <AssignmentProgressbar
+               assignments ={totalAssignments}
+               />
+
               
               <Button variant="primary" onClick={() => setEditMode(true)}>
                 Edit

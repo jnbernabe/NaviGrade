@@ -18,6 +18,7 @@ import {
 } from "react-bootstrap";
 import ToastPopup from "../../components/ToastPopup";
 import ModalPopUp from "../../components/ModalPopup";
+import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
 export const calculateStudentLevel = (completedPercentage) => {
   if (completedPercentage >= 90) {
@@ -50,10 +51,8 @@ const Assignments = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
   const { user, userDetails } = useAuth(AuthProvider);
   const { getAuthToken } = useAuth();
-
   //sorting function
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
   const [sortOrder, setSortOrder] = useState("asc"); // Default sorting order
@@ -171,14 +170,6 @@ const Assignments = () => {
     return 0;
   });
 
-  // Calculate percentage of completed assignments
-  const completedPercentage = Math.round(
-    (assignments.filter((assignment) => assignment.completed).length /
-      assignments.length) *
-      100
-  );
-
-  
   return (
     <>
       <Container>
@@ -198,14 +189,11 @@ const Assignments = () => {
                   /{assignments.length}
                 </p>
                 Assignments Completed
-                <ProgressBar
-                  now={completedPercentage}
-                  label={`${completedPercentage}%`}
-                />
-                <p>
-                  Your Student Level:{" "}
-                  {calculateStudentLevel(completedPercentage)}
-                </p>
+             
+                  {/* <AssignmentProgressbar
+                  assignments ={assignments}
+                /> */}
+
               </>
             )}
           </p>
