@@ -17,9 +17,9 @@ import { calculateStudentLevel } from "../pages/Assignments/Assignments";
         now={completedPercentage}
         label={`${completedPercentage}%`}
       />
-      <h4>
+      <h5>
         Your Student Level: {calculateStudentLevel(completedPercentage)}
-      </h4>
+      </h5>
     </div>
     )
   };
