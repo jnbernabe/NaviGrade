@@ -27,7 +27,7 @@ console.log('selectedAvatar',selectedAvatar)
 
 
   useEffect(() => {
-   // editMode が true の場合のみ handleAvatarSelect を呼び出す
+  
    if (editMode) {
     handleAvatarSelect(selectedAvatar);
   }
@@ -35,14 +35,9 @@ console.log('selectedAvatar',selectedAvatar)
 
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
-    if (!editMode) {
-        //editmode is false
+  
       localStorage.setItem("selectedAvatar", avatar);
-    } else {
-        //editmode is true
-      //localStorage.removeItem("selectedAvatar");
-      localStorage.setItem("selectedAvatar", avatar);
-    }
+   
   };
 
   
@@ -72,33 +67,5 @@ console.log('selectedAvatar',selectedAvatar)
     </div>
   );
 };
-
-// Render the saved avatar if it exists and not in edit mode, otherwise render the list of avatars for selection
-// return (
-//     <div>
-//       <h2>Select Your Avatar</h2>
-//       {(selectedAvatar && !editMode) ? (
-//         <img
-//           src={selectedAvatar}
-//           alt="Selected Avatar"
-//           className="selected-avatar"
-//         />
-//       ) : (
-//         <div className="avatar-list">
-//           {[avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatar9].map((avatar, index) => (
-//             <img
-//               key={index}
-//               src={avatar}
-//               alt={`Avatar ${index + 1}`}
-//               className={avatar === selectedAvatar ? "selected" : ""}
-//               onClick={() => handleAvatarSelect(avatar)}
-//             />
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
 
 export default AvatarSelection;
