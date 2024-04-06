@@ -5,19 +5,25 @@ import { useAuth } from "../../contexts/AuthContext";
 import { calculateStudentLevel } from "../../pages/Assignments/Assignments";
 import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
+//avatar
+import AvatarSelection from "../../components/AvatarSelection"
+import { avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatar9 } from "../../components/AvatarSelection";
+
+
 const ProfileDisplay = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [updatedUser, setUpdatedUser] = useState({ ...user });
-  
   const [totalAssignments, setTotalAssignments] = useState(0);
- 
   const { getAuthToken, setUserInfo } = useAuth();
+  
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
   const handleClose = () => {
     setShowModal(false);
     setEditMode(false); // Reset edit mode when closing the modal
   };
+
+
   const handleShow = () => setShowModal(true);
 
   const handleInputChange = (event) => {
@@ -88,7 +94,15 @@ const ProfileDisplay = ({ user }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+
+       
+          
           {editMode ? (
+           <div>
+
+<AvatarSelection editMode={editMode} />
+
+
             <Form onSubmit={handleSubmit}>
               <Form.Group>
                 <Form.Label>Name</Form.Label>
@@ -113,8 +127,11 @@ const ProfileDisplay = ({ user }) => {
                 Update
               </Button>
             </Form>
+            </div>
           ) : (
             <>
+           <AvatarSelection editMode={editMode} />
+
               <p>
                 Name:{" "}
                 {updatedUser && updatedUser.firstName

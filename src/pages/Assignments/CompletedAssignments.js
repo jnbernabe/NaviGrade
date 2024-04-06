@@ -98,10 +98,7 @@ const CompletedAssignments = () => {
 
 
   return (
-    <>
       <div className="assignments-container">
-  
-
              <Button
               variant="success"
               onClick={() => handleSortChange("dueDate")}
@@ -114,9 +111,6 @@ const CompletedAssignments = () => {
             >
               Sort by Grade
             </Button>
-
-         
-
          {!sortedAssignments.length == 0 ? (
           sortedAssignments.map((assignment) => (
             <Card
@@ -149,10 +143,7 @@ const CompletedAssignments = () => {
         ) : (
           <h3>No completed assignments found</h3>
         )} 
-
-
       </div>
-    </>
   );
 };
 
