@@ -36,11 +36,12 @@ const options = {
 exports.sendEmail = async (req, res) => {
   try {
   
-    const { closestAssignment, diffDays } = req.body;
+    const { closestAssignment, diffDays ,userEmail} = req.body;
     console.log('req.body: ', req.body);
     const mail = {
       from: '"Maddison Foo " <maddison53@ethereal.email>',
-      to: "yuko@test.com",
+      // to: "yuko@test.com",
+      to: userEmail.toString(),
       subject: "DUE SOON",
       text: `Closest assignment: ${closestAssignment.name}\n${diffDays} day(s) left`,
       html: `<h1>Closest assignment: ${closestAssignment.name}</h1><p>${diffDays} day(s) left</p>`

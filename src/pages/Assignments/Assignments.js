@@ -18,6 +18,7 @@ import {
 } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
 export const calculateStudentLevel = (completedPercentage) => {
   if (completedPercentage >= 90) {
@@ -48,10 +49,8 @@ const Assignments = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
   const { user, userDetails } = useAuth(AuthProvider);
   const { getAuthToken } = useAuth();
-
   //sorting function
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
   const [sortOrder, setSortOrder] = useState("asc"); // Default sorting order
@@ -211,14 +210,9 @@ const Assignments = () => {
                   /{assignments.length}
                 </p>
                 Assignments Completed
-                <ProgressBar
-                  now={completedPercentage}
-                  label={`${completedPercentage}%`}
-                />
-                <p>
-                  Your Student Level:{" "}
-                  {calculateStudentLevel(completedPercentage)}
-                </p>
+                {/* <AssignmentProgressbar
+                  assignments ={assignments}
+                /> */}
               </>
             )}
           </p>
