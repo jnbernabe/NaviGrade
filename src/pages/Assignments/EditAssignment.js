@@ -62,7 +62,7 @@ function EditGrade(props) {
             grade: assignment.grade,
             priority: assignment.priority,
             memo: assignment.memo,
-            completed: false
+            completed: assignment.completed
         };
         axios.patch(apiUrl, data)
             .then((result) => {

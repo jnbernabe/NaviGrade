@@ -180,7 +180,7 @@ const fetchCourses = async () => {
       )}
       </div>
       <div id="div3" className="text-center"> 
-       <h4>Calendar</h4>
+       <h4>Assignment Calendar</h4>
       
        <Calendar courses={courses} assignments={totalAssignments} />
       </div>
