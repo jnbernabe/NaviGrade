@@ -16,8 +16,8 @@ import {
   ButtonGroup,
   ProgressBar,
 } from "react-bootstrap";
-import ToastPopup from "../../components/ToastPopup";
-import ModalPopUp from "../../components/ModalPopup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
 export const calculateStudentLevel = (completedPercentage) => {
@@ -43,8 +43,6 @@ export const calculateStudentLevel = (completedPercentage) => {
     return "😢 Struggling";
   }
 };
-
-
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
@@ -103,13 +101,6 @@ const Assignments = () => {
     setShowConfirmation(true);
   };
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
   const deleteAssignment = async (id) => {
     try {
       const apikey = process.env.REACT_APP_API_KEY;
@@ -131,16 +122,15 @@ const Assignments = () => {
       let response = await axios.post(
         `${apikey}/completed-assignments/${id}/mark-completed`
       );
-      if (response.status === 201) {
-        setAssignments((prevAssignments) =>
-          prevAssignments.filter((assignment) => assignment._id !== id)
-        );
-        window.location.reload();
-        //handleShowModal();
-      }
+
+      setAssignments((prevAssignments) =>
+        prevAssignments.filter((assignment) => assignment._id !== id)
+      );
+      window.location.reload();
+      toast(`Assignment marked as completed`);
     } catch (error) {
       console.error("Error marking assignment as completed:", error);
-      alert("Failed to mark assignment as completed");
+      toast("Failed to mark assignment as completed");
     }
   };
   // sort
@@ -170,6 +160,37 @@ const Assignments = () => {
     return 0;
   });
 
+  // Calculate percentage of completed assignments
+  const completedPercentage = Math.round(
+    (assignments.filter((assignment) => assignment.completed).length /
+      assignments.length) *
+      100
+  );
+
+  const notifyClosestAssignment = () => {
+    if (assignments.length === 0) {
+      toast("No assignments currently.");
+      return;
+    }
+
+    // Sort assignments by dueDate in ascending order
+    const sortedAssignments = [...assignments].sort((a, b) => {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    });
+
+    // Get the closest assignment (first one in the sorted list)
+    const closestAssignment = sortedAssignments[0];
+
+    const today = new Date();
+    const dueDate = new Date(closestAssignment.dueDate);
+    const diffTime = dueDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    // Display a toast with information about the closest assignment
+    toast(`Closest assignment: ${closestAssignment.name}  
+    ${diffDays} day(s) left`);
+  };
+
   return (
     <>
       <Container>
@@ -189,16 +210,15 @@ const Assignments = () => {
                   /{assignments.length}
                 </p>
                 Assignments Completed
-             
-                  {/* <AssignmentProgressbar
+                {/* <AssignmentProgressbar
                   assignments ={assignments}
                 /> */}
-
               </>
             )}
           </p>
         </Row>
         <Row>
+          <ToastContainer />
           <Col>
             <h2 className="text-center">Upcoming Assignments </h2>
             {/* for {userInfo.firstName} */}
@@ -283,12 +303,6 @@ const Assignments = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <ModalPopUp
-              show={showModal}
-              onHide={handleCloseModal}
-              title="Completed!"
-              text="Sucessfully marked as completed"
-            />
           </Col>
 
           <Col>
