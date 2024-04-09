@@ -108,11 +108,11 @@ const Courses = () => {
                     ? course.schedules[0].endTime
                     : "TBD"}{" "}
                 </ul>
-                {course.memo !== "" && (
-                <p>Memo: {course.memo}</p>
-                 )} 
+                {course.memo !== "" && <p>Memo: {course.memo}</p>}
 
-                <p><Link to={`/editcourse/${course._id}`}>Edit</Link></p> 
+                <p>
+                  <Link to={`/editcourse/${course._id}`}>Edit</Link>
+                </p>
               </Card.Text>
 
               {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
