@@ -1,31 +1,19 @@
 NaviGrade
 
-SRC
-Contains React App
-Run with npm start
+Welcome to Navigrade,
+Your personal School tracker. Using this application you can track your course schedules, assignment due dates, grades, and predict your final grade.
 
-SERVERpm start
-contains backend for app
-run with nodemon server (requires cd in to server folder)
+To run this application:
+Start the client by running npm start in the root directory.
+Start the server by cd server and npm start
 
-TODO
+Unit tests are available by using npm test
 
-Functionality first - Issues stopping deployment -> Admin Report System - Create/ Edit User Profiles to NavBar - Student Assignment History - Dashboard Calendar - Grade Prediction Page - Ranking Assignments - Due Date Reminders - Calendar Sync Option
+Functionality:
+Personal user accounts.
+Course tracking with schedules and course information for you to add.
+Assignment tracking with notifications of due dates, grade tracking per assignment
+Grade prediction using completed grades and their weights 
+User Profile where the user can change their profile information and profile image 
+Calendar for visualization of upcoming due dates
 
-Authentication service file
-include file with blacklist as arg -> return T or F
-update list to token to file
-
-Database Layer
-Interact with DB
-
-    methods in model to find user
-    MVC pattern
-    Search for repository
-    Restrict actions on tables
-    Repo which talks with DB to do actions
-
-Unit Test - Automated code to test functionality
-Code Quality
-
-MongoDB reminder
