@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
+import axios from "../../services/mockApi";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -60,6 +60,7 @@ function EditCourse(props) {
 
     return (
         <div className="course-container">
+            <div className="glass-panel p-5">
             <h2>Edit Course</h2>
             <Form onSubmit={handleSave}>
                 <Form.Group>
@@ -136,6 +137,7 @@ function EditCourse(props) {
                     Save
                 </Button>
             </Form>
+            </div>
         </div>
     );
 }

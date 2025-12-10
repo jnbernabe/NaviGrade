@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
@@ -61,7 +61,7 @@ function EditGrade(props) {
 
         //course
         const response = await axios.get(
-          `${apikey}/courses/student/${userInfo.id}`
+          `${apikey}/courses/student/${userInfo._id}`
         );
         setCourses(response.data);
       } catch (error) {
@@ -97,6 +97,7 @@ function EditGrade(props) {
 
   return (
     <div className="assignments-container">
+      <div className="glass-panel p-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <h2>Edit Assignment</h2>
       <Form onSubmit={handleSave}>
         <Form.Group>
@@ -187,6 +188,7 @@ function EditGrade(props) {
           Save
         </Button>
       </Form>
+      </div>
     </div>
   );
 }

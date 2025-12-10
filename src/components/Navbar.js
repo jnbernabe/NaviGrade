@@ -49,9 +49,7 @@ const Navbar = () => {
   return (
     <BootstrapNavbar
       expand="lg"
-      bg="dark"
-      variant="dark"
-      className="mx-auto w-100 "
+      className="mx-auto w-100 sticky-top"
     >
       <Container fluid>
         <Link to="/" className="navbar-brand">

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './grades.css';
-import axios from 'axios';
+import axios from "../../services/mockApi";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,16 +15,15 @@ const Grades = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        fetch('http://localhost:5050/assignments')
-            .then(response => response.json())
-            .then(data => {
-                setGrades(data);
+        axios.get('http://localhost:5050/assignments')
+            .then(response => {
+                setGrades(response.data);
             })
             .catch(error => console.error('Error:', error));
 
-            fetch('http://localhost:5050/courses')
-            .then(response => response.json())
-            .then(data => {
+            axios.get('http://localhost:5050/courses')
+            .then(response => {
+                const data = response.data;
                 // save courseData as object
                 const coursesData = {};
                 data.forEach(course => {
@@ -36,9 +35,9 @@ const Grades = () => {
 
 
 
-            fetch('http://localhost:5050/students')
-            .then(response => response.json())
-            .then(data => {
+            axios.get('http://localhost:5050/students')
+            .then(response => {
+                const data = response.data;
                 // save courseData as object
                 const studentsData = {};
                 data.forEach(student => {

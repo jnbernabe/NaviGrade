@@ -1,7 +1,7 @@
 //CalendarContainer.js
 import React, { useState, useEffect } from "react";
 import Calendar from "./Calendar";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 
 const CalendarContainer = () => {
@@ -21,7 +21,7 @@ const CalendarContainer = () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(
-        `${apiKey}/courses/student/${userInfo.id}`
+        `${apiKey}/courses/student/${userInfo._id}`
       );
       const fetchedCourses = response.data;
       setCourses(fetchedCourses);
@@ -34,7 +34,7 @@ const CalendarContainer = () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(
-        `${apiKey}/assignments/student/${userInfo.id}`
+        `${apiKey}/assignments/student/${userInfo._id}`
       );
       const fetchedAssignments = response.data;
       setAssignments(fetchedAssignments);

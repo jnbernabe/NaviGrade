@@ -1,6 +1,7 @@
 // src/contexts/AuthContext.js
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "../services/mockApi";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -65,30 +66,26 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = getAuthToken();
     if (token) {
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      if (decodedToken.exp < currentTime) {
-        signout();
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp < currentTime) {
+          signout();
+        }
+      } catch (e) {
+        // Token is likely a mock token, ignore expiration
       }
     }
   }, []);
 
   const signout = async () => {
     try {
-      // Make a POST request to the server to logout
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await fetch(`${apiKey}/users/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Include the token in the Authorization header
-          Authorization: `Bearer ${getAuthToken()}`,
-        },
-        // Include any necessary authentication tokens or credentials
-      });
+      // Mock API call
+      // const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.post("/users/logout", {});
 
       // Assuming a successful logout, redirect to the home page or login page
-      if (response.ok) {
+      if (response.status === 200) {
         // Remove both access and refresh tokens
         removeAuthToken();
         setUser(null);
@@ -103,18 +100,12 @@ const AuthProvider = ({ children }) => {
   const signup = async (email, password, firstName, lastName) => {
     try {
       setLoading(true);
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await fetch(`${apiKey}/users/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, firstName, lastName }),
-      });
+      // const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.post("/users/signup", { email, password, firstName, lastName });
 
-      const responseData = await response.json(); // This line captures the response data
+      const responseData = response.data; // This line captures the response data
       console.log("Response data:", responseData);
-      if (response.ok) {
+      if (response.status === 200 || response.status === 201) {
         console.log("Signup successful. User data:", responseData);
         const userjson = JSON.stringify(responseData.user);
         setAuthToken(responseData.token, userjson);
@@ -123,7 +114,7 @@ const AuthProvider = ({ children }) => {
         navigate("/home");
         return true;
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         console.error("Error during signup:", response.statusText, errorData);
         return false;
       }
@@ -148,17 +139,11 @@ const AuthProvider = ({ children }) => {
         return false;
       }
 
-      const apiKey = process.env.REACT_APP_API_KEY;
-      const response = await fetch(`${apiKey}/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // const apiKey = process.env.REACT_APP_API_KEY;
+      const response = await axios.post("/users/login", { email, password });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200 || response.status === 201) {
+        const data = response.data;
         console.log("Sign in successful. User data:", data);
         // Set both access and refresh tokens
         const userjson = JSON.stringify(data.user);

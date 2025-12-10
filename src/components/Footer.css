@@ -1,21 +1,49 @@
+/* Cosmic Footer */
 .footer-container {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #212529;
-  color: white;
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+  padding: 2rem 0;
+  margin-top: auto;
   text-align: center;
-  padding: 15px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
+  width: 100%;
+  position: relative; /* Changed from fixed to flow with page */
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
 }
+
 .footer-social-media {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
+
 .footer-social-media a {
-  margin: 0 5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
 }
+
+.footer-social-media a:hover {
+  color: var(--primary);
+  text-shadow: 0 0 10px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
 .footer-email {
-  margin-left: auto;
+  margin-top: 1rem;
+}
+
+.footer-email a {
+  color: var(--secondary);
+}
+
+.footer-email a:hover {
+  color: var(--text-main);
+  text-decoration: underline;
 }

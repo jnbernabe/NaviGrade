@@ -1,76 +1,16 @@
 //pages/CompletedAssignments.js
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
-import { Card, Button, Form } from "react-bootstrap";
+import { Card, Button, Form, ButtonGroup } from "react-bootstrap";
 import { formatDateToMDYY } from "../../utils/serviceWorkers";
 import { ToastContainer, toast } from "react-toastify";
+import AssignmentItem from "../../components/AssignmentItem";
 
-const CompletedAssignments = () => {
-  const { getAuthToken } = useAuth();
-  const { user, userDetails } = useAuth(AuthProvider);
-  const [completedAssignments, setCompletedAssignments] = useState([]);
-  const [editingGrade, setEditingGrade] = useState(null);
-
+const CompletedAssignments = ({ assignments = [], onMarkIncomplete }) => {
   //sorting function
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
   const [sortOrder, setSortOrder] = useState("asc"); // Default sorting order
-
-  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
-
-  const userInfo = JSON.parse(userDetails);
-
-  useEffect(() => {
-    const fetchCompletedAssignments = async () => {
-      try {
-        //console.log("userInfo.id", userInfo.id);
-        const apikey = process.env.REACT_APP_API_KEY;
-        let response = await axios.get(
-          `${apikey}/completed-assignments/${userInfo.id}`
-        );
-        if (!response.data.length) {
-          console.log("No completed assignments found");
-        }
-        console.log("Completed Assignments fetched successfully:", response);
-        setCompletedAssignments(response.data);
-      } catch (error) {
-        console.error("Error fetching completed assignments:", error);
-      }
-    };
-    fetchCompletedAssignments();
-  }, [userInfo.id]);
-
-  const markAssignmentIncomplete = async (assignmentId) => {
-    try {
-      const apikey = process.env.REACT_APP_API_KEY;
-      await axios.put(
-        `${apikey}/completed-assignments/${assignmentId}/mark-incomplete`,
-        {
-          completed: false,
-        }
-      );
-      window.location.reload();
-      toast("Assignment marked as incomplete successfully");
-
-      //console.log("Assignment marked as incomplete successfully");
-      // Update the completedAssignments state to reflect the change
-      setCompletedAssignments((prevAssignments) => {
-        return prevAssignments.map((assignment) => {
-          if (assignment._id === assignmentId) {
-            return {
-              ...assignment,
-              completed: false,
-            };
-          }
-          return assignment;
-        });
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Error marking assignment as incomplete:", error);
-      toast("Failed to mark assignment as incomplete");
-    }
-  };
 
   const handleSortChange = (value) => {
     if (value === sortBy) {
@@ -83,7 +23,7 @@ const CompletedAssignments = () => {
     }
   };
 
-  const sortedAssignments = [...completedAssignments].sort((a, b) => {
+  const sortedAssignments = [...assignments].sort((a, b) => {
     if (sortBy === "dueDate") {
       // Sort by dueDate
       return sortOrder === "asc"
@@ -97,42 +37,44 @@ const CompletedAssignments = () => {
   });
 
   return (
-    <div className="assignments-container">
+    <div className="completed-section h-100">
       <ToastContainer />
-      <Button variant="success" onClick={() => handleSortChange("dueDate")}>
-        Sort by Due Date
-      </Button>
-      <Button variant="info" onClick={() => handleSortChange("grade")}>
-        Sort by Grade
-      </Button>
-      {!sortedAssignments.length == 0 ? (
-        sortedAssignments.map((assignment) => (
-          <Card
-            key={assignment._id}
-            className="assignment-card"
-            style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-            bsPrefix
-          >
-            <Card.Header>{assignment.name}</Card.Header>
-            <Card.Body>
-              <Card.Text>
-                Due Date: {formatDateToMDYY(assignment.dueDate)}
-              </Card.Text>
-              <Card.Text>Grade: {assignment.grade}</Card.Text>
-
-              <Button onClick={() => markAssignmentIncomplete(assignment._id)}>
-                Mark as Incomplete
-              </Button>
-
-              <Button variant="info" href={`/editassignment/${assignment._id}`}>
-                Edit
-              </Button>
-            </Card.Body>
-          </Card>
-        ))
-      ) : (
-        <h3>No completed assignments found</h3>
-      )}
+      <div className="d-flex justify-content-center gap-2 mb-3">
+        <Button variant="outline-success text-white" onClick={() => handleSortChange("dueDate")}>
+          Date
+        </Button>
+        <Button variant="outline-info text-white" onClick={() => handleSortChange("grade")}>
+          Grade
+        </Button>
+      </div>
+      
+      <div className="assignments-grid">
+        {!sortedAssignments.length == 0 ? (
+          sortedAssignments.map((assignment) => (
+             <Card
+                key={assignment._id}
+                className="assignment-card opacity-75" // Slightly dimmed to indicate completion
+                bsPrefix="card"
+              >
+              <AssignmentItem assignment={assignment} />
+              
+              <ButtonGroup className="mt-3 w-100 bg-dark-glass rounded-pill overflow-hidden border border-white border-opacity-10">
+                  <Button 
+                    variant="link" 
+                    className="text-warning text-decoration-none w-100"
+                    onClick={() => onMarkIncomplete(assignment._id)}
+                  >
+                      Mark Incomplete
+                  </Button>
+              </ButtonGroup>
+            </Card>
+          ))
+        ) : (
+          <div className="text-center text-muted py-5 border border-dashed border-secondary rounded-3">
+              No completed assignments found
+          </div>
+        )}
+      </div>
     </div>
   );
 };

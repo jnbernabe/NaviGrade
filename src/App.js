@@ -1,28 +1,35 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Container } from "react-bootstrap";
-import Home from "./pages/Home/Home";
-import CalendarContainer from "./pages/Calendar/CalendarContainer";
-import Courses from "./pages/Courses/Courses";
-import Assignments from "./pages/Assignments/Assignments";
+import { Container, Spinner } from "react-bootstrap";
 import Navbar from "./components/Navbar";
 import AuthenticationPage from "./components/AuthenticationPage";
-import Login from "./pages/Login/Login";
-import { useAuth } from "./contexts/AuthContext";
-import "bootstrap/dist/css/bootstrap.min.css";
-import MyGrades from "./pages/Grades/MyGrades";
-import Grades from "./pages/Grades/Grades";
-import EditGrade from "./pages/Grades/EditGrade";
-import EditCourse from "./pages/Courses/EditCourse";
-import EditAssignment from "./pages/Assignments/EditAssignment";
-import AddAssignment from "./pages/Assignments/AddAssignment";
-import ViewCourse from "./pages/Courses/ViewCourse";
-import AddCourse from "./pages/Courses/AddCourse";
-import Dashboard from "./pages/Dashboard/Dashboard";
 import Logout from "./components/Logout";
-import CompletedAssignments from "./pages/Assignments/CompletedAssignments";
+import { useAuth } from "./contexts/AuthContext";
 import "./styles.css";
 import Footer from "./components/Footer";
+
+// Lazy load pages
+const Home = lazy(() => import("./pages/Home/Home"));
+const CalendarContainer = lazy(() => import("./pages/Calendar/CalendarContainer"));
+const Courses = lazy(() => import("./pages/Courses/Courses"));
+const Assignments = lazy(() => import("./pages/Assignments/Assignments"));
+const Login = lazy(() => import("./pages/Login/Login"));
+const MyGrades = lazy(() => import("./pages/Grades/MyGrades"));
+const Grades = lazy(() => import("./pages/Grades/Grades"));
+const EditGrade = lazy(() => import("./pages/Grades/EditGrade"));
+const EditCourse = lazy(() => import("./pages/Courses/EditCourse"));
+const EditAssignment = lazy(() => import("./pages/Assignments/EditAssignment"));
+const AddAssignment = lazy(() => import("./pages/Assignments/AddAssignment"));
+const ViewCourse = lazy(() => import("./pages/Courses/ViewCourse"));
+const AddCourse = lazy(() => import("./pages/Courses/AddCourse"));
+const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
+const CompletedAssignments = lazy(() => import("./pages/Assignments/CompletedAssignments"));
+
+const LoadingFallback = () => (
+  <div className="d-flex justify-content-center align-items-center" style={{ height: "50vh" }}>
+    <Spinner animation="border" variant="primary" />
+  </div>
+);
 
 function App() {
   const { user } = useAuth();
@@ -34,34 +41,34 @@ function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/assignments" element={<Assignments />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><Courses /></Suspense>} />
+              <Route path="/assignments" element={<Suspense fallback={<LoadingFallback />}><Assignments /></Suspense>} />
+              <Route path="/login" element={<Suspense fallback={<LoadingFallback />}><Login /></Suspense>} />
 
-              <Route path="/mygrades" element={<MyGrades />} />
-              <Route path="/grades" element={<Grades />} />
+              <Route path="/mygrades" element={<Suspense fallback={<LoadingFallback />}><MyGrades /></Suspense>} />
+              <Route path="/grades" element={<Suspense fallback={<LoadingFallback />}><Grades /></Suspense>} />
 
               <Route
                 path="/calendar"
                 element={
-                  <>
+                  <Suspense fallback={<LoadingFallback />}>
                     <CalendarContainer />
                     <div
                       style={{ width: "100%", height: "600px", margin: "50px" }}
                     />
-                  </>
+                  </Suspense>
                 }
               />
-              <Route path="/editgrade/:id" element={<EditGrade />} />
-              <Route path="/editcourse/:id" element={<EditCourse />} />
-              <Route path="/editassignment/:id" element={<EditAssignment />} />
-              <Route path="/addassignment" element={<AddAssignment />} />
-              <Route path="/viewcourse/:id" element={<ViewCourse />} />
-              <Route path="/addcourse" element={<AddCourse />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/editgrade/:id" element={<Suspense fallback={<LoadingFallback />}><EditGrade /></Suspense>} />
+              <Route path="/editcourse/:id" element={<Suspense fallback={<LoadingFallback />}><EditCourse /></Suspense>} />
+              <Route path="/editassignment/:id" element={<Suspense fallback={<LoadingFallback />}><EditAssignment /></Suspense>} />
+              <Route path="/addassignment" element={<Suspense fallback={<LoadingFallback />}><AddAssignment /></Suspense>} />
+              <Route path="/viewcourse/:id" element={<Suspense fallback={<LoadingFallback />}><ViewCourse /></Suspense>} />
+              <Route path="/addcourse" element={<Suspense fallback={<LoadingFallback />}><AddCourse /></Suspense>} />
+              <Route path="/dashboard" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
               <Route
                 path="/completed-assignments"
-                element={<CompletedAssignments />}
+                element={<Suspense fallback={<LoadingFallback />}><CompletedAssignments /></Suspense>}
               />
             </>
           ) : (
@@ -69,26 +76,10 @@ function App() {
           )}
 
           {/* Make Home the default page */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Suspense fallback={<LoadingFallback />}><Home /></Suspense>} />
           <Route path="/logout" element={<Logout />} />
 
-          {user && (
-            <>
-              {/* ... (other routes for authenticated users) */}
-              <Route path="/calendar" element={<CalendarContainer />} />
-              <Route path="/editgrade/:id" element={<EditGrade />} />
-              <Route path="/editcourse/:id" element={<EditCourse />} />
-              <Route path="/editassignment/:id" element={<EditAssignment />} />
-              <Route path="/addassignment" element={<AddAssignment />} />
-              <Route path="/viewcourse/:id" element={<ViewCourse />} />
-              <Route path="/addcourse" element={<AddCourse />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route
-                path="/completed-assignments"
-                element={<CompletedAssignments />}
-              />
-            </>
-          )}
+          {/* Duplicate routes removed for cleanliness as they are unreachable if !user condition matches or handled above */}
         </Routes>
       </Container>
       <Footer />

@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Modal, Button, Form,ProgressBar } from "react-bootstrap";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth } from "../../contexts/AuthContext";
 import { calculateStudentLevel } from "../../pages/Assignments/Assignments";
 import AssignmentProgressbar from "../../components/AssignmentProgressbar";

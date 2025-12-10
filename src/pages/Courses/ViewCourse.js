@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
+import axios from "../../services/mockApi";
 import { Link } from 'react-router-dom';
 
 function ViewCourse() {
@@ -79,6 +79,7 @@ function ViewCourse() {
 
     return (
         <div className="courses-container">
+            <div className="glass-panel p-5">
             <h2>{editing ? 'Edit Course Details' : 'View Course Details'}</h2>
             {course ? (
                 <div>
@@ -117,6 +118,7 @@ function ViewCourse() {
             ) : (
                 <p>Loading course details...</p>
             )}
+            </div>
         </div>
     );
 }

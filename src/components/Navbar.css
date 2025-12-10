@@ -1,34 +1,68 @@
+/* Cosmic Dark Navbar */
+.navbar {
+  background: rgba(15, 23, 42, 0.6) !important; /* Semi-transparent dark */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+
 .logo {
-  width: 80px;
+  width: 50px;
   height: auto;
-  margin-left: 10px;
-  margin-right: 10px;
-  color: #299193;
+  margin-right: 15px;
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.navbar-brand {
+  font-family: var(--font-header);
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
 }
 
 .nav-link {
-  color: #299193;
-  font-size: 1.2em;
-  font-weight: bold;
-  text-decoration: none;
-  margin: 0 10px;
+  color: var(--text-muted) !important;
+  font-family: var(--font-header);
+  font-weight: 500;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.navbar {
-  color: #299193;
-  padding: 10px 0;
-  position: fixed;
+.nav-link:hover, .nav-link.active {
+  color: var(--text-main) !important;
+  text-shadow: 0 0 8px var(--primary-glow);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background: var(--primary);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
   width: 100%;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  right: 0;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #299193;
+.navbar-text {
+  color: var(--text-main) !important;
+  font-family: var(--font-main);
+  margin-left: 1rem;
 }
+

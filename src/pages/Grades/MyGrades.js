@@ -1,6 +1,6 @@
 // //src/pages/Grades/MyGrades.js
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth } from "../../contexts/AuthContext";
 import GradesForm from "../../components/GradesForm";
 import { Container, Form, Card, Row, Col, Button } from "react-bootstrap";
@@ -27,7 +27,7 @@ const MyGrades = () => {
       try {
         const apiKey = process.env.REACT_APP_API_KEY;
         const response = await axios.get(
-          `${apiKey}/courses/student/${userInfo.id}`
+          `${apiKey}/courses/student/${userInfo._id}`
         );
         const fetchedCourses = response.data;
         setCourses(fetchedCourses);
@@ -42,7 +42,7 @@ const MyGrades = () => {
   useEffect(() => {
     const fetchEstimatedGrade = async (courseId) => {
       try {
-        const studentId = userInfo.id;
+        const studentId = userInfo._id;
         const selected = courseId;
         //console.log("Course ID:", selected);
         const response = await axios.get(
@@ -88,14 +88,15 @@ const MyGrades = () => {
   };
 
   return (
-    <Container>
+    <div className="grades-container">
       <div>
         <h2>My Grades</h2>
 
-        <Card className="assignment-card" bsPrefix>
-          <p>Select your Course</p>
+        <div className="grade-card glass-panel" style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+          <p className="mb-2">Select your Course to view grades</p>
           <Form.Select
             id="course-select"
+            className="mb-3"
             onChange={(e) =>
               setSelectedCourse(() => {
                 if (e.target.value !== "") return e.target.value;
@@ -103,7 +104,7 @@ const MyGrades = () => {
               })
             }
           >
-            <option></option>
+            <option value="">Select a course...</option>
             {courses.map((course) => (
               <option key={course._id} value={course._id}>
                 {course.name}
@@ -111,6 +112,8 @@ const MyGrades = () => {
             ))}
           </Form.Select>
           <Button
+            variant="outline-primary"
+            className="w-100"
             onClick={() => {
               setGrades([]);
               setCompletedAssignments([]);
@@ -122,29 +125,33 @@ const MyGrades = () => {
               document.getElementById("course-select").selectedIndex = 0;
             }}
           >
-            Reset
+            Reset Selection
           </Button>
-        </Card>
+        </div>
       </div>
       <>
-        {isLoading ? (
-          <p>Waiting for Selection</p>
+        {isLoading && !selectedCourse ? (
+          <p className="text-center text-muted">Please select a course above.</p>
+        ) : isLoading ? (
+             <p className="text-center">Loading grades...</p>
         ) : error ? (
-          <p>{error}</p>
+          <div className="text-center text-danger glass-panel p-3">{error}</div>
         ) : (
           <>
             {completedAssignments ? (
+              <div className="glass-panel p-4">
               <GradesForm
                 completedassignments={completedAssignments}
                 handleChildData={handleChildData}
               />
+              </div>
             ) : (
-              <p>No completed assignments</p>
+              <p className="text-center">No completed assignments found.</p>
             )}
           </>
         )}
       </>
-    </Container>
+    </div>
   );
 };
 

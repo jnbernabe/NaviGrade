@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./courses.css";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 
 const Courses = () => {
@@ -22,7 +22,7 @@ const Courses = () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(
-        `${apiKey}/courses/student/${userInfo.id}`
+        `${apiKey}/courses/student/${userInfo._id}`
       );
       const fetchedCourses = response.data;
       setCourses(fetchedCourses);
@@ -68,56 +68,39 @@ const Courses = () => {
       <Link to="/addcourse">
         <Button variant="primary">Add Course</Button>
       </Link>
-      <div
-        className="course-list"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="course-list">
         {courses.map((course) => (
           <Card
             key={course._id}
             className="course-card"
-            style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-            bsPrefix
+            bsPrefix="card"
           >
-            <Card.Img variant="top" src={course.image} />{" "}
-            {/* Add this line if you have images */}
             <Card.Body>
               <Card.Title>{course.name}</Card.Title>
-              <Card.Text>Professor: {course.professor}</Card.Text>
-              <Card.Text>
-                {/* Schedule: {formatDateToMDYY(course.schedule)} */}
-                <h5>Schedule: </h5>
-                <ul>
-                  {course.schedules[0] != null
-                    ? course.schedules[0].day
-                    : "TBD"}{" "}
-                </ul>
-                <ul>
-                  Start:{" "}
-                  {course.schedules[0] != null
-                    ? course.schedules[0].startTime
-                    : "TBD"}{" "}
-                </ul>
-                <ul>
-                  End:{" "}
-                  {course.schedules[0] != null
-                    ? course.schedules[0].endTime
-                    : "TBD"}{" "}
-                </ul>
-                {course.memo !== "" && <p>Memo: {course.memo}</p>}
+              <div className="card-subtitle">Professor: {course.professor}</div>
 
-                <p>
-                  <Link to={`/editcourse/${course._id}`}>Edit</Link>
-                </p>
-              </Card.Text>
+              <div className="course-info-grid">
+                <div className="course-info-item">
+                  <span className="course-info-label">Day</span>
+                  <span className="course-info-value">
+                    {course.schedules[0] ? course.schedules[0].day : "TBD"}
+                  </span>
+                </div>
+                <div className="course-info-item">
+                  <span className="course-info-label">Time</span>
+                  <span className="course-info-value">
+                    {course.schedules[0]
+                      ? `${course.schedules[0].startTime} - ${course.schedules[0].endTime}`
+                      : "TBD"}
+                  </span>
+                </div>
+              </div>
 
-              {/* <Button variant="danger" onClick={() => deleteCourse(course._id)}>
-                Delete this course
-              </Button> */}
+              {course.memo && <div className="course-memo">"{course.memo}"</div>}
+
+              <div className="course-actions">
+                <Link to={`/editcourse/${course._id}`}>Edit Course</Link>
+              </div>
             </Card.Body>
           </Card>
         ))}

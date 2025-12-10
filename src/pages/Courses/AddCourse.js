@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -53,7 +53,7 @@ function AddCourse() {
         // Update the student's course list
         const courseId = response.data.courseId;
         const studentResponse = await axios.post(
-          `${apiKey}/courses/${userInfo.id}/add-course`,
+          `${apiKey}/courses/${userInfo._id}/add-course`,
           { courseId }
         );
         if (studentResponse.status === 201) {

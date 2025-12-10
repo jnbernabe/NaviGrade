@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
@@ -39,7 +39,7 @@ function AddAssignment() {
         dueDate: dueDate.toISOString(),
         courseId: course,
         weight: weight,
-        studentId: userInfo.id,
+        studentId: userInfo._id,
         grade: grade,
         //completed:completed,
         memo:memo,
@@ -62,7 +62,7 @@ function AddAssignment() {
 
       // Send POST request to add the course to student's courses
       await axios
-        .post(`${apiKey}/courses/${userInfo.id}/add-course`, {
+        .post(`${apiKey}/courses/${userInfo._id}/add-course`, {
           courseId: course,
         })
         .catch((error) => {
@@ -96,7 +96,7 @@ function AddAssignment() {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
-          `${apiKey}/courses/student/${userInfo.id}`
+          `${apiKey}/courses/student/${userInfo._id}`
         );
         setCourses(response.data);
       } catch (error) {
@@ -120,6 +120,7 @@ function AddAssignment() {
 
   return (
     <div className="assignments-container">
+        <div className="glass-panel p-5" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <h2>Add Assignment </h2>
       <p>User: {userInfo.firstName}</p>
       <Form onSubmit={handleSubmit}>
@@ -219,6 +220,7 @@ function AddAssignment() {
           Save
         </Button>
       </Form>
+    </div>
     </div>
   );
 }

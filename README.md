@@ -5,9 +5,8 @@ Your personal School tracker. Using this application you can track your course s
 
 To run this application:
 
-Start the client by running npm start in the root directory
-
-Start the server by cd server and npm start
+Start the application by running `npm start` in the root directory.
+This is a stateless version of Navigrade, running entirely in the browser with mock data.
 
 Unit tests are available by using npm test
 

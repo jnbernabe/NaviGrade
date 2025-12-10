@@ -1,6 +1,6 @@
 // Dashboard.js
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { Card, Button } from "react-bootstrap";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import "./Dashboard.css";
@@ -13,7 +13,9 @@ import Calendar from "../Calendar/Calendar";
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);  //assignments are sorted by completed
   const [courses, setCourses] = useState([]);
-  const [totalAssignments, setTotalAssignments] = useState([]); //totalAssignments are total assignment without sorting 
+  // const [totalAssignments, setTotalAssignments] = useState([]); //totalAssignments are total assignment without sorting 
+  const [totalAssignments, setTotalAssignments] = useState([]);
+ 
   const { getAuthToken } = useAuth();
   const { user, userDetails } = useAuth(AuthProvider);
   const userInfo = JSON.parse(userDetails);
@@ -37,7 +39,7 @@ const Dashboard = () => {
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
       const response = await axios.get(
-        `${apiKey}/assignments/student/${userInfo.id}`
+        `${apiKey}/assignments/student/${userInfo._id}`
       );
       const fetchedAssignments = response.data;
       setTotalAssignments(fetchedAssignments);
@@ -125,7 +127,7 @@ const fetchCourses = async () => {
   try {
     const apiKey = process.env.REACT_APP_API_KEY;
     const response = await axios.get(
-      `${apiKey}/courses/student/${userInfo.id}`
+      `${apiKey}/courses/student/${userInfo._id}`
     );
     const fetchedCourses = response.data;
     setCourses(fetchedCourses);
@@ -144,18 +146,19 @@ const fetchCourses = async () => {
       <h3 className="display-5"> Dashboard for {userInfo.firstName} </h3>
     
       <AssignmentProgressbar
-      assignments={ totalAssignments}
+      assignments={totalAssignments}
+      className="mb-4"
       />
           <div className="button-container" >
-              <Button variant="warning" onClick={notifyClosestAssignment}>
+              <Button className="btn-primary" onClick={notifyClosestAssignment}>
                 What is due next?
               </Button>
-              <ToastContainer />
-              <Button variant="info" onClick={handleSendEmail}>Send me a reminder Email</Button>
+              <ToastContainer theme="dark" />
+              <Button variant="outline-info" onClick={handleSendEmail}>Send me a reminder Email</Button>
         </div>
         
       </div>
-      <div id="div2" className="text-center">
+      <div id="div2" className="glass-panel">
         {/* left column */}
               
       <h4>Assignment(s)</h4>
@@ -167,12 +170,11 @@ const fetchCourses = async () => {
             <Card
               key={assignment._id}
               className="assignment-card"
-              style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-              bsPrefix
+              bsPrefix="card"
             >
               <AssignmentItem
                 assignment={assignment}
-                studentId={userInfo.id}
+                studentId={userInfo._id}
               />
             </Card>
           ))}
@@ -209,7 +211,7 @@ const fetchCourses = async () => {
             >
               <AssignmentItem
                 assignment={assignment}
-                studentId={userInfo.id}
+                studentId={userInfo._id}
               />
             </Card>
           ))}

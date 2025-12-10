@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import "./assignments.css";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
+import axios from "../../services/mockApi";
 import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import AssignmentItem from "../../components/AssignmentItem";
 import Modal from "react-bootstrap/Modal";
+import EditAssignmentModal from "./EditAssignmentModal";
+
 import CompletedAssignments from "./CompletedAssignments";
 import {
   Card,
@@ -55,6 +57,23 @@ const Assignments = () => {
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
   const [sortOrder, setSortOrder] = useState("asc"); // Default sorting order
   const [showGradeSortButton, setShowGradeSortButton] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState(null);
+
+  const handleEditClick = (assignment) => {
+      setEditingAssignment(assignment);
+      setShowEditModal(true);
+  };
+
+  const handleAssignmentUpdate = (updatedAssignment) => {
+      console.log("Updating assignment list state", updatedAssignment);
+      setAssignments(prev => prev.map(a => a._id === updatedAssignment._id ? updatedAssignment : a));
+  };
+  
+  const handleAssignmentDelete = (id) => {
+      setAssignments((prev) => prev.filter(a => a._id !== id));
+      toast("Assignment deleted");
+  };
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
@@ -66,7 +85,7 @@ const Assignments = () => {
         //console.log("Fetching assignments...");
         const apiKey = process.env.REACT_APP_API_KEY;
         const response = await axios.get(
-          `${apiKey}/assignments/student/${userInfo.id}`
+          `${apiKey}/assignments/student/${userInfo._id}`
         );
         //console.log("Assignments fetched successfully:", response.data);
         const fetchedAssignments = response.data;
@@ -93,7 +112,7 @@ const Assignments = () => {
       }
     };
     fetchAssignments();
-  }, [assignments, userInfo.id]);
+  }, [userInfo._id]);
 
   const handleCloseConfirmation = () => setShowConfirmation(false);
   const handleShowConfirmation = (id) => {
@@ -106,7 +125,9 @@ const Assignments = () => {
       const apikey = process.env.REACT_APP_API_KEY;
       const response = await axios.delete(`${apikey}/assignments/${id}`);
       if (response.status === 200) {
-        window.location.href = "/assignments";
+        setAssignments((prev) => prev.filter(a => a._id !== id));
+        setShowConfirmation(false);
+        toast("Assignment deleted");
       } else {
         alert("Failed to delete grade.");
       }
@@ -124,9 +145,10 @@ const Assignments = () => {
       );
 
       setAssignments((prevAssignments) =>
-        prevAssignments.filter((assignment) => assignment._id !== id)
+        prevAssignments.map((assignment) => 
+            assignment._id === id ? { ...assignment, completed: true } : assignment
+        )
       );
-      window.location.reload();
       toast(`Assignment marked as completed`);
     } catch (error) {
       console.error("Error marking assignment as completed:", error);
@@ -191,100 +213,125 @@ const Assignments = () => {
     ${diffDays} day(s) left`);
   };
 
+  const markAssignmentIncomplete = async (id) => {
+    try {
+      const apikey = process.env.REACT_APP_API_KEY;
+      await axios.put(
+        `${apikey}/completed-assignments/${id}/mark-incomplete`,
+        { completed: false }
+      );
+      
+      setAssignments((prevAssignments) =>
+        prevAssignments.map((assignment) => 
+            assignment._id === id ? { ...assignment, completed: false } : assignment
+        )
+      );
+      toast("Assignment marked as incomplete");
+    } catch (error) {
+      console.error("Error marking assignment as incomplete:", error);
+      toast("Failed to mark assignment as incomplete");
+    }
+  };
+
   return (
     <>
-      <Container>
-        <Row>
-          <p className="text-center">
-            {assignments.filter((assignment) => assignment.completed).length ==
-            0 ? (
-              <>No Assignments Completed</>
+      <Container className="py-4">
+        <Row className="mb-5 justify-content-center">
+          <Col md={8} className="text-center">
+            {assignments.filter((assignment) => assignment.completed).length == 0 ? (
+              <div className="p-4 glass-panel text-muted">No Assignments Completed Yet</div>
             ) : (
-              <>
-                Congrats, {userInfo.firstName}!
-                <p className="fs-1">
-                  {
-                    assignments.filter((assignment) => assignment.completed)
-                      .length
-                  }
-                  /{assignments.length}
-                </p>
-                Assignments Completed
-                {/* <AssignmentProgressbar
-                  assignments ={assignments}
-                /> */}
-              </>
+                <div className="p-4 glass-panel">
+                 <h2 className="display-6 mb-0">Congrats, {userInfo.firstName}!</h2>
+                 <div className="my-3">
+                    <span className="display-4 fw-bold text-primary">
+                    {assignments.filter((assignment) => assignment.completed).length}
+                    </span>
+                    <span className="fs-4 text-muted mx-2">/</span>
+                    <span className="fs-4 text-muted">{assignments.length}</span>
+                 </div>
+                 <div className="text-uppercase tracking-wider fs-6 text-secondary fw-bold">Assignments Completed</div>
+                </div>
             )}
-          </p>
-        </Row>
-        <Row>
-          <ToastContainer />
-          <Col>
-            <h2 className="text-center">Upcoming Assignments </h2>
-            {/* for {userInfo.firstName} */}
-            <Link to="/addassignment"></Link>
-            <ButtonGroup>
-              <Button className="d-block mx-auto" href="/addassignment">
-                Add New Assignment
-              </Button>
-              <Button
-                variant="success"
-                onClick={() => handleSortChange("dueDate")}
-              >
-                Sort by Due Date
-              </Button>
-              <Button
-                variant="info"
-                onClick={() => handleSortChange("priority")}
-              >
-                Sort by Priority
-              </Button>
-            </ButtonGroup>
           </Col>
+        </Row>
 
-          <Col>
-            <h2 className="text-center">Completed Assignments</h2>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div className="assignments-container">
+        <Row className="g-5"> {/* Added gutter for better spacing */}
+          <Col lg={6} className="d-flex flex-column">
+            <div className="d-flex flex-column align-items-center">
+                <h2 className="text-center mb-3 display-6" style={{ fontFamily: 'var(--font-header)' }}>Upcoming</h2>
+                
+                <div className="d-flex gap-2 flex-wrap justify-content-center mb-3">
+                     <Link to="/addassignment" className="text-decoration-none">
+                        <Button variant="primary" className="d-flex align-items-center gap-2">
+                            <span>+ New</span>
+                        </Button>
+                     </Link>
+                     <Button variant="outline-success text-white" onClick={() => handleSortChange("dueDate")}>
+                        Date
+                     </Button>
+                     <Button variant="outline-info text-white" onClick={() => handleSortChange("priority")}>
+                        Priority
+                     </Button>
+                </div>
+            </div>
+
+            <div className="assignments-grid flex-grow-1">
               {sortedAssignments
                 .filter((assignment) => assignment.completed === false)
                 .map((assignment) => (
                   <Card
                     key={assignment._id}
                     className="assignment-card"
-                    style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-                    bsPrefix
+                    bsPrefix="card"
                   >
                     <AssignmentItem
                       assignment={assignment}
-                      studentId={userInfo.id}
+                      studentId={userInfo._id}
                     />
-                    <ButtonGroup>
+                    <ButtonGroup className="mt-3 w-100 bg-dark-glass rounded-pill overflow-hidden border border-white border-opacity-10">
                       <Button
-                        variant="danger"
+                        variant="link"
+                        className="text-danger text-decoration-none"
                         onClick={() => handleShowConfirmation(assignment._id)}
                       >
                         Delete
                       </Button>
-                      <Button href={`/editassignment/${assignment._id}`}>
+                      <Button 
+                        variant="link" 
+                        onClick={() => handleEditClick(assignment)}
+                        className="text-white text-decoration-none border-start border-end border-secondary border-opacity-25"
+                      >
                         Edit
                       </Button>
                       <Button
-                        variant="success"
+                        variant="link"
+                        className="text-success text-decoration-none"
                         onClick={() =>
                           markAssignmentAsCompleted(assignment._id)
                         }
                       >
-                        Mark as Completed
+                        Complete
                       </Button>
                     </ButtonGroup>
                   </Card>
                 ))}
+                {sortedAssignments.filter(a => !a.completed).length === 0 && (
+                    <div className="text-center text-muted py-5 border border-dashed border-secondary rounded-3">
+                        No upcoming assignments
+                    </div>
+                )}
             </div>
-            <Modal show={showConfirmation} onHide={handleCloseConfirmation}>
+            
+            <EditAssignmentModal 
+                show={showEditModal} 
+                onHide={() => setShowEditModal(false)} 
+                assignment={editingAssignment}
+                onUpdate={handleAssignmentUpdate}
+                onDelete={handleAssignmentDelete}
+            />
+
+            <Modal show={showConfirmation} onHide={handleCloseConfirmation} centered>
               <Modal.Header closeButton>
                 <Modal.Title>Confirm Deletion</Modal.Title>
               </Modal.Header>
@@ -296,7 +343,7 @@ const Assignments = () => {
                   Cancel
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="danger"
                   onClick={() => deleteAssignment(assignmentIdToDelete)}
                 >
                   Delete
@@ -305,8 +352,15 @@ const Assignments = () => {
             </Modal>
           </Col>
 
-          <Col>
-            <CompletedAssignments />
+          <Col lg={6} className="d-flex flex-column border-lg-start border-secondary border-opacity-10">
+             {/* Completed Assignments Section */}
+             <div className="d-flex flex-column align-items-center">
+                 <h2 className="text-center mb-3 display-6" style={{ fontFamily: 'var(--font-header)' }}>Completed</h2>
+             </div>
+             <CompletedAssignments 
+                assignments={assignments.filter(a => a.completed)}
+                onMarkIncomplete={markAssignmentIncomplete}
+             />
           </Col>
         </Row>
       </Container>
