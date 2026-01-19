@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/NaviGrade/static/css/main.1312e28f.css",
-    "main.js": "/NaviGrade/static/js/main.f88a2148.js",
+    "main.css": "/NaviGrade/static/css/main.691f9b3d.css",
+    "main.js": "/NaviGrade/static/js/main.e00bb282.js",
     "static/css/430.8ae527fd.chunk.css": "/NaviGrade/static/css/430.8ae527fd.chunk.css",
     "static/js/430.ca9dbfb4.chunk.js": "/NaviGrade/static/js/430.ca9dbfb4.chunk.js",
     "static/css/785.7e681749.chunk.css": "/NaviGrade/static/css/785.7e681749.chunk.css",
     "static/js/785.2a94eccb.chunk.js": "/NaviGrade/static/js/785.2a94eccb.chunk.js",
     "static/css/857.e5485de6.chunk.css": "/NaviGrade/static/css/857.e5485de6.chunk.css",
     "static/js/857.76e172dd.chunk.js": "/NaviGrade/static/js/857.76e172dd.chunk.js",
-    "static/js/898.369e9db6.chunk.js": "/NaviGrade/static/js/898.369e9db6.chunk.js",
+    "static/js/898.04fba5fe.chunk.js": "/NaviGrade/static/js/898.04fba5fe.chunk.js",
     "static/css/285.46b47a29.chunk.css": "/NaviGrade/static/css/285.46b47a29.chunk.css",
     "static/js/285.d529900c.chunk.js": "/NaviGrade/static/js/285.d529900c.chunk.js",
     "static/js/903.d05c1f1d.chunk.js": "/NaviGrade/static/js/903.d05c1f1d.chunk.js",
@@ -26,15 +26,15 @@
     "static/media/avatar3.png": "/NaviGrade/static/media/avatar3.e3cfa38e6c6c37ac6a1b.png",
     "static/media/avatar1.png": "/NaviGrade/static/media/avatar1.8be1523b91d9bf8ff1a3.png",
     "index.html": "/NaviGrade/index.html",
-    "main.1312e28f.css.map": "/NaviGrade/static/css/main.1312e28f.css.map",
-    "main.f88a2148.js.map": "/NaviGrade/static/js/main.f88a2148.js.map",
+    "main.691f9b3d.css.map": "/NaviGrade/static/css/main.691f9b3d.css.map",
+    "main.e00bb282.js.map": "/NaviGrade/static/js/main.e00bb282.js.map",
     "430.8ae527fd.chunk.css.map": "/NaviGrade/static/css/430.8ae527fd.chunk.css.map",
     "430.ca9dbfb4.chunk.js.map": "/NaviGrade/static/js/430.ca9dbfb4.chunk.js.map",
     "785.7e681749.chunk.css.map": "/NaviGrade/static/css/785.7e681749.chunk.css.map",
     "785.2a94eccb.chunk.js.map": "/NaviGrade/static/js/785.2a94eccb.chunk.js.map",
     "857.e5485de6.chunk.css.map": "/NaviGrade/static/css/857.e5485de6.chunk.css.map",
     "857.76e172dd.chunk.js.map": "/NaviGrade/static/js/857.76e172dd.chunk.js.map",
-    "898.369e9db6.chunk.js.map": "/NaviGrade/static/js/898.369e9db6.chunk.js.map",
+    "898.04fba5fe.chunk.js.map": "/NaviGrade/static/js/898.04fba5fe.chunk.js.map",
     "285.46b47a29.chunk.css.map": "/NaviGrade/static/css/285.46b47a29.chunk.css.map",
     "285.d529900c.chunk.js.map": "/NaviGrade/static/js/285.d529900c.chunk.js.map",
     "903.d05c1f1d.chunk.js.map": "/NaviGrade/static/js/903.d05c1f1d.chunk.js.map",
@@ -44,7 +44,7 @@
     "169.2cb09be6.chunk.js.map": "/NaviGrade/static/js/169.2cb09be6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1312e28f.css",
-    "static/js/main.f88a2148.js"
+    "static/css/main.691f9b3d.css",
+    "static/js/main.e00bb282.js"
   ]
 }
