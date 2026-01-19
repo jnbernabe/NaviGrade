@@ -8,6 +8,8 @@ import { useAuth } from "./contexts/AuthContext";
 import "./styles.css";
 import Footer from "./components/Footer";
 
+import PageTracker from "./components/PageTracker";
+
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home/Home"));
 const CalendarContainer = lazy(() => import("./pages/Calendar/CalendarContainer"));
@@ -31,6 +33,7 @@ function App() {
 
   return (
     <div className="app-wrapper">
+      <PageTracker />
       <Navbar />
       <Container className="main-content">
         <Routes>
