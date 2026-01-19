@@ -87,6 +87,16 @@ const mockApi = {
         return mockResponse([], 200);
     }
 
+    // Estimate Grades (Get Assignments for Course/Student)
+    const estimateGradesMatch = cleanUrl.match(/^\/grades\/estimate-grades\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)$/);
+    if(estimateGradesMatch) {
+        const studentId = estimateGradesMatch[1];
+        const courseId = estimateGradesMatch[2];
+        const studentAssignments = assignments.filter(a => a.student === studentId && a.course === courseId);
+        // Return 200 with empty array if none found, rather than 404, to avoid error state in UI
+        return mockResponse(studentAssignments);
+    }
+
     return mockResponse({ message: "Not found" }, 404);
   },
 

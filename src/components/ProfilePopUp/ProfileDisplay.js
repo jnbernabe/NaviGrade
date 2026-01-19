@@ -13,7 +13,7 @@ import { avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8,
 const ProfileDisplay = ({ show, handleClose, user }) => {
   const [editMode, setEditMode] = useState(false);
   const [updatedUser, setUpdatedUser] = useState({ ...user });
-  const [totalAssignments, setTotalAssignments] = useState(0);
+  const [totalAssignments, setTotalAssignments] = useState([]);
   const { getAuthToken, setUserInfo } = useAuth();
   
   axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
@@ -34,8 +34,9 @@ const ProfileDisplay = ({ show, handleClose, user }) => {
     event.preventDefault();
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
+      const userId = user._id || user.id;
       const response = await axios.patch(
-        `${apiKey}/students/${user.id}`,
+        `${apiKey}/students/${userId}`,
         updatedUser
       );
 
@@ -52,10 +53,12 @@ const ProfileDisplay = ({ show, handleClose, user }) => {
   };
 
    const fetchAssignments = async () => {
+    if (!user) return;
     try {
       const apiKey = process.env.REACT_APP_API_KEY;
+      const userId = user._id || user.id;
       const response = await axios.get(
-        `${apiKey}/assignments/student/${user.id}`
+        `${apiKey}/assignments/student/${userId}`
       );
       setTotalAssignments(response.data);
     } catch (error) {
@@ -65,7 +68,7 @@ const ProfileDisplay = ({ show, handleClose, user }) => {
 
   useEffect(() => {
     fetchAssignments();
-  }, [user.id]); 
+  }, [user]); 
 
 
   return (
@@ -128,7 +131,7 @@ const ProfileDisplay = ({ show, handleClose, user }) => {
                  <p className="text-muted small">{updatedUser.email}</p>
              </div>
 
-             <div className="p-3 bg-white bg-opacity-5 rounded border border-white border-opacity-10">
+             <div className="p-3 bg-dark-glass rounded border border-white border-opacity-10">
                  <h6 className="text-uppercase text-muted small mb-3 ls-1">Current Progress</h6>
                  <AssignmentProgressbar assignments ={totalAssignments} />
              </div>

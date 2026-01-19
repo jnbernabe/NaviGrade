@@ -4,7 +4,7 @@ import axios from "../../services/mockApi";
 import { useAuth } from "../../contexts/AuthContext";
 import GradesForm from "../../components/GradesForm";
 import { Container, Form, Card, Row, Col, Button } from "react-bootstrap";
-import GradesFormEdit from "./GradesFormEdit";
+
 import { ToastContainer, toast } from "react-toastify";
 
 const MyGrades = () => {
@@ -88,69 +88,85 @@ const MyGrades = () => {
   };
 
   return (
-    <div className="grades-container">
-      <div>
-        <h2>My Grades</h2>
-
-        <div className="grade-card glass-panel" style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}>
-          <p className="mb-2">Select your Course to view grades</p>
-          <Form.Select
-            id="course-select"
-            className="mb-3"
-            onChange={(e) =>
-              setSelectedCourse(() => {
-                if (e.target.value !== "") return e.target.value;
-                else return null;
-              })
-            }
-          >
-            <option value="">Select a course...</option>
-            {courses.map((course) => (
-              <option key={course._id} value={course._id}>
-                {course.name}
-              </option>
-            ))}
-          </Form.Select>
-          <Button
-            variant="outline-primary"
-            className="w-100"
-            onClick={() => {
-              setGrades([]);
-              setCompletedAssignments([]);
-              setEstimatedGrade(null);
-              setSelectedCourse(null);
-              setIsLoading(true);
-              setError(null);
-              setGradePrediction(null);
-              document.getElementById("course-select").selectedIndex = 0;
-            }}
-          >
-            Reset Selection
-          </Button>
-        </div>
+    <div className="dashboard-container">
+      <div className="glass-panel p-4 mb-4 text-center">
+        <h2 className="display-6 fw-bold mb-0">My Grades</h2>
+        <p className="text-muted mt-2 mb-0">Track your performance and predict your final score</p>
       </div>
-      <>
-        {isLoading && !selectedCourse ? (
-          <p className="text-center text-muted">Please select a course above.</p>
-        ) : isLoading ? (
-             <p className="text-center">Loading grades...</p>
-        ) : error ? (
-          <div className="text-center text-danger glass-panel p-3">{error}</div>
-        ) : (
-          <>
-            {completedAssignments ? (
-              <div className="glass-panel p-4">
-              <GradesForm
-                completedassignments={completedAssignments}
-                handleChildData={handleChildData}
-              />
-              </div>
-            ) : (
-              <p className="text-center">No completed assignments found.</p>
-            )}
-          </>
-        )}
-      </>
+
+      <Row className="justify-content-center">
+        <Col md={8} lg={6}>
+          <div className="glass-panel p-4 mb-4">
+            <Form.Label className="text-muted text-uppercase small ls-1">Select Course</Form.Label>
+            <Form.Select
+              id="course-select"
+              className="bg-dark-glass text-white border-secondary border-opacity-25 mb-3"
+              onChange={(e) =>
+                setSelectedCourse(() => {
+                  if (e.target.value !== "") return e.target.value;
+                  else return null;
+                })
+              }
+            >
+              <option value="" className="text-dark">Select a course to view...</option>
+              {courses.map((course) => (
+                <option key={course._id} value={course._id} className="text-dark">
+                  {course.name}
+                </option>
+              ))}
+            </Form.Select>
+            <Button
+              variant="outline-primary"
+              className="w-100"
+              onClick={() => {
+                setGrades([]);
+                setCompletedAssignments([]);
+                setEstimatedGrade(null);
+                setSelectedCourse(null);
+                setIsLoading(true);
+                setError(null);
+                setGradePrediction(null);
+                if(document.getElementById("course-select")) document.getElementById("course-select").selectedIndex = 0;
+              }}
+            >
+              Reset Selection
+            </Button>
+          </div>
+        </Col>
+      </Row>
+
+      <Row className="justify-content-center">
+        <Col md={12}>
+          {isLoading && !selectedCourse ? (
+            <div className="text-center text-muted py-5">
+               <div style={{fontSize: '3rem', opacity: 0.3}}>🎓</div>
+               <p className="mt-3">Select a course above to get started.</p>
+            </div>
+          ) : isLoading ? (
+             <div className="text-center py-5">
+                 <div className="spinner-border text-primary mb-3" role="status"></div>
+                 <p>Loading course data...</p>
+             </div>
+          ) : error ? (
+            <div className="text-center text-danger glass-panel p-4">{error}</div>
+          ) : (
+            <>
+              {completedAssignments ? (
+                <div className="glass-panel p-4">
+                  <GradesForm
+                    completedassignments={completedAssignments}
+                    handleChildData={handleChildData}
+                  />
+                </div>
+              ) : (
+                <div className="glass-panel p-5 text-center">
+                    <p className="text-muted">No completed assignments found for this course.</p>
+                </div>
+              )}
+            </>
+          )}
+        </Col>
+      </Row>
     </div>
   );
 };

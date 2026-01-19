@@ -14,11 +14,16 @@ const GradesForm = ({
   const [allTasks, setAllTasks] = useState([]);
   const [GradePrediction, setGradePrediction] = useState(null);
 
-  if (assignments.length === 0) {
-    console.log("No assignments");
-    toast.error("No assignments found");
-  }
-  //console.log("Assignments:", assignments);
+  // Sync state with props when selected course changes
+  useEffect(() => {
+    setAssignments(completedassignments);
+    setTests([{ name: "", weight: "", grade: "" }]); // Reset hypotheticals
+    setGradePrediction(null); // Reset prediction
+    
+    if (completedassignments.length === 0) {
+        toast.info("No completed assignments found. Add hypothetical ones to predict.");
+    }
+  }, [completedassignments]);
 
   const handleNameChange = (event, index) => {
     const newAssignments = [...assignments];
@@ -87,16 +92,22 @@ const GradesForm = ({
     return true;
   };
 
-  const calculateFinalGrade = () => {
+  const calculateFinalGrade = (data) => {
     // Calculate the final grade based on weights and grades
     let totalWeight = 0;
     let weightedSum = 0;
 
-    allTasks.forEach((assignment) => {
-      totalWeight += assignment.weight;
-      weightedSum += assignment.grade * assignment.weight;
+    data.forEach((assignment) => {
+      if (assignment.weight && assignment.grade) {
+        totalWeight += parseFloat(assignment.weight);
+        weightedSum += parseFloat(assignment.grade) * parseFloat(assignment.weight);
+      }
     });
 
+    // If totalWeight is effectively 1 (checked by checkWeights), this is the result.
+    // If not, it's a weighted average. 
+    // The previous code verified sum to be 1.0, so weightedSum is the straightforward answer.
+    
     //console.log("Final Grade:", weightedSum);
     setGradePrediction(weightedSum);
     //console.log("Final Grade:", GradePrediction);
@@ -123,152 +134,156 @@ const GradesForm = ({
     //console.log("Combined data:", allTasks);
 
     //handleChildData(allTasks);
-    calculateFinalGrade();
+    calculateFinalGrade(combinedData);
   };
 
   return (
     <>
       <ToastContainer />
-      {GradePrediction ? (
-        <Card className="assignment-card" bsPrefix>
-          <Card.Title> Final Grade Prediction</Card.Title>
-          <p>Your estimated grade is: {GradePrediction}</p>
+      {GradePrediction !== null ? (
+        <Card className="bg-success bg-opacity-10 border-success border-opacity-50 text-white text-center p-4">
+          <Card.Body>
+             <h3 className="display-6 fw-bold text-success mb-3">Grade Prediction</h3>
+             <div className="display-1 fw-bold mb-0">{Number(GradePrediction).toFixed(2)}%</div>
+             <p className="text-muted mt-2">Based on current weights and scores</p>
+             <Button variant="outline-success mt-3" onClick={() => setGradePrediction(null)}>Recalculate</Button>
+          </Card.Body>
         </Card>
       ) : (
         <>
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Row>
-              <Col>
+              <Col md={12} lg={6}>
+                 <h5 className="text-secondary mb-3 border-bottom border-secondary border-opacity-25 pb-2">Completed Assignments</h5>
                 {assignments.map((assignment, index) => (
                   <Card
-                    className="assignment-card"
-                    style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-                    bsPrefix
+                    key={index}
+                    className="bg-dark-glass border border-secondary border-opacity-25 mb-3 text-white"
                   >
-                    <Form.Group controlId="validationCustom01">
-                      <Form.Label>
-                        Assignment Name:
-                        <Form.Control
-                          required
-                          type="text"
-                          value={assignment.name}
-                          onChange={(event) => handleNameChange(event, index)}
-                        />
-                      </Form.Label>
-                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    <Card.Body>
+                    <Form.Group controlId={`assign-${index}`} className="mb-3">
+                      <Form.Label className="text-muted small text-uppercase">Assignment Name</Form.Label>
+                      <Form.Control
+                        required
+                        type="text"
+                        value={assignment.name}
+                        onChange={(event) => handleNameChange(event, index)}
+                        className="bg-transparent text-white border-secondary border-opacity-50"
+                        readOnly={true} 
+                      />
                     </Form.Group>
 
-                    <Form.Group controlId="validationCustom02">
-                      <Form.Label>
-                        Assignment Weight:
-                        <Form.Control
-                          required
-                          type="text"
-                          value={assignment.weight}
-                          onChange={(event) => handleWeightChange(event, index)}
-                        />
-                      </Form.Label>
-                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="validationCustom03">
-                      <Form.Label>
-                        Assignment Grade:
-                        <Form.Control
-                          required
-                          type="text"
-                          value={assignment.grade}
-                          onChange={(event) => handleGradeChange(event, index)}
-                        />
-                      </Form.Label>
-                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId={`weight-${index}`}>
+                                <Form.Label className="text-muted small text-uppercase">Weight (0-1.0)</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="number" step="0.01"
+                                    value={assignment.weight}
+                                    onChange={(event) => handleWeightChange(event, index)}
+                                    className="bg-transparent text-white border-secondary border-opacity-50"
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId={`grade-${index}`}>
+                                <Form.Label className="text-muted small text-uppercase">Grade (%)</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="number"
+                                    value={assignment.grade}
+                                    onChange={(event) => handleGradeChange(event, index)}
+                                    className="bg-transparent text-white border-secondary border-opacity-50"
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    </Card.Body>
                   </Card>
                 ))}
               </Col>
-              <Col>
+              
+              <Col md={12} lg={6}>
+                 <h5 className="text-secondary mb-3 border-bottom border-secondary border-opacity-25 pb-2">Hypothetical Tests/Assignments</h5>
                 {Tests.map((test, index) => (
                   <Card
-                    className="assignment-card"
-                    style={{ flex: "0 0 calc(33% - 1em)", margin: "0.5em" }}
-                    bsPrefix
+                    key={`test-${index}`}
+                    className="bg-dark-glass border border-dashed border-secondary border-opacity-50 mb-3 text-white"
                   >
-                    <Form.Group controlId="validationCustom04">
-                      <Form.Label>
-                        Assignment Name:
+                    <Card.Body>
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <span className="badge bg-info bg-opacity-20 text-info">Hypothetical</span>
+                             {Tests.length > 0 && (
+                                <Button variant="link" className="text-danger p-0" title="Remove" onClick={() => {
+                                    const newTests = [...Tests];
+                                    newTests.splice(index, 1);
+                                    setTests(newTests);
+                                }}>x</Button>
+                             )}
+                        </div>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="text-muted small text-uppercase">Name</Form.Label>
                         <Form.Control
                           required
                           type="text"
+                          placeholder="e.g. Final Exam"
                           value={test.name}
-                          onChange={(event) =>
-                            handleTestNameChange(event, index)
-                          }
+                          onChange={(event) => handleTestNameChange(event, index)}
+                          className="bg-transparent text-white border-secondary border-opacity-50"
                         />
-                        <Form.Control.Feedback>
-                          Looks good!
-                        </Form.Control.Feedback>
-                      </Form.Label>
                     </Form.Group>
-                    <Form.Group controlId="validationCustom05">
-                      <Form.Label>
-                        Assignment Weight:
-                        <Form.Control
-                          required
-                          type="text"
-                          value={test.weight}
-                          onChange={(event) =>
-                            handleTestWeightChange(event, index)
-                          }
-                        />
-                        <Form.Control.Feedback>
-                          Looks good!
-                        </Form.Control.Feedback>
-                      </Form.Label>
-                    </Form.Group>
-                    <Form.Group controlId="validationCustom06">
-                      <Form.Label>
-                        Assignment Grade:
-                        <Form.Control
-                          required
-                          type="text"
-                          value={test.grade}
-                          onChange={(event) =>
-                            handleTestGradeChange(event, index)
-                          }
-                        />
-                      </Form.Label>
-
-                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
+                    <Row>
+                        <Col>
+                            <Form.Group>
+                              <Form.Label className="text-muted small text-uppercase">Weight</Form.Label>
+                              <Form.Control
+                                required
+                                type="number" step="0.01"
+                                placeholder="0.2"
+                                value={test.weight}
+                                onChange={(event) => handleTestWeightChange(event, index)}
+                                className="bg-transparent text-white border-secondary border-opacity-50"
+                              />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                              <Form.Label className="text-muted small text-uppercase">Est. Grade</Form.Label>
+                              <Form.Control
+                                required
+                                type="number"
+                                placeholder="95"
+                                value={test.grade}
+                                onChange={(event) => handleTestGradeChange(event, index)}
+                                className="bg-transparent text-white border-secondary border-opacity-50"
+                              />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    </Card.Body>
                   </Card>
                 ))}
-                <ButtonGroup>
+                
+                <div className="d-grid gap-2">
+                  <Button
+                    variant="outline-info"
+                    onClick={handleAddRow}
+                    className="border-dashed"
+                  >
+                    + Add Hypothetical Assignment
+                  </Button>
+
                   <Button
                     variant="primary"
-                    type="button"
-                    onClick={handleAddRow}
-                  >
-                    Add Assignment/Test
-                  </Button>
-
-                  <Button
-                    variant="success"
                     type="submit"
-                    //onClick={handleSubmit}
+                    className="mt-3 py-2 fw-bold"
                   >
-                    Submit
+                    Calculate Final Prediction
                   </Button>
-                  <Button
-                    variant="danger"
-                    type="button"
-                    onClick={handleDeleteRow}
-                  >
-                    Delete Last Row
-                  </Button>
-                </ButtonGroup>
+                </div>
               </Col>
             </Row>
-
-            <br />
           </Form>
         </>
       )}

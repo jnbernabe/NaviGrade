@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-section">
           <span className="footer-brand">NaviGrade</span>
-          <span className="copyright">© 2024 All Rights Reserved</span>
+          <span className="copyright">© 2026 All Rights Reserved</span>
         </div>
         
         <div className="footer-section social-links">

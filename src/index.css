@@ -25,6 +25,12 @@
   --radius-lg: 20px;
 }
 
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 /* Force all muted text to be white/variable color */
 .text-muted {
   color: var(--text-muted) !important;
