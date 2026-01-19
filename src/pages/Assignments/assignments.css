@@ -1,81 +1,210 @@
 /* Cosmic Assignments Layout */
+/* Main Container */
 .assignments-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-  padding-top: 80px;
-  min-height: calc(100vh - 60px);
+  padding-top: 2rem;
+  max-width: 1200px;
 }
 
-.assignments-container h2 {
-  font-family: var(--font-header);
-  font-weight: 700;
-  background: linear-gradient(to right, #fff, #94a3b8);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Header Panel */
+.assignments-header-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
   margin-bottom: 2rem;
-  text-align: center;
 }
 
-/* Main Grid Layout */
-.assignments-grid {
+/* Stats Widget */
+.stats-widget {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Glass Panel Helpers */
+.bg-dark-glass {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+/* Tab Pills Override inside Header */
+.custom-pills .nav-link {
+  color: var(--text-muted);
+  border-radius: 50rem;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.custom-pills .nav-link.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: 0 4px 15px var(--primary-glow);
+  border: none;
+}
+
+.custom-pills .nav-link:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.tabs-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* List Item Styling */
+.assignment-card-horizontal {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(30, 41, 59, 0.4));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md); /* Match standard radius */
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  border-left: 4px solid var(--primary); /* Left border accent */
+  padding: 1.75rem 2rem; /* Generous padding */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
-.assignment-card {
-  background: var(--bg-card) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: var(--radius-md) !important;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+.assignment-card-horizontal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary);
+}
+
+/* Horizontal Actions */
+.card-actions-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 250px; /* Ensure space for buttons */
+  justify-content: flex-end;
+}
+
+/* Fix visibility of Edit button */
+.btn-edit-action {
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.btn-edit-action:hover {
+  color: white !important;
+}
+
+/* Animations */
+.fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .assignments-header-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-group {
+    justify-content: center;
+  }
+  
+  .card-actions-horizontal {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+  }
+}
+
+/* Modal Styling */
+.modal-content.glass-modal {
+  background: #1e293b !important;
+  border: 1px solid var(--glass-border);
   color: var(--text-main);
-  box-shadow: var(--glass-shadow);
-  display: flex !important;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
-.assignment-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--primary) !important;
-  box-shadow: 0 15px 30px rgba(139, 92, 246, 0.15);
-}
-
-/* Modals */
-.modal-content {
-  background-color: var(--bg-surface) !important;
-  border: 1px solid var(--glass-border) !important;
-  color: var(--text-main) !important;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-.modal-header {
-  border-bottom: 1px solid var(--glass-border) !important;
-}
-
-.modal-footer {
-  border-top: 1px solid var(--glass-border) !important;
+.modal-header, .modal-footer {
+  border-color: var(--glass-border);
+  background: rgba(0,0,0,0.2);
 }
 
 .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%);
+  filter: invert(1);
 }
 
-.btn-group {
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-top: auto; /* Push to bottom */
+/* Completed Card Variant */
+.assignment-card-completed {
+  border-left-color: var(--secondary) !important; /* Green/Success color if mapped, otherwise blue */
+  background: rgba(15, 23, 42, 0.4) !important; /* Slightly darker */
 }
 
-/* Reusing utility classes from Dashboard for consistency if needed */
-.bg-dark-glass {
-  background: rgba(0,0,0,0.2);
+.assignment-card-completed .text-muted {
+  color: white !important; /* Ensure readability */
 }
-.ls-1 {
-  letter-spacing: 1px;
+
+/* Hover Utilities */
+.hover-text-white:hover {
+  color: white !important;
+}
+
+.hover-opacity-100:hover {
+  opacity: 1 !important;
+}
+
+/* Icons */
+.bi {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* High Contrast Text overrides for Dark Theme */
+.assignments-container .text-muted {
+  color: white !important; /* Strictly White */
+}
+
+/* Specific fix for the stats label if needed */
+.stats-widget .text-uppercase {
+  color: white !important;
+  opacity: 1; 
 }

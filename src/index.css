@@ -12,7 +12,7 @@
   --accent: #06b6d4;        /* Cyan */
   
   --text-main: #f8fafc;     /* White/Slate-50 */
-  --text-muted: #94a3b8;    /* Slate-400 */
+  --text-muted: #ffffff;    /* Forced White for High Contrast */
   
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -23,6 +23,11 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
+}
+
+/* Force all muted text to be white/variable color */
+.text-muted {
+  color: var(--text-muted) !important;
 }
 
 * {
@@ -215,4 +220,19 @@ a:hover {
   background-color: rgba(15, 23, 42, 0.8) !important;
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25) !important;
+  color: white !important;
+}
+
+/* Global Placeholder Override */
+::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
 }

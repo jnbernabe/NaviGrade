@@ -41,24 +41,37 @@ console.log('selectedAvatar',selectedAvatar)
   };
 
   
- // Render the saved avatar if it exists, otherwise render the list of avatars
- return (
-    <div>
-    
-      {selectedAvatar ? (
-        <img
-          src={selectedAvatar}
-          alt="Selected Avatar"
-          className="selected-avatar"
-        />
-      ) : (
-        <div className="avatar-list">
+  // Render the saved avatar if it exists, otherwise render the list of avatars
+  return (
+    <div className="d-flex flex-column align-items-center">
+      {/* View Mode: Show Selected */}
+      {!editMode && (
+          <div className="position-relative">
+             <img
+              src={selectedAvatar || avatar1}
+              alt="Selected Avatar"
+              className="rounded-circle border border-2 border-primary p-1"
+              style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+            />
+          </div>
+      )}
+
+      {/* Edit Mode: Show Selection Grid */}
+      {editMode && (
+        <div className="d-flex flex-wrap justify-content-center gap-3">
           {[avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatar9].map((avatar, index) => (
             <img
               key={index}
               src={avatar}
               alt={`Avatar ${index + 1}`}
-              className={avatar === selectedAvatar ? "selected" : ""}
+              className={`rounded-circle cursor-pointer transition-all ${avatar === selectedAvatar ? "border border-4 border-primary" : "border border-transparent opacity-75 hover-opacity-100"}`}
+              style={{ 
+                  width: '60px', 
+                  height: '60px', 
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                  transform: avatar === selectedAvatar ? 'scale(1.1)' : 'scale(1)'
+              }}
               onClick={() => handleAvatarSelect(avatar)}
             />
           ))}

@@ -29,43 +29,50 @@ const localizer = dateFnsLocalizer({
   locales
 }); 
 
-const getDayOfWeek = day => {
-  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  return days.indexOf(day.toLowerCase());
+const getDayOfWeek = dayAbbr => {
+  const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  // Handle full names just in case (e.g., 'Monday') and short names ('Mon')
+  const d = dayAbbr.toLowerCase().slice(0, 3);
+  return days.indexOf(d);
 };
 
-const MyCalendar = ({ courses , assignments}) => {
+const MyCalendar = ({ courses = [], assignments = [], height = "700px" }) => {
   // Map course schedules to events
-  //console.log('Courses:', courses);
-
-  //event handler for clicking events 
   const [selectedEvent, setSelectedEvent] = useState(null);
+
   const handleEventClick = event => {
-    // Set the selected event when an event item is clicked
     setSelectedEvent(event);
   };
-  const handleCloseModal = event => {
+  
+  const handleCloseModal = () => {
     setSelectedEvent(null);
   };
-
-  let events = [];
   
-    events = courses.flatMap(course => {
-      const courseEvents = [];
+  // Create a map of course colors for easy lookup
+  const courseColors = {};
+  courses.forEach(c => {
+      courseColors[c._id] = c.color;
+  });
 
-    // For each schedule in the course, generate events based on the course start and end dates
+  // Generate Course Events
+  let events = courses.flatMap(course => {
+    const courseEvents = [];
+    if (!course.schedules) return [];
+
     course.schedules.forEach(schedule => {
       const startDate = new Date(course.startDate);
       const endDate = new Date(course.endDate);
-
-      // Find the next occurrence of the scheduled day
       let currentDate = startDate;
+      
+      // Parse days (e.g. "Mon, Wed" or "Monday")
+      const days = schedule.day ? schedule.day.split(',').map(d => d.trim()) : [];
+      const targetDayIndices = days.map(getDayOfWeek).filter(idx => idx !== -1);
+
       while (currentDate <= endDate) {
         const scheduleDay = new Date(currentDate);
-        scheduleDay.setHours(0, 0, 0, 0); // Reset hours, minutes, seconds, and milliseconds
+        scheduleDay.setHours(0, 0, 0, 0);
 
-        const dayOfWeek = scheduleDay.getDay();
-        if (dayOfWeek === getDayOfWeek(schedule.day)) {
+        if (targetDayIndices.includes(scheduleDay.getDay())) {
           const startTimeParts = schedule.startTime.split(':').map(part => parseInt(part, 10));
           const endTimeParts = schedule.endTime.split(':').map(part => parseInt(part, 10));
 
@@ -80,53 +87,94 @@ const MyCalendar = ({ courses , assignments}) => {
             title: course.name,
             start: startDateTime,
             end: endDateTime,
+            type: 'course',
+            desc: `Class: ${course.name} (${course.professor})`,
+            color: course.color || '#8b5cf6' // Use course color or default violet
           });
         }
-
-        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+        currentDate.setDate(currentDate.getDate() + 1);
       }
     });
 
     return courseEvents;
   });
 
-  //console.log('Assignments:', assignments.dueDate);
-  // Add events for assignments
-  if (assignments) {
-    events = events.concat(
-      assignments.map((assignment) => ({
+  // Generate Assignment Events
+  if (assignments && assignments.length > 0) {
+    const assignmentEvents = assignments.map((assignment) => {
+      const duedate = new Date(assignment.dueDate);
+      
+      return {
         id: assignment._id,
-        title: assignment.name,
-        start: assignment.dueDate,
-        end: assignment.dueDate,
-        allDay: true, // Show as all-day event
-      }))
-    );
+        title: `DUE: ${assignment.name}`,
+        start: duedate,
+        end: duedate,
+        allDay: true,
+        type: 'assignment',
+        desc: `Assignment Due: ${assignment.name}`,
+        color: '#f59e0b' // Fixed Orange for all assignments to be distinct from Courses
+      };
+    });
+    events = [...events, ...assignmentEvents];
   }
 
+  // Custom Event Styling
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    let style = {
+      border: 'none',
+      borderRadius: '4px',
+      opacity: 0.9,
+      color: 'white',
+      display: 'block',
+      backgroundColor: event.color,
+      fontSize: '0.75rem', // Smaller font
+      padding: '1px 4px', // Compact padding
+      lineHeight: '1.2'
+    };
+
+    if (event.type === 'assignment') {
+      style.borderLeft = '3px solid #b45309'; // Darker orange border
+      style.fontWeight = '600';
+    } else {
+        // Course events
+        style.opacity = 0.85;
+    }
+
+    return {
+      style: style
+    };
+  };
 
   return (
-    <div style={{height: "600px"}}>
+    <div style={{height: height}} className="p-3">
     <BigCalendar 
       defaultView='month' 
       localizer={localizer} 
       events={events} 
-      startAccessor={(event) => new Date(event.start)} 
-      endAccessor={(event) => new Date(event.end)} 
+      startAccessor="start" 
+      endAccessor="end" 
       locales={locales}
-      onSelectEvent={handleEventClick} // Handle click event on event items
+      onSelectEvent={handleEventClick}
+      eventPropGetter={eventStyleGetter}
+      popup
       />
+      
       {selectedEvent && (
-        <Modal show={true} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
+        <Modal show={true} onHide={handleCloseModal} centered contentClassName="glass-modal">
+          <Modal.Header closeButton closeVariant="white">
             <Modal.Title>{selectedEvent.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Start: {selectedEvent.start.toString()}</p>
-            <p>End: {selectedEvent.end.toString()}</p>
+            <p className="fs-5">{selectedEvent.desc}</p>
+            <p className="text-muted">
+              {selectedEvent.allDay 
+                ? format(selectedEvent.start, 'PPPP') 
+                : `${format(selectedEvent.start, 'PPPP p')} - ${format(selectedEvent.end, 'p')}`
+              }
+            </p>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
+            <Button variant="primary" onClick={handleCloseModal}>
               Close
             </Button>
           </Modal.Footer>

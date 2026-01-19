@@ -8,7 +8,7 @@ import { useAuth, AuthProvider } from "../../contexts/AuthContext";
 import AssignmentItem from "../../components/AssignmentItem";
 import Modal from "react-bootstrap/Modal";
 import EditAssignmentModal from "./EditAssignmentModal";
-
+import AddAssignmentModal from "./AddAssignmentModal";
 import CompletedAssignments from "./CompletedAssignments";
 import {
   Card,
@@ -17,6 +17,8 @@ import {
   Row,
   ButtonGroup,
   ProgressBar,
+  Tabs,
+  Tab
 } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -59,6 +61,7 @@ const Assignments = () => {
   const [showGradeSortButton, setShowGradeSortButton] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState(null);
+  const [activeTab, setActiveTab] = useState('upcoming');
 
   const handleEditClick = (assignment) => {
       setEditingAssignment(assignment);
@@ -233,139 +236,258 @@ const Assignments = () => {
     }
   };
 
+  const handleAssignmentAdd = (newAssignment) => {
+      setAssignments(prev => [...prev, newAssignment]);
+      toast("Assignment added successfully!");
+  };
+  
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // History Sorting
+  const [historySortBy, setHistorySortBy] = useState("dueDate");
+  const [historySortOrder, setHistorySortOrder] = useState("desc"); // Default desk for history
+
+  const handleHistorySortChange = (value) => {
+    if (value === historySortBy) {
+      setHistorySortOrder(historySortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setHistorySortBy(value);
+      setHistorySortOrder("desc"); // Default to newest/highest first for history
+    }
+  };
+
+  const sortedHistory = assignments
+    .filter(a => a.completed)
+    .sort((a, b) => {
+        if (historySortBy === "dueDate") {
+            return historySortOrder === "asc"
+                ? new Date(a.dueDate) - new Date(b.dueDate)
+                : new Date(b.dueDate) - new Date(a.dueDate);
+        } else if (historySortBy === "grade") {
+            return historySortOrder === "asc" ? a.grade - b.grade : b.grade - a.grade;
+        }
+        return 0;
+    });
+
   return (
-    <>
-      <Container className="py-4">
-        <Row className="mb-5 justify-content-center">
-          <Col md={8} className="text-center">
-            {assignments.filter((assignment) => assignment.completed).length == 0 ? (
-              <div className="p-4 glass-panel text-muted">No Assignments Completed Yet</div>
-            ) : (
-                <div className="p-4 glass-panel">
-                 <h2 className="display-6 mb-0">Congrats, {userInfo.firstName}!</h2>
-                 <div className="my-3">
-                    <span className="display-4 fw-bold text-primary">
+    <Container className="assignments-container">
+      {/* Unified Command Center Header */}
+      <div className="glass-panel p-4 mb-5">
+        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4 mb-4">
+          {/* Title Section */}
+          <div>
+            <h1 className="display-5 fw-bold text-white mb-2">My Assignments</h1>
+            <p className="text-muted mb-0 fs-5">Manage your tasks and track your progress</p>
+          </div>
+          
+          {/* Stats Widget */}
+          <div className="stats-widget ps-4 pe-3 py-2 border border-secondary border-opacity-25 rounded-pill bg-dark-glass d-inline-flex align-items-center gap-3">
+            <div className="text-end">
+              <div className="text-uppercase text-muted fw-bold" style={{fontSize: '0.7rem', letterSpacing: '1px'}}>Completed</div>
+              <div className="d-flex align-items-baseline justify-content-end gap-2">
+                 <span className="display-6 fw-bold text-primary" style={{lineHeight: 1}}>
                     {assignments.filter((assignment) => assignment.completed).length}
-                    </span>
-                    <span className="fs-4 text-muted mx-2">/</span>
-                    <span className="fs-4 text-muted">{assignments.length}</span>
-                 </div>
-                 <div className="text-uppercase tracking-wider fs-6 text-secondary fw-bold">Assignments Completed</div>
-                </div>
-            )}
-          </Col>
-        </Row>
-
-        <Row className="g-5"> {/* Added gutter for better spacing */}
-          <Col lg={6} className="d-flex flex-column">
-            <div className="d-flex flex-column align-items-center">
-                <h2 className="text-center mb-3 display-6" style={{ fontFamily: 'var(--font-header)' }}>Upcoming</h2>
-                
-                <div className="d-flex gap-2 flex-wrap justify-content-center mb-3">
-                     <Link to="/addassignment" className="text-decoration-none">
-                        <Button variant="primary" className="d-flex align-items-center gap-2">
-                            <span>+ New</span>
-                        </Button>
-                     </Link>
-                     <Button variant="outline-success text-white" onClick={() => handleSortChange("dueDate")}>
-                        Date
-                     </Button>
-                     <Button variant="outline-info text-white" onClick={() => handleSortChange("priority")}>
-                        Priority
-                     </Button>
-                </div>
+                 </span>
+                 <span className="text-muted fs-5">/ {assignments.length}</span>
+              </div>
             </div>
-
-            <div className="assignments-grid flex-grow-1">
-              {sortedAssignments
-                .filter((assignment) => assignment.completed === false)
-                .map((assignment) => (
-                  <Card
-                    key={assignment._id}
-                    className="assignment-card"
-                    bsPrefix="card"
-                  >
-                    <AssignmentItem
-                      assignment={assignment}
-                      studentId={userInfo._id}
-                    />
-                    <ButtonGroup className="mt-3 w-100 bg-dark-glass rounded-pill overflow-hidden border border-white border-opacity-10">
-                      <Button
-                        variant="link"
-                        className="text-danger text-decoration-none"
-                        onClick={() => handleShowConfirmation(assignment._id)}
-                      >
-                        Delete
-                      </Button>
-                      <Button 
-                        variant="link" 
-                        onClick={() => handleEditClick(assignment)}
-                        className="text-white text-decoration-none border-start border-end border-secondary border-opacity-25"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="link"
-                        className="text-success text-decoration-none"
-                        onClick={() =>
-                          markAssignmentAsCompleted(assignment._id)
-                        }
-                      >
-                        Complete
-                      </Button>
-                    </ButtonGroup>
-                  </Card>
-                ))}
-                {sortedAssignments.filter(a => !a.completed).length === 0 && (
-                    <div className="text-center text-muted py-5 border border-dashed border-secondary rounded-3">
-                        No upcoming assignments
-                    </div>
-                )}
+            <div className="bg-primary bg-opacity-10 p-2 rounded-circle border border-primary border-opacity-25">
+               <span className="fs-3">🏆</span>
             </div>
-            
-            <EditAssignmentModal 
-                show={showEditModal} 
-                onHide={() => setShowEditModal(false)} 
-                assignment={editingAssignment}
-                onUpdate={handleAssignmentUpdate}
-                onDelete={handleAssignmentDelete}
-            />
+          </div>
+        </div>
 
-            <Modal show={showConfirmation} onHide={handleCloseConfirmation} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirm Deletion</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                Are you sure you want to delete this assignment?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseConfirmation}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => deleteAssignment(assignmentIdToDelete)}
+        {/* Toolbar: Tabs (Left) & Actions (Right) */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pt-3 border-top border-secondary border-opacity-25">
+          <Tabs
+            id="assignment-tabs"
+            activeKey={activeTab}
+            onSelect={(k) => setActiveTab(k)}
+            className="custom-pills mb-0"
+          >
+            <Tab eventKey="upcoming" title={`Upcoming (${assignments.filter(a => !a.completed).length})`} />
+            <Tab eventKey="completed" title="History" />
+          </Tabs>
+
+          {activeTab === 'upcoming' && (
+             <div className="d-flex gap-2 bg-dark-glass p-1 rounded-pill border border-secondary border-opacity-10">
+                <Button 
+                  variant={sortBy === 'dueDate' ? 'primary' : 'ghost'}
+                  className={`rounded-pill px-3 py-2 ${sortBy !== 'dueDate' && 'text-muted hover-text-white'}`}
+                  onClick={() => handleSortChange("dueDate")}
+                  size="sm"
                 >
-                  Delete
+                  <i className="bi bi-calendar-event me-2"></i>
+                  Date {sortBy === 'dueDate' && (sortOrder === 'asc' ? '↑' : '↓')}
                 </Button>
-              </Modal.Footer>
-            </Modal>
-          </Col>
-
-          <Col lg={6} className="d-flex flex-column border-lg-start border-secondary border-opacity-10">
-             {/* Completed Assignments Section */}
-             <div className="d-flex flex-column align-items-center">
-                 <h2 className="text-center mb-3 display-6" style={{ fontFamily: 'var(--font-header)' }}>Completed</h2>
+                <div className="vr bg-secondary opacity-25 my-1"></div>
+                <Button 
+                  variant={sortBy === 'priority' ? 'primary' : 'ghost'}
+                  className={`rounded-pill px-3 py-2 ${sortBy !== 'priority' && 'text-muted hover-text-white'}`}
+                  onClick={() => handleSortChange("priority")}
+                  size="sm"
+                >
+                  <i className="bi bi-flag me-2"></i>
+                  Priority {sortBy === 'priority' && (sortOrder === 'asc' ? '↓' : '↑')} 
+                </Button>
+                <div className="vr bg-secondary opacity-25 my-1"></div>
+                <Button 
+                    variant="primary" 
+                    className="rounded-pill px-4 py-1 ms-2 d-flex align-items-center gap-2 shadow-sm"
+                    onClick={() => setShowAddModal(true)}
+                  >
+                    <span className="fs-5">+</span> New
+                </Button>
              </div>
-             <CompletedAssignments 
-                assignments={assignments.filter(a => a.completed)}
-                onMarkIncomplete={markAssignmentIncomplete}
-             />
-          </Col>
-        </Row>
-      </Container>
-    </>
+          )}
+
+          {activeTab === 'completed' && (
+             <div className="d-flex gap-2 bg-dark-glass p-1 rounded-pill border border-secondary border-opacity-10">
+                <Button 
+                  variant={historySortBy === 'dueDate' ? 'primary' : 'ghost'}
+                  className={`rounded-pill px-3 py-2 ${historySortBy !== 'dueDate' && 'text-muted hover-text-white'}`}
+                  onClick={() => handleHistorySortChange("dueDate")}
+                  size="sm"
+                >
+                  <i className="bi bi-calendar-event me-2"></i>
+                  Date {historySortBy === 'dueDate' && (historySortOrder === 'asc' ? '↑' : '↓')}
+                </Button>
+                <div className="vr bg-secondary opacity-25 my-1"></div>
+                <Button 
+                  variant={historySortBy === 'grade' ? 'primary' : 'ghost'}
+                  className={`rounded-pill px-3 py-2 ${historySortBy !== 'grade' && 'text-muted hover-text-white'}`}
+                  onClick={() => handleHistorySortChange("grade")}
+                  size="sm"
+                >
+                  <i className="bi bi-award me-2"></i>
+                  Grade {historySortBy === 'grade' && (historySortOrder === 'asc' ? '↑' : '↓')}
+                </Button>
+             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <Row className="justify-content-center">
+        <Col xl={12}> 
+          
+          {activeTab === 'upcoming' && (
+            <div className="upcoming-section fade-in-up">
+               {/* Filter Bar Removed - Integrated above */}
+
+               <div className="assignments-list">
+                  {sortedAssignments
+                    .filter((assignment) => !assignment.completed)
+                    .map((assignment) => (
+                      <Card
+                        key={assignment._id}
+                        className="assignment-card-horizontal"
+                        bsPrefix="card"
+                      >
+                        <div className="d-flex flex-column flex-md-row gap-4 align-items-md-center w-100">
+                           <div className="flex-grow-1">
+                              <AssignmentItem
+                                  assignment={assignment}
+                                  studentId={userInfo._id}
+                              />
+                           </div>
+                           
+                           <div className="card-actions-horizontal">
+                              <Button
+                                variant="link"
+                                className="btn-edit-action text-decoration-none p-2"
+                                onClick={() => handleEditClick(assignment)}
+                                title="Edit Assignment"
+                              >
+                                Edit
+                              </Button>
+                              <div className="vr bg-secondary opacity-25 mx-1" style={{height: '24px'}}></div>
+                              <Button
+                                variant="link"
+                                className="text-danger text-decoration-none p-2 opacity-75 hover-opacity-100"
+                                onClick={() => handleShowConfirmation(assignment._id)}
+                                title="Delete Assignment"
+                              >
+                                Delete
+                              </Button>
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                className="ms-3 px-4 rounded-pill fw-medium"
+                                onClick={() => markAssignmentAsCompleted(assignment._id)}
+                              >
+                                Complete
+                              </Button>
+                           </div>
+                        </div>
+                      </Card>
+                  ))}
+                  
+                  {sortedAssignments.filter(a => !a.completed).length === 0 && (
+                      <div className="empty-state">
+                          <h4>All caught up!</h4>
+                          <p>No upcoming assignments.</p>
+                          <Button variant="outline-primary" className="mt-3" onClick={() => setShowAddModal(true)}>
+                              Create First Assignment
+                          </Button>
+                      </div>
+                  )}
+               </div>
+            </div>
+          )}
+
+          {activeTab === 'completed' && (
+            <div className="completed-section fade-in-up">
+               <CompletedAssignments 
+                  assignments={sortedHistory}
+                  onMarkIncomplete={markAssignmentIncomplete}
+               />
+            </div>
+          )}
+
+        </Col>
+      </Row>
+
+      {/* Modals */}
+      <AddAssignmentModal
+          show={showAddModal}
+          onHide={() => setShowAddModal(false)}
+          onAdd={handleAssignmentAdd}
+      />
+
+      <EditAssignmentModal 
+          show={showEditModal} 
+          onHide={() => setShowEditModal(false)} 
+          assignment={editingAssignment}
+          onUpdate={handleAssignmentUpdate}
+          onDelete={handleAssignmentDelete}
+      />
+
+      <Modal 
+        show={showConfirmation} 
+        onHide={handleCloseConfirmation} 
+        centered
+        contentClassName="glass-modal"
+      >
+        <Modal.Header closeButton closeVariant="white">
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this assignment? This action cannot be undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirmation}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => deleteAssignment(assignmentIdToDelete)}
+          >
+            Delete Assignment
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 };
-
 export default Assignments;

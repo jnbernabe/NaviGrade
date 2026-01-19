@@ -13,14 +13,15 @@ const AssignmentItem = ({ assignment, studentId }) => {
   };
 
   const getPriorityBadge = (p) => {
-    // 1=High, 3=Low? Or reverse? Mock data says 1, 2, 3. Let's assume 1 is high.
-    // Actually mock data usually implies 1 is highest priority.
-    switch(p) {
-        case 1: return <span className="badge bg-danger">High Priority</span>;
-        case 2: return <span className="badge bg-warning text-dark">Medium</span>;
-        case 3: return <span className="badge bg-info text-dark">Low</span>;
-        default: return null;
-    }
+    if (!p) return null;
+    const priority = p.toString().toLowerCase(); // handle both numbers or strings safely
+    
+    // Convert old numbers if they exist in DB (1=High, 2=Medium, 3=Low from mock)
+    if (priority === '1' || priority === 'high') return <span className="badge bg-danger">High</span>;
+    if (priority === '2' || priority === 'medium') return <span className="badge bg-warning text-dark">Medium</span>;
+    if (priority === '3' || priority === 'low') return <span className="badge bg-info text-dark">Low</span>;
+    
+    return <span className="badge bg-secondary">{p}</span>;
   };
 
   return (
@@ -30,7 +31,7 @@ const AssignmentItem = ({ assignment, studentId }) => {
         {assignment.completed ? (
             <span className="badge bg-success">Done</span>
         ) : (
-            assignment.priority > 0 && getPriorityBadge(assignment.priority)
+            assignment.priority && getPriorityBadge(assignment.priority)
         )}
       </div>
       

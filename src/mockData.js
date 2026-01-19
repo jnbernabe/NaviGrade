@@ -16,11 +16,11 @@ export const COURSES = [
     name: "Advanced Web Development",
     professor: "Dr. Sarah Smith",
     schedules: [
-      { day: "Monday", startTime: "10:00", endTime: "11:30" },
-      { day: "Wednesday", startTime: "10:00", endTime: "11:30" },
+      { day: "Mon, Wed", startTime: "10:00", endTime: "11:30" },
     ],
-    startDate: "2025-01-15T00:00:00.000Z",
-    endDate: "2025-05-15T00:00:00.000Z",
+    startDate: "2026-01-15T00:00:00.000Z",
+    endDate: "2026-05-15T00:00:00.000Z",
+    color: "#8b5cf6", // Violet
     memo: "Focus on React and Node.js",
     assignments: ["assign1", "assign2"],
   },
@@ -29,11 +29,11 @@ export const COURSES = [
     name: "Data Structures & Algorithms",
     professor: "Prof. Alan Turing",
     schedules: [
-      { day: "Tuesday", startTime: "14:00", endTime: "15:30" },
-      { day: "Thursday", startTime: "14:00", endTime: "15:30" },
+      { day: "Tue, Thu", startTime: "14:00", endTime: "15:30" },
     ],
-    startDate: "2025-01-16T00:00:00.000Z",
-    endDate: "2025-05-16T00:00:00.000Z",
+    startDate: "2026-01-16T00:00:00.000Z",
+    endDate: "2026-05-16T00:00:00.000Z",
+    color: "#06b6d4", // Cyan
     memo: "Prepare for technical interviews",
     assignments: ["assign3", "assign4"],
   },
@@ -42,10 +42,11 @@ export const COURSES = [
     name: "UI/UX Design Principles",
     professor: "Jane Doe",
     schedules: [
-      { day: "Friday", startTime: "09:00", endTime: "12:00" },
+      { day: "Fri", startTime: "09:00", endTime: "12:00" },
     ],
-    startDate: "2025-01-17T00:00:00.000Z",
-    endDate: "2025-05-17T00:00:00.000Z",
+    startDate: "2026-01-17T00:00:00.000Z",
+    endDate: "2026-05-17T00:00:00.000Z",
+    color: "#eab308", // Yellow for contrast
     memo: "Final project needs a prototype",
     assignments: ["assign5"],
   },
@@ -55,7 +56,7 @@ export const ASSIGNMENTS = [
   {
     _id: "assign1",
     name: "Portfolio Website",
-    dueDate: "2025-02-15T23:59:59.000Z",
+    dueDate: "2026-02-15T23:59:59.000Z",
     course: "course1",
     grade: 95,
     weight: 0.2,
@@ -67,7 +68,7 @@ export const ASSIGNMENTS = [
   {
     _id: "assign2",
     name: "API Integration",
-    dueDate: "2025-03-10T23:59:59.000Z",
+    dueDate: "2026-03-10T23:59:59.000Z",
     course: "course1",
     grade: 0,
     weight: 0.3,
@@ -79,7 +80,7 @@ export const ASSIGNMENTS = [
   {
     _id: "assign3",
     name: "Sorting Algorithms",
-    dueDate: "2025-02-20T23:59:59.000Z",
+    dueDate: "2026-02-20T23:59:59.000Z",
     course: "course2",
     grade: 88,
     weight: 0.15,
@@ -91,7 +92,7 @@ export const ASSIGNMENTS = [
   {
     _id: "assign4",
     name: "Binary Trees",
-    dueDate: "2025-04-05T23:59:59.000Z",
+    dueDate: "2026-04-05T23:59:59.000Z",
     course: "course2",
     grade: 0,
     weight: 0.25,
@@ -103,7 +104,7 @@ export const ASSIGNMENTS = [
   {
     _id: "assign5",
     name: "Wireframe Design",
-    dueDate: "2025-02-01T23:59:59.000Z",
+    dueDate: "2026-02-01T23:59:59.000Z",
     course: "course3",
     grade: 92,
     weight: 0.2,

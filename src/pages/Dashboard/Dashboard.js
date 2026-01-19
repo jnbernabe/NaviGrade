@@ -136,27 +136,46 @@ const fetchCourses = async () => {
   }
 };
 
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   return (
     <div className="dashboard-container mx-auto">
     
      
     <div id="cssportal-grid">
       <div id="div1">
-            {/* top center row */}
-      <h3 className="display-5"> Dashboard for {userInfo.firstName} </h3>
-    
-      <AssignmentProgressbar
-      assignments={totalAssignments}
-      className="mb-4"
-      />
-          <div className="button-container" >
-              <Button className="btn-primary" onClick={notifyClosestAssignment}>
-                What is due next?
+        {/* Left: Compact Greeting */}
+        <div className="d-flex align-items-center gap-2 pe-4 border-end border-secondary border-opacity-25" style={{ minWidth: '220px' }}>
+             <div className="rounded-circle bg-primary bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style={{width: '40px', height:'40px'}}>
+                 <span style={{fontSize: '1.2rem'}}>👋</span>
+             </div>
+             <div>
+                 <div className="text-muted small text-uppercase" style={{fontSize: '0.65rem', letterSpacing: '1px'}}>{getGreeting()}</div>
+                 <div className="fw-bold text-white lh-1">{userInfo.firstName}</div>
+             </div>
+        </div>
+
+        {/* Middle: Progress Bar (Takes remaining space) */}
+        <div className="flex-grow-1 px-4">
+          <AssignmentProgressbar assignments={totalAssignments} />
+        </div>
+
+        {/* Right: Actions */}
+        <div className="d-flex gap-2 ps-4 border-start border-secondary border-opacity-25">
+             <Button size="sm" variant="outline-light" className="border-opacity-25 text-muted hover-white" onClick={notifyClosestAssignment} style={{fontSize: '0.8rem'}}>
+                Next Due
               </Button>
               <ToastContainer theme="dark" />
-              <Button variant="outline-info" onClick={handleSendEmail}>Send me a reminder Email</Button>
+              <Button size="sm" variant="primary" onClick={handleSendEmail} style={{fontSize: '0.8rem', padding: '0.25rem 0.75rem'}}>
+                Reminder
+              </Button>
         </div>
-        
       </div>
       <div id="div2" className="glass-panel">
         {/* left column */}
@@ -184,7 +203,7 @@ const fetchCourses = async () => {
       <div id="div3" className="text-center"> 
        <h4>Assignment Calendar</h4>
       
-       <Calendar courses={courses} assignments={totalAssignments} />
+       <Calendar courses={courses} assignments={totalAssignments} height="600px" />
       </div>
   </div>
 

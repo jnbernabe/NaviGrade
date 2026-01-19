@@ -17,11 +17,6 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const MyGrades = lazy(() => import("./pages/Grades/MyGrades"));
 const Grades = lazy(() => import("./pages/Grades/Grades"));
 const EditGrade = lazy(() => import("./pages/Grades/EditGrade"));
-const EditCourse = lazy(() => import("./pages/Courses/EditCourse"));
-const EditAssignment = lazy(() => import("./pages/Assignments/EditAssignment"));
-const AddAssignment = lazy(() => import("./pages/Assignments/AddAssignment"));
-const ViewCourse = lazy(() => import("./pages/Courses/ViewCourse"));
-const AddCourse = lazy(() => import("./pages/Courses/AddCourse"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const CompletedAssignments = lazy(() => import("./pages/Assignments/CompletedAssignments"));
 
@@ -60,11 +55,6 @@ function App() {
                 }
               />
               <Route path="/editgrade/:id" element={<Suspense fallback={<LoadingFallback />}><EditGrade /></Suspense>} />
-              <Route path="/editcourse/:id" element={<Suspense fallback={<LoadingFallback />}><EditCourse /></Suspense>} />
-              <Route path="/editassignment/:id" element={<Suspense fallback={<LoadingFallback />}><EditAssignment /></Suspense>} />
-              <Route path="/addassignment" element={<Suspense fallback={<LoadingFallback />}><AddAssignment /></Suspense>} />
-              <Route path="/viewcourse/:id" element={<Suspense fallback={<LoadingFallback />}><ViewCourse /></Suspense>} />
-              <Route path="/addcourse" element={<Suspense fallback={<LoadingFallback />}><AddCourse /></Suspense>} />
               <Route path="/dashboard" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
               <Route
                 path="/completed-assignments"

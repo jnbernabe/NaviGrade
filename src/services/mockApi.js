@@ -131,11 +131,26 @@ const mockApi = {
            completed: body.completed || false
         };
        assignments.push(newAssignment);
-       
-       // Also update course and student arrays? 
-       // In a real DB, this is relational. Here we just store in arrays.
-       // The frontend likely expects the assignment object back.
        return mockResponse(newAssignment, 201);
+    }
+    
+    // ADD COURSE
+    if (cleanUrl === "/courses" || cleanUrl === "/courses/") {
+        const newCourse = {
+            ...body,
+            _id: `course${Date.now()}`,
+            schedules: body.schedules || (body.schedule ? [body.schedule] : []), // Normalize
+        };
+        courses.push(newCourse);
+        return mockResponse({ ...newCourse, courseId: newCourse._id }, 201);
+    }
+    
+    // Add Course to Student (Link)
+    const addCourseToStudentMatch = cleanUrl.match(/^\/courses\/([a-zA-Z0-9]+)\/add-course$/);
+    if(addCourseToStudentMatch) {
+         // In this mock, we don't really track student-course links robustly, 
+         // but let's return success to satisfy the frontend call.
+         return mockResponse({ message: "Course added to student" }, 201);
     }
 
     // Mark Completed - Some routes are POST /:id/mark-completed
@@ -173,6 +188,7 @@ const mockApi = {
     // console.log("Mock API PATCH:", url, body);
     const cleanUrl = url.replace(process.env.REACT_APP_API_KEY || "http://localhost:5050", "");
     
+    // Assignments
     const assignMatch = cleanUrl.match(/^\/assignments\/([a-zA-Z0-9]+)$/);
     if(assignMatch) {
         const id = assignMatch[1];
@@ -180,6 +196,17 @@ const mockApi = {
         if(idx !== -1) {
             assignments[idx] = { ...assignments[idx], ...body };
             return mockResponse({ message: "Updated" });
+        }
+    }
+    
+    // Courses
+    const courseMatch = cleanUrl.match(/^\/courses\/([a-zA-Z0-9]+)$/);
+    if(courseMatch) {
+        const id = courseMatch[1];
+        const idx = courses.findIndex(c => c._id === id);
+        if(idx !== -1) {
+            courses[idx] = { ...courses[idx], ...body };
+            return mockResponse({ message: "Course Updated" });
         }
     }
 
@@ -195,6 +222,15 @@ const mockApi = {
         const id = assignMatch[1];
         assignments = assignments.filter(a => a._id !== id);
          return mockResponse({ message: "Deleted" });
+    }
+    
+    const courseMatch = cleanUrl.match(/^\/courses\/([a-zA-Z0-9]+)$/);
+    if(courseMatch) {
+        const id = courseMatch[1];
+        courses = courses.filter(c => c._id !== id);
+        // Also cleanup assignments for this course?
+        assignments = assignments.filter(a => a.course !== id);
+        return mockResponse({ message: "Course Deleted" });
     }
     
     return mockResponse({ message: "Not found" }, 404);

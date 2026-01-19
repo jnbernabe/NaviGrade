@@ -64,7 +64,7 @@
 
 /* Events */
 .rbc-event {
-  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  /* background has been removed to allow dynamic inline styles */
   border: none !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 4px;

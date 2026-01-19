@@ -5,52 +5,29 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "../../services/mockApi";
 import { useAuth } from "../../contexts/AuthContext";
 
-const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) => {
-  const [formData, setFormData] = useState({
+const AddAssignmentModal = ({ show, onHide, onAdd }) => {
+  const initialFormState = {
     name: "",
     dueDate: new Date(),
-    course: "", // This will be the course ID
+    course: "", // Course ID
     grade: 0,
     weight: 0,
-    priority: 0,
+    priority: "Medium",
     memo: "",
     completed: false
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
   const [courses, setCourses] = useState([]);
   const { userDetails } = useAuth();
   const userInfo = JSON.parse(userDetails);
   const apikey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
-    if (show && assignment) {
-      // If assignment has course name instead of ID, we might need to find the ID from the courses list or handle it.
-      // The current Assignments.js maps course ID to name. We might need the ID for editing.
-      // Let's assume we can fetch courses and match by name if needed, or better yet, pass the original ID if available.
-      // Looking at Assignments.js, it seems we replace course ID with Name. This is tricky.
-      // We should probably keep the ID in the assignment object or fetch the single assignment again if needed.
-      // OR, fix Assignments.js to keep both ID and Name.
-      
-      setFormData({
-        ...assignment,
-        dueDate: new Date(assignment.dueDate)
-      });
-    }
-  }, [show, assignment]);
-
-  useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(`${apikey}/courses/student/${userInfo._id}`);
         setCourses(response.data);
-         
-        // If the assignment course is a Name string, try to find the ID
-        if (assignment && typeof assignment.course === 'string') {
-             const matchedCourse = response.data.find(c => c.name === assignment.course);
-             if (matchedCourse) {
-                 setFormData(prev => ({ ...prev, course: matchedCourse._id }));
-             }
-        }
-
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -58,47 +35,39 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
 
     if (show) {
       fetchCourses();
+      setFormData(initialFormState); // Reset form when opening
     }
-  }, [show, userDetails, apikey, assignment, userInfo._id]);
+  }, [show, userDetails, apikey, userInfo._id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Find course name for display update if needed, but API usually expects ID
       const selectedCourse = courses.find(c => c._id === formData.course);
       
-      // Update via API
-       await axios.patch(`${apikey}/assignments/${assignment._id}`, formData);
-       
-       // Update local state in parent
-       onUpdate({ 
-           ...formData, 
-           _id: assignment._id,
-           course: selectedCourse ? selectedCourse.name : formData.course // Optimistic update for display
-       });
-       onHide();
+      const payload = {
+        ...formData,
+        studentId: userInfo._id
+      };
+      
+      const response = await axios.post(`${apikey}/assignments/add-assignment`, payload);
+      
+      // Pass back the new assignment for local update (optimistic or from response)
+      onAdd({
+          ...response.data,
+          course: selectedCourse ? selectedCourse.name : "Unknown Course" 
+      });
+      
+      onHide();
     } catch (error) {
-      console.error("Error updating assignment:", error);
-      alert("Failed to update assignment");
+      console.error("Error adding assignment:", error);
+      alert("Failed to add assignment");
     }
   };
-  
-  const handleDelete = async () => {
-      if (window.confirm("Are you sure you want to delete this assignment?")) {
-        try {
-            await axios.delete(`${apikey}/assignments/${assignment._id}`);
-            onDelete(assignment._id);
-            onHide();
-        } catch (error) {
-            console.error("Error deleting assignment:", error);
-        }
-      }
-  }
 
   return (
     <Modal show={show} onHide={onHide} centered contentClassName="glass-modal">
       <Modal.Header closeButton closeVariant="white" className="border-bottom border-secondary border-opacity-25">
-        <Modal.Title style={{ fontFamily: 'var(--font-header)' }}>Edit Assignment</Modal.Title>
+        <Modal.Title style={{ fontFamily: 'var(--font-header)' }}>Add New Assignment</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -109,6 +78,7 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
+              placeholder="e.g. Final Project"
               className="bg-dark-glass text-white border-secondary border-opacity-25"
             />
           </Form.Group>
@@ -127,6 +97,7 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
             <Form.Select
               value={formData.course}
               onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+              required
               className="bg-dark-glass text-white border-secondary border-opacity-25"
             >
               <option value="">Select Course</option>
@@ -141,17 +112,6 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
           <div className="row g-3 mb-3">
               <div className="col-md-6">
                   <Form.Group>
-                    <Form.Label>Grade (0-100)</Form.Label>
-                    <Form.Control
-                      type="number"
-                      value={formData.grade}
-                      onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-                      className="bg-dark-glass text-white border-secondary border-opacity-25"
-                    />
-                  </Form.Group>
-              </div>
-              <div className="col-md-6">
-                  <Form.Group>
                     <Form.Label>Priority</Form.Label>
                      <Form.Select
                       value={formData.priority}
@@ -164,6 +124,9 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
                     </Form.Select>
                   </Form.Group>
               </div>
+              <div className="col-md-6">
+                 {/* Weight input could go here if needed, or left out for simplicity */}
+              </div>
           </div>
 
           <Form.Group className="mb-3">
@@ -173,22 +136,18 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
               rows={3}
               value={formData.memo}
               onChange={(e) => setFormData({ ...formData, memo: e.target.value })}
+              placeholder="Details about the assignment..."
               className="bg-dark-glass text-white border-secondary border-opacity-25"
             />
           </Form.Group>
 
-          <div className="d-flex justify-content-between mt-4">
-             <Button variant="outline-danger" onClick={handleDelete}>
-                 Delete Assignment
-             </Button>
-            <div>
-                 <Button variant="secondary" onClick={onHide} className="me-2">
-                  Cancel
-                </Button>
-                <Button variant="primary" type="submit">
-                  Save Changes
-                </Button>
-            </div>
+          <div className="d-flex justify-content-end mt-4">
+             <Button variant="secondary" onClick={onHide} className="me-2">
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Create Task
+            </Button>
           </div>
         </Form>
       </Modal.Body>
@@ -196,4 +155,4 @@ const EditAssignmentModal = ({ show, onHide, assignment, onUpdate, onDelete }) =
   );
 };
 
-export default EditAssignmentModal;
+export default AddAssignmentModal;

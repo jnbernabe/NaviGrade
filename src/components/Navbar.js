@@ -51,83 +51,54 @@ const Navbar = () => {
       expand="lg"
       className="mx-auto w-100 sticky-top"
     >
-      <Container fluid>
+      <div className="navbar-content container-fluid">
         <Link to="/" className="navbar-brand">
-          {/* Navbar brand logo */}
-          <img src={logoImage} alt="Logo" className="logo" />
-          {/* Navbar brand text */}
+          <img src={logoImage} alt="NaviGrade" className="logo" />
           NaviGrade
         </Link>
 
         <BootstrapNavbar.Toggle aria-controls="navbarNav" />
 
         <BootstrapNavbar.Collapse id="navbarNav">
-          <Nav className="ml-auto w-100" bsPrefix>
+          <Nav className="ms-auto align-items-center">
             {user ? (
               <>
-                <Nav.Link
-                  as={Link}
-                  to="/dashboard"
-                  className="nav-link"
-                  bsPrefix
+                <Nav.Link as={Link} to="/dashboard" className="nav-link">Dashboard</Nav.Link>
+                <Nav.Link as={Link} to="/courses" className="nav-link">Courses</Nav.Link>
+                <Nav.Link as={Link} to="/assignments" className="nav-link">Assignments</Nav.Link>
+                <Nav.Link as={Link} to="/calendar" className="nav-link">Calendar</Nav.Link>
+                <Nav.Link as={Link} to="/mygrades" className="nav-link">My Grades</Nav.Link>
+                
+                <div className="nav-separator"></div>
+
+                <div 
+                  className="nav-link text-white user-welcome cursor-pointer d-flex align-items-center gap-2" 
+                  onClick={() => setShowModal(true)}
+                  style={{ cursor: 'pointer' }}
                 >
-                  Dashboard
-                </Nav.Link>
-                <Nav.Link as={Link} to="/courses" className="nav-link">
-                  Courses
-                </Nav.Link>
-                <Nav.Link as={Link} to="/assignments" className="nav-link">
-                  Assignments
-                </Nav.Link>
+                  <span className="nav-icon">👤</span>
+                  {userInfo && userInfo.firstName ? `Hi, ${userInfo.firstName}` : "Profile"}
+                </div>
 
-                <Nav.Link as={Link} to="/calendar" className="nav-link">
-                  Calendar
-                </Nav.Link>
-                <Nav.Link as={Link} to="/mygrades" className="nav-link">
-                  My Grades
-                </Nav.Link>
-
-                <Nav.Link as={Link} to="/logout" className="nav-link">
-                  Logout
-                </Nav.Link>
+                <Nav.Link as={Link} to="/logout" className="nav-link logout-link">Logout</Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link
-                  as={Link}
-                  to="/authentication/signup"
-                  className="nav-link"
-                >
-                  Sign Up
-                </Nav.Link>
-                <Nav.Link
-                  as={Link}
-                  to="/authentication/signin"
-                  className="nav-link"
-                >
-                  Login
-                </Nav.Link>
+                <Nav.Link as={Link} to="/authentication/signup" className="nav-link">Sign Up</Nav.Link>
+                <Nav.Link as={Link} to="/authentication/signin" className="nav-link highlight-link">Login</Nav.Link>
               </>
             )}
           </Nav>
         </BootstrapNavbar.Collapse>
-        <BootstrapNavbar.Text className="text-white">
-          {userInfo && userInfo.firstName
-            ? `Welcome, ${userInfo.firstName}`
-            : " "}
-        </BootstrapNavbar.Text>
-        {user ? (
-          <>
-            <ProfileDisplay
-              show={showModal}
-              handleClose={handleCloseModal}
-              user={userInfo}
-            />
-          </>
-        ) : (
-          console.log("No user")
+
+        {user && (
+          <ProfileDisplay
+            show={showModal}
+            handleClose={handleCloseModal}
+            user={userInfo}
+          />
         )}
-      </Container>
+      </div>
     </BootstrapNavbar>
   );
 };

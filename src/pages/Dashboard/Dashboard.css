@@ -18,17 +18,28 @@
 /* Header Area (Welcome & Progress) */
 #div1 {
   grid-column: span 12;
-  text-align: center;
+  text-align: left;
   margin-bottom: 2rem;
-  padding: 2rem;
+  padding: 0.75rem 1.5rem;
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
   border-radius: var(--radius-lg);
   border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+/* Flex items handling */
+#div1 > div:first-child {
+    flex: 0 0 auto;
+}
+#div1 > div:nth-child(2) {
+    flex: 1;
 }
 
 /* Assignments Column */
 #div2 {
-  grid-column: span 7;
+  grid-column: span 4;
   padding: 1.5rem;
   border-radius: var(--radius-md);
   background: var(--bg-card); /* Glass background */
@@ -37,7 +48,7 @@
 
 /* Calendar/Right Column */
 #div3 {
-  grid-column: span 5;
+  grid-column: span 8;
   padding: 1.5rem;
   border-radius: var(--radius-md);
   background: var(--bg-card);
@@ -82,11 +93,29 @@
 h3.display-5 {
   font-family: var(--font-header);
   font-weight: 700;
-  background: linear-gradient(to right, #fff, #94a3b8);
+  margin-bottom: 2rem;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-greeting {
+  text-align: left;
+  line-height: 1.2;
+}
+
+.greeting-text {
+  font-size: 1.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.user-name {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 1.5rem;
+  display: block;
+  margin-top: 0.25rem;
 }
 
 h4 {
