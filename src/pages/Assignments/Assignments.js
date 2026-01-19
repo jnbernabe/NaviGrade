@@ -15,14 +15,11 @@ import {
   Container,
   Col,
   Row,
-  ButtonGroup,
-  ProgressBar,
   Tabs,
   Tab
 } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AssignmentProgressbar from "../../components/AssignmentProgressbar";
 
 export const calculateStudentLevel = (completedPercentage) => {
   if (completedPercentage >= 90) {
@@ -52,13 +49,13 @@ const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [assignmentIdToDelete, setAssignmentIdToDelete] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const { user, userDetails } = useAuth(AuthProvider);
+
+  const { userDetails } = useAuth(AuthProvider);
   const { getAuthToken } = useAuth();
   //sorting function
   const [sortBy, setSortBy] = useState("dueDate"); // Default sorting by dueDate
   const [sortOrder, setSortOrder] = useState("asc"); // Default sorting order
-  const [showGradeSortButton, setShowGradeSortButton] = useState(false);
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState(null);
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -105,11 +102,7 @@ const Assignments = () => {
 
         setAssignments(updatedAssignments);
 
-        // Check if completed assignments have grades
-        const hasGrades = updatedAssignments.some(
-          (assignment) => assignment.completed && assignment.grade !== undefined
-        );
-        setShowGradeSortButton(hasGrades);
+
       } catch (error) {
         console.error("Error fetching assignments:", error);
       }
@@ -185,36 +178,9 @@ const Assignments = () => {
     return 0;
   });
 
-  // Calculate percentage of completed assignments
-  const completedPercentage = Math.round(
-    (assignments.filter((assignment) => assignment.completed).length /
-      assignments.length) *
-      100
-  );
 
-  const notifyClosestAssignment = () => {
-    if (assignments.length === 0) {
-      toast("No assignments currently.");
-      return;
-    }
 
-    // Sort assignments by dueDate in ascending order
-    const sortedAssignments = [...assignments].sort((a, b) => {
-      return new Date(a.dueDate) - new Date(b.dueDate);
-    });
 
-    // Get the closest assignment (first one in the sorted list)
-    const closestAssignment = sortedAssignments[0];
-
-    const today = new Date();
-    const dueDate = new Date(closestAssignment.dueDate);
-    const diffTime = dueDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    // Display a toast with information about the closest assignment
-    toast(`Closest assignment: ${closestAssignment.name}  
-    ${diffDays} day(s) left`);
-  };
 
   const markAssignmentIncomplete = async (id) => {
     try {

@@ -9,15 +9,7 @@ import img7 from "../assets/avatar7.png";
 import img8 from "../assets/avatar8.png";
 import img9 from "../assets/avatar9.png";
 
-export const avatar1 = img1;
-export const avatar2 = img2;
-export const avatar3 = img3;
-export const avatar4 = img4;
-export const avatar5 = img5;
-export const avatar6 = img6;
-export const avatar7 = img7;
-export const avatar8 = img8;
-export const avatar9 = img9;
+
 
 const avatars = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
 

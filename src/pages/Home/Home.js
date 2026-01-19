@@ -1,13 +1,21 @@
 // Home.js
 
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import LoginModal from "../../components/LoginModal";
 import "./Home.css"; // Import the new CSS
 
 const Home = () => {
   const { user } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
+  
+  const handleOpenLogin = (demo = false) => {
+      setIsDemo(demo);
+      setShowLoginModal(true);
+  };
   
   const features = [
     {
@@ -39,6 +47,11 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      <LoginModal 
+           show={showLoginModal} 
+           handleClose={() => setShowLoginModal(false)}
+           isDemo={isDemo}
+      />
       {/* Hero Section */}
       <section className="hero-section">
         <Container>
@@ -59,11 +72,12 @@ const Home = () => {
                       Get Started for Free
                     </Button>
                   </Link>
-                  <Link to="/authentication/signin">
-                    <Button variant="secondary" className="btn-hero">
+                  <Button variant="secondary" className="btn-hero" onClick={() => handleOpenLogin(false)}>
                       Log In
-                    </Button>
-                  </Link>
+                  </Button>
+                  <Button variant="info" className="btn-hero text-white" onClick={() => handleOpenLogin(true)}>
+                      Try Demo
+                  </Button>
                 </div>
               )}
               

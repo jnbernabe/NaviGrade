@@ -5,17 +5,20 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "../../services/mockApi";
 import { useAuth } from "../../contexts/AuthContext";
 
+
+const initialFormState = {
+  name: "",
+  dueDate: new Date(),
+  course: "", // Course ID
+  grade: 0,
+  weight: 0,
+  priority: "Medium",
+  memo: "",
+  completed: false
+};
+
 const AddAssignmentModal = ({ show, onHide, onAdd }) => {
-  const initialFormState = {
-    name: "",
-    dueDate: new Date(),
-    course: "", // Course ID
-    grade: 0,
-    weight: 0,
-    priority: "Medium",
-    memo: "",
-    completed: false
-  };
+
 
   const [formData, setFormData] = useState(initialFormState);
   const [courses, setCourses] = useState([]);
