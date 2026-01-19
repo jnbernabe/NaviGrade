@@ -30,9 +30,9 @@ function App() {
   const { user } = useAuth();
 
   return (
-    <>
+    <div className="app-wrapper">
       <Navbar />
-      <Container>
+      <Container className="main-content">
         <Routes>
           {user ? (
             <>
@@ -73,7 +73,7 @@ function App() {
         </Routes>
       </Container>
       <Footer />
-    </>
+    </div>
   );
 }
 

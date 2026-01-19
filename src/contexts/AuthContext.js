@@ -111,7 +111,7 @@ const AuthProvider = ({ children }) => {
         setAuthToken(responseData.token, userjson);
         setUser(responseData.user);
         setUserDetails(userjson);
-        navigate("/home");
+        navigate("/dashboard");
         return true;
       } else {
         const errorData = response.data;

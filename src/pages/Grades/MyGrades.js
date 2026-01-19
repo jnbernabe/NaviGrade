@@ -95,7 +95,7 @@ const MyGrades = () => {
       </div>
 
       <Row className="justify-content-center">
-        <Col md={8} lg={6}>
+        <Col md={10} lg={12}>
           <div className="glass-panel p-4 mb-4">
             <Form.Label className="text-muted text-uppercase small ls-1">Select Course</Form.Label>
             <Form.Select

@@ -21,10 +21,8 @@ const SignUp = () => {
       const success = await signup(email, password, firstName, lastName);
 
       if (success) {
-        setSuccessMessage('Signup successful. Redirecting to login page...');
-        setTimeout(() => {
-          navigate('/login'); // Use navigate for navigation
-        }, 3000); // Redirect after 3 seconds
+        // The context handles navigation to dashboard, or we can do it here if context returns success
+        // Context currently navigates to dashboard, so this component will unmount.
       } else {
         setError('Signup failed. Please check your information and try again.');
       }

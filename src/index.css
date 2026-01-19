@@ -242,3 +242,16 @@ a:hover {
 ::-ms-input-placeholder {
   color: rgba(255, 255, 255, 0.7) !important;
 }
+
+/* Sticky Footer Implementation */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.main-content {
+  flex: 1; /* Grow to fill available space */
+  display: flex; /* Allow children to utilize height if needed */
+  flex-direction: column;
+}
