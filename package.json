@@ -25,7 +25,7 @@
     "sort-by": "^1.2.0",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://github.com/jnbernabe/NaviGrade",
+  "homepage": "https://jnbernabe.github.io/NaviGrade",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
